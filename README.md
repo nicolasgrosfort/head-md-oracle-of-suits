@@ -1,5 +1,9 @@
 # Oracle of Suits
 
+## Journal
+
+[Journal](/journal/journal.md)
+
 ## Observations
 
 **Structure** : Links | Logs | FAQ

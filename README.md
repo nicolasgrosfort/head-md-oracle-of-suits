@@ -1,1 +1,1 @@
-# md1-oracle-of-suit
+# head-md-oracle-of-suits

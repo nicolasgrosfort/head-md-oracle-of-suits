@@ -1,1 +1,1 @@
-# head-md-oracle-of-suits
+# Oracle of Suits

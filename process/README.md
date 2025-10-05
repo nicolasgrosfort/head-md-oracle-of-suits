@@ -30,16 +30,16 @@ The journal is the primary entry point and narrative thread. It points to the ot
 
 ### Journal
 
-- [Journal](/journal/journal.md)
+- [Journal](/process/journal/journal.md)
 
 ### Observations
 
 #### 09-22-2025
 
-- [Hanafuda](/observations/09-22-2025/hanafuda.md)
-- [Free Tarot Reading](/observations/09-22-2025/free-tarot-reading.md)
-- [Reddit](/observations/09-22-2025/reddit.md)
+- [Hanafuda](/process/observations/09-22-2025/hanafuda.md)
+- [Free Tarot Reading](/process/observations/09-22-2025/free-tarot-reading.md)
+- [Reddit](/process/observations/09-22-2025/reddit.md)
 
 #### 09-23-2025
 
-...
+...*to be continued*

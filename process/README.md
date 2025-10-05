@@ -1,38 +1,45 @@
-# Processus
+# Process
 
 ## Documentation
 
 ### Structure
 
-Le journal est le point d'entrée principal. Il est composé de 3 types de contenu. Un fichier journal est créé pour chaque jour où des notes sont prises.
+The journal is the primary entry point and narrative thread. It points to the other types of notes.
 
-1. `Observations` : Des notes brutes, des idées, des lectures, des vidéos, etc.
-2. `Théories` : Des notes plus structurées, des concepts, des idées.
-3. `Réflexion` : Des notes introspectives, des idées, des ressentis.
+1. `Observations`: Raw notes, ideas, readings, videos, etc.
+2. `Theories`: More structured notes, concepts, ideas.
+3. `Reflection`: Introspective notes, thoughts, feelings.
+4. `Concepts`: Design ideas, prototypes, iterations.
 
-### Conventions de nommage
+### Naming Conventions
 
-- Tous les fichiers texte sont au format Markdown (`.md`).
-- Tous les fichiers image sont au format PNG (`.png || .jpg || .gif`).
-- Toutes les dates sont au format `AAAA-MM-JJ`.
-- Les fichiers sont nommés : `[contexte]-[titre-de-la-note]-[version]-[date].md`
-  - ex: `theorie-interactions-1-2024-01-01.png`.
-  - ex: `observation-lecture-1-2024-01-01.md`.
+- All text files are in Markdown format (.md)
+- All image files are in PNG, JPG, or GIF format (.png | .jpg | .gif)
+- All dates use the YYYY-MM-DD format
+- Files follow the pattern: `[context]-[note-title?]-[version?]-[date].md`
+  - Example: `concept-2025-10-01.md`
+  - Example: `theorie-agency-1-2025-10-01.png`
+  - Example: `observation-ludotheque-1-2025-10-01.md`
+
+## Content
+
+### Concept
+
+- [2025-10-02](/process/concepts/concept-2025-10-02.md)
+- [2025-10-05](/process/concepts/concept-2025-10-05.md)
 
 ### Journal
 
-[Journal](/journal/journal.md)
+- [Journal](/journal/journal.md)
 
 ### Observations
 
-**Structure** : Links | Logs | FAQ
-
-### 09-22-2025
+#### 09-22-2025
 
 - [Hanafuda](/observations/09-22-2025/hanafuda.md)
 - [Free Tarot Reading](/observations/09-22-2025/free-tarot-reading.md)
 - [Reddit](/observations/09-22-2025/reddit.md)
 
-### 09-23-2025
+#### 09-23-2025
 
 ...

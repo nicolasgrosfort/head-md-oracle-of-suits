@@ -4,6 +4,6 @@ A project to design embodied, playful, and accessible interactive experiences re
 
 ## Summary
 
-- [Process](/process/README.md)
-- [Code](/code/README.md)
-- [Press-kit](/press-kit/README.md)
+- [Process](/process)
+- [Code](/code)
+- [Press-kit](/press-kit)

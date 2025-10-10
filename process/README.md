@@ -25,8 +25,8 @@ The journal is the primary entry point and narrative thread. It points to the ot
 
 ### Concept
 
-- [2025-10-02](/process/concepts/concept-2025-10-02.md)
-- [2025-10-05](/process/concepts/concept-2025-10-05.md)
+- [2025-10-02](2025-10-02-shiner.md)
+- [2025-10-05](2025-10-05-entropy-of-trust.md)
 
 ### Journal
 

@@ -4,11 +4,11 @@
     "type": "split",
     "children": [
       {
-        "id": "1da9aff4ed347005",
+        "id": "05f165674693e98f",
         "type": "tabs",
         "children": [
           {
-            "id": "171d2c3f3e694e0c",
+            "id": "acb5923da2b23e7e",
             "type": "leaf",
             "state": {
               "type": "empty",
@@ -49,7 +49,7 @@
             "state": {
               "type": "search",
               "state": {
-                "query": "",
+                "query": "concept-6",
                 "matchingCase": false,
                 "explainSearch": false,
                 "collapseAll": false,
@@ -74,7 +74,7 @@
       }
     ],
     "direction": "horizontal",
-    "width": 300
+    "width": 358.5
   },
   "right": {
     "id": "427a7548afb67a34",
@@ -162,12 +162,32 @@
       "bases:Create new base": false
     }
   },
-  "active": "171d2c3f3e694e0c",
+  "active": "58d4efd2fd3f1965",
   "lastOpenFiles": [
-    "process.md",
-    "code.md",
-    "process/concepts/concept-2025-10-08.md",
+    "process/concepts/images/shiner-sketch.png",
+    "process/concepts/2025-10-05-entropy-of-trust.md",
+    "process/concepts/images/entropy-of-trust-sketch.png",
+    "process/concepts/images/card-shark.png",
+    "process/concepts/images/card-as-interface-setup.jpg",
+    "process/concepts/images/card-as-interface-action.gif",
+    "process/concepts/images/gadget-shiner-action.gif",
+    "process/concepts/images/gadger-shiner-setup.jpg",
+    "process/concepts/2025-10-02-shiner.md",
+    "process/concepts/images/shiner-storyboard-sprites.png",
+    "process/concepts/images/shiner-storyboard-step-10.png",
+    "process/concepts/images/shiner-storyboard-step-9.png",
+    "process/concepts/2025-10-08-cartidge.md",
+    "process/observations/images",
+    "process/README.md",
     "README.md",
-    "Untitled.base"
+    "process/journal/journal.md",
+    "process/observations/09-22-2025/free-tarot-reading.md",
+    "process/observations/09-22-2025/youtube.md",
+    "process/observations/09-22-2025/reddit.md",
+    "process/observations/09-22-2025/hanafuda.md",
+    "process/journal/Journal.base",
+    "test.md",
+    "process.md",
+    "code.md"
   ]
 }

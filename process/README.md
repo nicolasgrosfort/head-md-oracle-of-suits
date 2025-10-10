@@ -24,7 +24,7 @@
 
 - Markdown format (.md)
 - YYYY-MM-DD date format
-- Filename follow the pattern: `[date]-[title]-[version?].md`
+- Filename follow the pattern: `[date]-[title?]-[version?].md`
   - Example: `2025-10-01-hanafuda.md`
 
 ### Images

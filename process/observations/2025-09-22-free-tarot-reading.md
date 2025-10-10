@@ -1,24 +1,22 @@
 # Free Tarot Reading
 
-[Free Tarot Reading](https://www.free-tarot-reading.net/free)
+## Journal
 
-## Logs
-
-Je n'ai jamais "joué" au tarot, et je ne sais pas en quoi consiste le fait de faire un *tirage*.
+I’ve never actually _played_ tarot, and I don’t really know what a _reading_ is.
 
 ![alt text](free-tarot-reading-1.png)
 
-Je dois choisir 6 cartes face cachée. Ensuite, on me donne mon *tirage*. J'ai hate de connaître mon avenir.
+I have to choose 6 cards face down. Then, I’m given my _reading_.
+I’m excited to find out my future.
 
 ![alt text](free-tarot-reading-2.png)
 
-Je me surprend à être assez réceptif aux messages. Non pour ce qu'ils racontent, mais pour la manière dont je peux les interpréter :
+I’m surprised at how receptive I am to the messages — not for _what_ they say, but for the way I can interpret them.
 
-Je cherche en quelque sorte à valider si les prédiction ont du sens. Je m'interroge et me positionne en faveur ou contre. Ça me permet de sortir un peu de moi, de prendre de la distance.
+In a way, I’m trying to validate whether the predictions make sense. I question them, and position myself either for or against. It allows me to step a bit outside of myself — to take some distance. 
 
-Est-ce que ça me concerne ? Si oui, quelle forme ça prend ? Comment ça se manifeste dans mon quotidien ?Comment l'amplifier ? Comment l'éviter ?
-
-Est-ce que c'est à ça que sert un oracle ? Faire réfléchir sur soi ?
+Does this relate to me? If yes, what form does it take? How does it manifest in my daily life? How can I amplify it? How can I avoid it?
+Is that what an oracle is for? To make you reflect on yourself? #prediction
 
 ![alt text](free-tarot-reading-3.png)
 ![alt text](free-tarot-reading-4.png)
@@ -26,4 +24,8 @@ Est-ce que c'est à ça que sert un oracle ? Faire réfléchir sur soi ?
 ![alt text](free-tarot-reading-6.png)
 ![alt text](free-tarot-reading-7.png)
 
-Globalement, ces prédictions, sont très "générales", vagues. Je pense qu'elles sont faites pour parler à tout le monde.
+Overall, these predictions are very _general_, vague. I think they’re meant to resonate with everyone.
+
+## Source
+
+- [Free Tarot Reading](https://www.free-tarot-reading.net/free)

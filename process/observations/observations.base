@@ -1,0 +1,18 @@
+views:
+  - type: table
+    name: Table
+    filters:
+      and:
+        - file.ext == "md"
+        - file.folder == "process/observations"
+    order:
+      - file.name
+      - file.tags
+    sort:
+      - property: file.basename
+        direction: ASC
+      - property: file.name
+        direction: ASC
+    columnSize:
+      file.name: 145
+      file.basename: 136

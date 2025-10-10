@@ -4,39 +4,24 @@
     "type": "split",
     "children": [
       {
-        "id": "05f165674693e98f",
+        "id": "b53d3dce01fb528b",
         "type": "tabs",
         "children": [
           {
-            "id": "acb5923da2b23e7e",
+            "id": "412776527691826e",
             "type": "leaf",
             "state": {
               "type": "markdown",
               "state": {
-                "file": "process/journal/2025-09-22.md",
+                "file": "process/references/hanafuda.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "2025-09-22"
-            }
-          },
-          {
-            "id": "a2886701093b2425",
-            "type": "leaf",
-            "state": {
-              "type": "markdown",
-              "state": {
-                "file": "process/journal/2025-09-22.md",
-                "mode": "source",
-                "source": false
-              },
-              "icon": "lucide-file",
-              "title": "2025-09-22"
+              "title": "hanafuda"
             }
           }
-        ],
-        "currentTab": 1
+        ]
       }
     ],
     "direction": "vertical"
@@ -68,7 +53,7 @@
             "state": {
               "type": "search",
               "state": {
-                "query": "concept-6",
+                "query": "tag:throwing",
                 "matchingCase": false,
                 "explainSearch": false,
                 "collapseAll": false,
@@ -181,21 +166,32 @@
       "bases:Create new base": false
     }
   },
-  "active": "a2886701093b2425",
+  "active": "412776527691826e",
   "lastOpenFiles": [
+    "Capture d’écran 2025-10-10 à 20.50.11.png",
+    "process/references/hanafuda.md",
+    "process/references/references.base",
+    "process/observations/observations.base",
+    "process/journal/journal.base",
+    "process/observations/2025-09-23-the-history-of-nintendo.md",
+    "process/observations/2025-09-22-throwing-cards-and-they-are-sharp-af.md",
+    "process/observations/2025-09-22-les-jeux-de-cartes-hanafuda-de-nintendo-ont-un-atout-dans-leur-manche.md",
+    "process/observations/2025-09-22-hanafuda-koi-koi.md",
+    "process/observations/2025-09-22-hanafuda.md",
+    "process/observations/2025-09-22-free-tarot-reading.md",
+    "process/observations/2025-09-22-bought-two-new-decks.md",
+    "process/observations/2025-09-22-anyone-got-any-tips-for-getting-into-throwing-cards.md",
+    "observations/09-22-2025/hanafuda.md",
+    "process/journal/2025-09-23.md",
+    "process/journal/2025-09-22.md",
+    "process/references/Untitled.base",
+    "observations/09-22-2025",
+    "observations",
     "process/README.md",
     "process/concepts/2025-10-08-cartidge.md",
     "process/concepts/2025-10-02-shiner.md",
-    "process/journal/2025-09-22.md",
-    "process/journal/2025-09-23.md",
     "process/journal/images",
-    "Journal.base",
     "process/observations/images/the-history-of-nintendo-1.png",
-    "process/observations/2025-09-23-the-history-of-nintendo.md",
-    "process/observations/2025-09-22-youtube.md",
-    "process/observations/2025-09-22-free-tarot-reading.md",
-    "process/observations/2025-09-22-reddit.md",
-    "process/observations/2025-09-22-hanafuda.md",
     "process/observations/images/free-tarot-reading-1.png",
     "process/references/images",
     "process/references",
@@ -210,7 +206,6 @@
     "process/concepts/images/card-as-interface-action.gif",
     "process/concepts/images/gadget-shiner-action.gif",
     "process/concepts/images/gadger-shiner-setup.jpg",
-    "process/concepts/images/shiner-storyboard-sprites.png",
     "process/observations/images",
     "test.md",
     "process.md",

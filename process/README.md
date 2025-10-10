@@ -1,12 +1,5 @@
 # Process
 
-## Summary
-
-- [Concepts](/concepts)
-- [Journal](/journal)
-- [Observations](/observations)
-- [References](/references)
-
 ## Structure
 
 1. `Concepts`: Design ideas, prototypes, iterations.

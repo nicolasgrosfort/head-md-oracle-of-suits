@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "process/observations/2025-09-27-jonction-toy-library.md",
+                "file": "process/README.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "2025-09-27-jonction-toy-library"
+              "title": "README"
             }
           }
         ]
@@ -168,10 +168,10 @@
   },
   "active": "73c8e8a98019f1be",
   "lastOpenFiles": [
+    "process/observations/2025-09-27-jonction-toy-library.md",
     "process/observations/images/toy-library-activate-card-1.png",
     "process/observations/images/toy-library-activate-card-2.png",
     "process/observations/images/toy-library-activate-card-3.png",
-    "process/observations/2025-09-27-jonction-toy-library.md",
     "Pasted image 20251010214142.png",
     "process/references/sleeve.md",
     "process/references/booster-pack.md",

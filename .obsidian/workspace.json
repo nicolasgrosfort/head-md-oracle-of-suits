@@ -13,15 +13,30 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "process/README.md",
+                "file": "process/journal/2025-09-22.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "README"
+              "title": "2025-09-22"
+            }
+          },
+          {
+            "id": "a2886701093b2425",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "process/journal/2025-09-22.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "2025-09-22"
             }
           }
-        ]
+        ],
+        "currentTab": 1
       }
     ],
     "direction": "vertical"
@@ -166,12 +181,23 @@
       "bases:Create new base": false
     }
   },
-  "active": "58d4efd2fd3f1965",
+  "active": "a2886701093b2425",
   "lastOpenFiles": [
+    "process/journal/2025-09-23.md",
+    "process/journal/2025-09-22.md",
+    "process/journal/images",
+    "Journal.base",
+    "process/observations/images/the-history-of-nintendo-1.png",
+    "process/observations/2025-09-23-the-history-of-nintendo.md",
+    "process/observations/2025-09-22-youtube.md",
+    "process/observations/2025-09-22-free-tarot-reading.md",
+    "process/observations/2025-09-22-reddit.md",
+    "process/observations/2025-09-22-hanafuda.md",
+    "process/observations/images/free-tarot-reading-1.png",
+    "process/README.md",
     "process/references/images",
     "process/references",
     "README.md",
-    "process/README.md",
     "press-kit/README.md",
     "code/README.md",
     "process/concepts/images/entropy-of-trust-sketch.png",
@@ -184,16 +210,8 @@
     "process/concepts/images/gadger-shiner-setup.jpg",
     "process/concepts/2025-10-02-shiner.md",
     "process/concepts/images/shiner-storyboard-sprites.png",
-    "process/concepts/images/shiner-storyboard-step-10.png",
-    "process/concepts/images/shiner-storyboard-step-9.png",
     "process/concepts/2025-10-08-cartidge.md",
     "process/observations/images",
-    "process/journal/journal.md",
-    "process/observations/09-22-2025/free-tarot-reading.md",
-    "process/observations/09-22-2025/youtube.md",
-    "process/observations/09-22-2025/reddit.md",
-    "process/observations/09-22-2025/hanafuda.md",
-    "process/journal/Journal.base",
     "test.md",
     "process.md",
     "code.md"

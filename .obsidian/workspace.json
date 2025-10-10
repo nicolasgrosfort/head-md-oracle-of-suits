@@ -11,10 +11,14 @@
             "id": "acb5923da2b23e7e",
             "type": "leaf",
             "state": {
-              "type": "empty",
-              "state": {},
+              "type": "markdown",
+              "state": {
+                "file": "process/README.md",
+                "mode": "source",
+                "source": false
+              },
               "icon": "lucide-file",
-              "title": "New tab"
+              "title": "README"
             }
           }
         ]
@@ -164,9 +168,15 @@
   },
   "active": "58d4efd2fd3f1965",
   "lastOpenFiles": [
+    "process/references/images",
+    "process/references",
+    "README.md",
+    "process/README.md",
+    "press-kit/README.md",
+    "code/README.md",
+    "process/concepts/images/entropy-of-trust-sketch.png",
     "process/concepts/images/shiner-sketch.png",
     "process/concepts/2025-10-05-entropy-of-trust.md",
-    "process/concepts/images/entropy-of-trust-sketch.png",
     "process/concepts/images/card-shark.png",
     "process/concepts/images/card-as-interface-setup.jpg",
     "process/concepts/images/card-as-interface-action.gif",
@@ -178,8 +188,6 @@
     "process/concepts/images/shiner-storyboard-step-9.png",
     "process/concepts/2025-10-08-cartidge.md",
     "process/observations/images",
-    "process/README.md",
-    "README.md",
     "process/journal/journal.md",
     "process/observations/09-22-2025/free-tarot-reading.md",
     "process/observations/09-22-2025/youtube.md",

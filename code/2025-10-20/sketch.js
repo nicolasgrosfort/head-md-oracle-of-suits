@@ -11,6 +11,8 @@ let capture;
 let hands;
 let results;
 let rectSize = 100; // Taille initiale du rectangle
+let targetRectSize = 100; // Taille cible pour l'effet spring
+let rectVelocity = 0; // Vélocité du redimensionnement
 let cubeRotationX = 0; // Rotation du cube sur l'axe X
 let cubeRotationY = 0; // Rotation du cube sur l'axe Y
 let rotationVelocityX = 0; // Vélocité de rotation sur l'axe X
@@ -21,6 +23,10 @@ let previousDistance = null; // Distance précédente entre les doigts
 const rotationSpeed = 0.1; // Vitesse de rotation
 const zoomSpeed = 0.5; // Vitesse de zoom
 const inertia = 0.95; // Coefficient d'inertie (0.95 = 95% de conservation de la vélocité)
+// Constantes pour l'effet spring du zoom
+const springK = 0.15; // Constante de ressort (rigidité)
+const springDamp = 0.8; // Amortissement du ressort
+const springMass = 0.5; // Masse pour la simulation
 
 function setup() {
 	createCanvas(windowWidth, windowHeight, WEBGL);
@@ -92,11 +98,11 @@ function draw() {
 				// Calculer le changement de distance
 				const deltaDistance = currentDistance - previousDistance;
 
-				// Incrémenter la taille en fonction du changement
-				rectSize += deltaDistance * zoomSpeed;
+				// Mettre à jour la taille CIBLE au lieu de la taille directe
+				targetRectSize += deltaDistance * zoomSpeed;
 
-				// Contraindre la taille entre 50 et 400
-				rectSize = constrain(rectSize, 50, 400);
+				// Contraindre la taille cible entre 50 et 400
+				targetRectSize = constrain(targetRectSize, 50, 400);
 			}
 
 			// Sauvegarder la distance actuelle
@@ -129,7 +135,7 @@ function draw() {
 			previousPalmY = null;
 		}
 
-		// Appliquer l'inertie à la vélocité
+		// Appliquer l'inertie à la vélocité de rotation
 		rotationVelocityX *= inertia;
 		rotationVelocityY *= inertia;
 
@@ -148,6 +154,9 @@ function draw() {
 		previousPalmY = null;
 		previousDistance = null;
 	}
+
+	// Appliquer l'effet spring au redimensionnement du cube
+	updateSizeSpring();
 
 	// Dessiner la zone de manipulation
 	drawManipulationZone();
@@ -255,6 +264,24 @@ function draw() {
 	specularMaterial(120);
 	box(rectSize);
 	pop();
+}
+
+function updateSizeSpring() {
+	// Simulation de ressort pour le redimensionnement du cube
+	// f = -k * (position - restPosition)
+	const force = -springK * (rectSize - targetRectSize);
+
+	// a = f / m
+	const accel = force / springMass;
+
+	// Appliquer l'accélération à la vélocité avec amortissement
+	rectVelocity = springDamp * (rectVelocity + accel);
+
+	// Mettre à jour la position (taille)
+	rectSize += rectVelocity;
+
+	// Contraindre la taille entre 50 et 400
+	rectSize = constrain(rectSize, 50, 400);
 }
 
 function onResults(res) {

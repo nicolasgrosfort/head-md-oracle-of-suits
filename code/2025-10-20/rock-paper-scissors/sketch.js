@@ -4,6 +4,14 @@ let capture;
 let hands;
 let results;
 
+// États du jeu
+let gameState = "WAITING"; // WAITING, COUNTDOWN, FROZEN, SHOWING_WINNER
+let countdownStart = 0;
+const countdownDuration = 3000; // 3 secondes
+let currentCountdown = 3;
+let frozenResults = null;
+let winner = null;
+
 function setup() {
 	createCanvas(windowWidth, windowHeight);
 
@@ -32,6 +40,116 @@ function setup() {
 function draw() {
 	background(0);
 
+	// Gestion des états du jeu
+	const numHands = results?.multiHandLandmarks?.length || 0;
+
+	// Machine à états
+	if (numHands !== 2) {
+		// Si pas exactement 2 mains, réinitialiser
+		if (gameState !== "WAITING") {
+			resetGame();
+		}
+		gameState = "WAITING";
+	} else if (numHands === 2) {
+		// Exactement 2 mains détectées
+		if (gameState === "WAITING") {
+			// Démarrer le countdown
+			gameState = "COUNTDOWN";
+			countdownStart = millis();
+		} else if (gameState === "COUNTDOWN") {
+			// Vérifier le countdown
+			const elapsed = millis() - countdownStart;
+			currentCountdown = 3 - floor(elapsed / 1000);
+
+			if (elapsed >= countdownDuration) {
+				// Countdown terminé, figer le jeu
+				gameState = "FROZEN";
+				frozenResults = captureFinalGestures();
+				winner = determineWinner(frozenResults);
+			}
+		}
+	}
+
+	// Affichage selon l'état
+	if (gameState === "FROZEN") {
+		// Afficher l'image figée et le gagnant
+		drawFrozenGame();
+	} else {
+		// Afficher le jeu en direct
+		drawLiveGame();
+	}
+
+	// Afficher les instructions et le compte à rebours
+	drawGameUI();
+}
+
+function resetGame() {
+	frozenResults = null;
+	winner = null;
+	currentCountdown = 3;
+}
+
+function captureFinalGestures() {
+	const player1 = results.multiHandLandmarks[0];
+	const player2 = results.multiHandLandmarks[1];
+
+	return {
+		player1: {
+			hand: player1,
+			gesture: detectRockPaperScissors(player1),
+		},
+		player2: {
+			hand: player2,
+			gesture: detectRockPaperScissors(player2),
+		},
+	};
+}
+
+function determineWinner(frozenResults) {
+	const gesture1 = frozenResults.player1.gesture.gesture;
+	const gesture2 = frozenResults.player2.gesture.gesture;
+
+	// Extraire le type de geste (enlever les emojis)
+	const type1 = gesture1.includes("CAILLOU")
+		? "ROCK"
+		: gesture1.includes("FEUILLE")
+			? "PAPER"
+			: gesture1.includes("CISEAUX")
+				? "SCISSORS"
+				: "UNKNOWN";
+
+	const type2 = gesture2.includes("CAILLOU")
+		? "ROCK"
+		: gesture2.includes("FEUILLE")
+			? "PAPER"
+			: gesture2.includes("CISEAUX")
+				? "SCISSORS"
+				: "UNKNOWN";
+
+	if (type1 === type2) {
+		return "ÉGALITÉ! 🤝";
+	}
+
+	if (
+		(type1 === "ROCK" && type2 === "SCISSORS") ||
+		(type1 === "SCISSORS" && type2 === "PAPER") ||
+		(type1 === "PAPER" && type2 === "ROCK")
+	) {
+		return "JOUEUR 1 GAGNE! 🎉";
+	}
+
+	if (
+		(type2 === "ROCK" && type1 === "SCISSORS") ||
+		(type2 === "SCISSORS" && type1 === "PAPER") ||
+		(type2 === "PAPER" && type1 === "ROCK")
+	) {
+		return "JOUEUR 2 GAGNE! 🎉";
+	}
+
+	return "ERREUR";
+}
+
+function drawLiveGame() {
 	// Afficher la vidéo en miroir
 	push();
 	translate(width, 0);
@@ -50,10 +168,73 @@ function draw() {
 			// Détecter le geste avec probabilités
 			const gestureResult = detectRockPaperScissors(hand);
 
-			// Afficher le résultat à côté de la main
-			displayGestureResult(hand, gestureResult);
+			// Afficher le résultat en position fixe (gauche ou droite)
+			displayGestureResultFixed(gestureResult, i + 1);
 		}
 	}
+}
+
+function drawFrozenGame() {
+	// Afficher les résultats figés
+	if (frozenResults) {
+		// Joueur 1
+		drawHandLandmarks(frozenResults.player1.hand);
+		displayGestureResultFixed(frozenResults.player1.gesture, 1);
+
+		// Joueur 2
+		drawHandLandmarks(frozenResults.player2.hand);
+		displayGestureResultFixed(frozenResults.player2.gesture, 2);
+
+		// Afficher le gagnant au centre
+		push();
+		fill(255, 215, 0);
+		stroke(0);
+		strokeWeight(4);
+		textAlign(CENTER, CENTER);
+		textSize(80);
+		textStyle(BOLD);
+		text(winner, width / 2, height / 2);
+
+		// Instructions pour rejouer
+		textSize(30);
+		fill(255);
+		text("Retirez une main pour recommencer", width / 2, height / 2 + 80);
+		pop();
+	}
+}
+
+function drawGameUI() {
+	push();
+	textAlign(CENTER, TOP);
+
+	if (gameState === "WAITING") {
+		// Attente de 2 joueurs
+		fill(255, 100, 100);
+		textSize(40);
+		textStyle(BOLD);
+		text("🖐️ EN ATTENTE DE 2 JOUEURS 🖐️", width / 2, 50);
+
+		textSize(20);
+		fill(200);
+		const numHands = results?.multiHandLandmarks?.length || 0;
+		text(`Mains détectées: ${numHands}/2`, width / 2, 110);
+	} else if (gameState === "COUNTDOWN") {
+		// Countdown en cours
+		fill(255, 200, 0);
+		textSize(200);
+		textStyle(BOLD);
+		text(
+			currentCountdown > 0 ? currentCountdown : "GO!",
+			width / 2,
+			height / 3,
+		);
+
+		textSize(30);
+		fill(255);
+		text("Faites votre geste!", width / 2, height / 3 + 220);
+	}
+
+	pop();
 }
 
 function onResults(res) {
@@ -195,8 +376,92 @@ function calculateScissorsScore(fingerStates) {
 	return max(score, 0);
 }
 
-// Afficher le résultat du geste détecté
-function displayGestureResult(hand, gestureResult) {
+// Nouvelle fonction : Afficher le résultat en position fixe
+function displayGestureResultFixed(gestureResult, playerNumber) {
+	// Position fixe selon le numéro du joueur
+	// Joueur 1 = en haut à gauche, Joueur 2 = en haut à droite
+	const padding = 20;
+	const boxWidth = 250;
+	const boxHeight = 140;
+
+	let x, y;
+	if (playerNumber === 1) {
+		// Haut à gauche
+		x = padding + boxWidth / 2;
+		y = padding + boxHeight / 2;
+	} else {
+		// Haut à droite
+		x = width - padding - boxWidth / 2;
+		y = padding + boxHeight / 2;
+	}
+
+	push();
+
+	// Fond semi-transparent pour la lisibilité
+	fill(0, 0, 0, 200);
+	strokeWeight(3);
+	rectMode(CENTER);
+	rect(x, y, boxWidth, boxHeight, 10);
+
+	// Numéro du joueur
+	fill(playerNumber === 1 ? color(100, 200, 255) : color(255, 100, 200));
+	textAlign(CENTER, CENTER);
+	textSize(18);
+	textStyle(BOLD);
+	text(`JOUEUR ${playerNumber}`, x, y - boxHeight / 2 + 25);
+
+	// Nom du geste (plus gros)
+	fill(255);
+	textSize(28);
+	textStyle(BOLD);
+	text(gestureResult.gesture, x, y - 20);
+
+	// Barre de confiance
+	textSize(14);
+	textStyle(NORMAL);
+	text(`Confiance: ${gestureResult.confidence.toFixed(0)}%`, x, y + 15);
+
+	// Barre de progression
+	const barWidth = 200;
+	const barHeight = 10;
+
+	// Fond de la barre
+	fill(50);
+	noStroke();
+	rect(x, y + 40, barWidth, barHeight, 5);
+
+	// Barre de confiance colorée
+	const confidenceWidth = map(gestureResult.confidence, 0, 100, 0, barWidth);
+
+	if (gestureResult.confidence > 70) {
+		fill(0, 255, 0);
+	} else if (gestureResult.confidence > 40) {
+		fill(255, 200, 0);
+	} else {
+		fill(255, 100, 0);
+	}
+
+	rectMode(CORNER);
+	rect(x - barWidth / 2, y + 40 - barHeight / 2, confidenceWidth, barHeight, 5);
+
+	// Afficher les probabilités détaillées (petit texte)
+	textSize(11);
+	fill(200);
+	textAlign(CENTER);
+	rectMode(CENTER);
+	text(
+		`🪨 ${gestureResult.probabilities.rock.toFixed(0)}%  ` +
+			`📄 ${gestureResult.probabilities.paper.toFixed(0)}%  ` +
+			`✂️ ${gestureResult.probabilities.scissors.toFixed(0)}%`,
+		x,
+		y + 60,
+	);
+
+	pop();
+}
+
+// Ancienne fonction : Afficher le résultat à côté de la main (gardée pour compatibilité)
+function displayGestureResult(hand, gestureResult, playerNumber = 0) {
 	// Position de la main (utiliser le poignet)
 	const wrist = hand[0];
 	const x = width - wrist.x * width;
@@ -208,7 +473,16 @@ function displayGestureResult(hand, gestureResult) {
 	fill(0, 0, 0, 180);
 	noStroke();
 	rectMode(CENTER);
-	rect(x, y - 80, 180, 100, 10);
+	rect(x, y - 80, 180, 120, 10);
+
+	// Numéro du joueur (si spécifié)
+	if (playerNumber > 0) {
+		fill(playerNumber === 1 ? color(100, 200, 255) : color(255, 100, 200));
+		textAlign(CENTER, CENTER);
+		textSize(16);
+		textStyle(BOLD);
+		text(`JOUEUR ${playerNumber}`, x, y - 130);
+	}
 
 	// Nom du geste
 	fill(255);

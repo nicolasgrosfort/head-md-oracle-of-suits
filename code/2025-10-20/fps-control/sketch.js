@@ -2,6 +2,7 @@
 
 const CONFIG = {
 	drawGrid: false,
+	amountOfBoxes: 200,
 };
 
 let cam;
@@ -25,8 +26,7 @@ function setup() {
 	requestPointerLock();
 
 	// Créer plusieurs boîtes dispersées aléatoirement
-	const numBoxes = 15; // Nombre de boîtes
-	for (let i = 0; i < numBoxes; i++) {
+	for (let i = 0; i < CONFIG.amountOfBoxes; i++) {
 		boxes.push({
 			x: random(-1000, 1000),
 			y: random(-500, 500),
@@ -35,7 +35,7 @@ function setup() {
 			rotX: random(TWO_PI),
 			rotY: random(TWO_PI),
 			rotZ: random(TWO_PI),
-			color: color(random(100, 255), random(100, 255), random(100, 255)),
+			color: color(random(0, 255), random(0, 255), random(0, 255)),
 		});
 	}
 }
@@ -125,6 +125,8 @@ function draw() {
 		rotateY(boxes[i].rotY);
 		rotateZ(boxes[i].rotZ);
 		fill(boxes[i].color);
+		stroke(0);
+		strokeWeight(1);
 		specularMaterial(boxes[i].color); // Matériau qui réagit à la lumière
 		box(boxes[i].size);
 		pop();

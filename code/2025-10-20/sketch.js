@@ -8,7 +8,8 @@ let capture;
 let hands;
 let results;
 let rectSize = 100; // Taille initiale du rectangle
-let cubeRotation = 0; // Rotation du cube
+let cubeRotationX = 0; // Rotation du cube sur l'axe X
+let cubeRotationY = 0; // Rotation du cube sur l'axe Y
 
 function setup() {
 	createCanvas(640, 480, WEBGL);
@@ -51,7 +52,19 @@ function draw() {
 
 	if (results?.multiHandLandmarks) {
 		if (results.multiHandLandmarks.length === 2) {
+			// Deux mains : contrôler la taille
 			rectSize = getRectSize(results.multiHandLandmarks);
+		} else if (results.multiHandLandmarks.length === 1) {
+			// Une seule main : contrôler la rotation
+			const hand = results.multiHandLandmarks[0];
+			// Utiliser la paume (landmark 0) pour contrôler la rotation
+			const palm = hand[0];
+
+			// Convertir la position normalisée en angles de rotation
+			// X de la main contrôle la rotation Y du cube (gauche/droite)
+			// Y de la main contrôle la rotation X du cube (haut/bas)
+			cubeRotationY = map(palm.x, 0, 1, -PI, PI);
+			cubeRotationX = map(palm.y, 0, 1, -PI, PI);
 		}
 
 		for (const landmarks of results.multiHandLandmarks) {
@@ -64,14 +77,19 @@ function draw() {
 	noStroke();
 	text(`FPS: ${floor(frameRate())}`, 10, 20);
 	text(`Taille: ${floor(rectSize)}`, 10, 40);
+	text(`Mains détectées: ${results?.multiHandLandmarks?.length || 0}`, 10, 60);
+	if (results?.multiHandLandmarks?.length === 1) {
+		text(`Mode: Rotation`, 10, 80);
+	} else if (results?.multiHandLandmarks?.length === 2) {
+		text(`Mode: Taille`, 10, 80);
+	}
 	pop();
 
 	// Dessiner le cube au centre en 3D
 	push();
-	// Rotation automatique du cube
-	cubeRotation += 0.01;
-	rotateX(cubeRotation);
-	rotateY(cubeRotation * 0.7);
+	// Utiliser la rotation contrôlée par la main
+	rotateX(cubeRotationX);
+	rotateY(cubeRotationY);
 
 	// Style du cube
 	fill(100, 150, 255, 200);

@@ -21,13 +21,13 @@ function setup() {
 	requestPointerLock();
 
 	// Créer plusieurs boîtes dispersées aléatoirement
-	const numBoxes = 15; // Nombre de boîtes
+	const numBoxes = 150; // Nombre de boîtes
 	for (let i = 0; i < numBoxes; i++) {
 		boxes.push({
-			x: random(-1000, 1000),
-			y: random(-500, 500),
-			z: random(-1000, 1000),
-			size: random(50, 150),
+			x: random(-2000, 2000),
+			y: random(-1000, 1000),
+			z: random(-2000, 2000),
+			size: random(50, 200),
 			rotX: random(TWO_PI),
 			rotY: random(TWO_PI),
 			rotZ: random(TWO_PI),

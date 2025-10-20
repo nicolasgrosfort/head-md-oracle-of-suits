@@ -11,24 +11,13 @@
             "id": "7ba679f29c07597f",
             "type": "leaf",
             "state": {
-              "type": "markdown",
+              "type": "bases",
               "state": {
-                "file": "process/references/sleeve.md",
-                "mode": "source",
-                "source": false,
-                "backlinks": true,
-                "backlinkOpts": {
-                  "collapseAll": false,
-                  "extraContext": false,
-                  "sortOrder": "alphabetical",
-                  "showSearch": false,
-                  "searchQuery": "",
-                  "backlinkCollapsed": false,
-                  "unlinkedCollapsed": true
-                }
+                "file": "process/references/references.base",
+                "viewName": "Table"
               },
-              "icon": "lucide-file",
-              "title": "sleeve"
+              "icon": "lucide-table",
+              "title": "references"
             }
           }
         ]
@@ -178,17 +167,18 @@
   },
   "active": "7ba679f29c07597f",
   "lastOpenFiles": [
-    "code/2025-10-20/rock-paper-scissors/libraries/p5.sound.min.js",
-    "code/2025-10-20/rock-paper-scissors/libraries/p5.min.js",
-    "code/2025-10-20/rock-paper-scissors/style.css",
-    "code/2025-10-20/rock-paper-scissors/sketch.js",
-    "code/2025-10-20/rock-paper-scissors/libraries",
-    "code/2025-10-20/rock-paper-scissors/jsconfig.json",
-    "code/2025-10-20/rock-paper-scissors/index.html",
-    "code/2025-10-20/rock-paper-scissors",
-    "code/2025-10-20/3d-random-light/jsconfig.json",
-    "code/2025-10-20/3d-random-light/libraries/p5.sound.min.js",
-    "code/2025-10-20/3d-random-light/libraries/p5.min.js",
+    "code/2025-10-20/fps-control/libraries/p5.sound.min.js",
+    "code/2025-10-20/fps-control/libraries/p5.min.js",
+    "code/2025-10-20/fps-control/style.css",
+    "code/2025-10-20/fps-control/sketch.js",
+    "code/2025-10-20/fps-control/libraries",
+    "code/2025-10-20/fps-control/jsconfig.json",
+    "code/2025-10-20/fps-control/index.html",
+    "code/2025-10-20/fps-control",
+    "code/2025-10-20/map/jsconfig.json",
+    "code/2025-10-20/map/libraries/p5.sound.min.js",
+    "code/2025-10-20/map/libraries/p5.min.js",
+    "process/references/sleeve.md",
     "process/README.md",
     "process/references/hanafuda.md",
     "process/observations/2025-09-22-hanafuda-koi-koi.md",
@@ -209,7 +199,6 @@
     "process/observations/images/toy-library-activate-card-2.png",
     "process/observations/images/toy-library-activate-card-3.png",
     "Pasted image 20251010214142.png",
-    "process/references/sleeve.md",
     "process/observations/images/toy-library-map-space.png",
     "process/observations/images/toy-library-sketch-sitting.png",
     "Capture d’écran 2025-10-10 à 20.50.11.png",

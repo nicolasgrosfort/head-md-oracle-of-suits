@@ -35,8 +35,20 @@ const springMass = 0.5; // Masse pour la simulation
 let rightHandInZone = false,
 	leftHandInZone = false;
 
+let myFont;
+
+function preload() {
+	// Charger une police pour WEBGL
+	myFont = loadFont(
+		"https://cdnjs.cloudflare.com/ajax/libs/topcoat/0.8.0/font/SourceCodePro-Regular.otf",
+	);
+}
+
 function setup() {
 	createCanvas(windowWidth, windowHeight, WEBGL);
+
+	textFont(myFont);
+	textSize(16);
 
 	// Initialiser les 3 lumières colorées
 	lights.push({
@@ -240,7 +252,7 @@ function draw() {
 	}
 
 	// Texte en 2D
-	fill(0);
+	fill(255);
 	noStroke();
 	text(`FPS: ${floor(frameRate())}`, 10, 20);
 	text(`Taille: ${floor(rectSize)}`, 10, 40);
@@ -263,7 +275,7 @@ function draw() {
 
 		if (rightHand) {
 			const inZone = isHandInManipulationZone(rightHand);
-			fill(inZone ? color(0, 200, 0) : color(200, 0, 0));
+			fill(255);
 			text(
 				`Main droite: Zoom ${inZone ? "✓ DANS LA ZONE" : "✗ Hors zone"}`,
 				10,
@@ -274,7 +286,7 @@ function draw() {
 
 		if (leftHand) {
 			const inZone = isHandInManipulationZone(leftHand);
-			fill(inZone ? color(0, 200, 0) : color(200, 0, 0));
+			fill(255);
 			text(
 				`Main gauche: Rotation ${inZone ? "✓ DANS LA ZONE" : "✗ Hors zone"}`,
 				10,

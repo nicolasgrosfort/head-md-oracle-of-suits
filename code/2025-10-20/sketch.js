@@ -4,7 +4,7 @@ const CONFIG = {
 	showVideo: false,
 	drawManipulationZone: true,
 	drawPalmPosition: true,
-	drawHandLandmarks: true,
+	drawHandLandmarks: false,
 };
 
 let capture;
@@ -19,7 +19,7 @@ let previousPalmX = null; // Position précédente de la paume en X
 let previousPalmY = null; // Position précédente de la paume en Y
 let previousDistance = null; // Distance précédente entre les doigts
 const rotationSpeed = 0.1; // Vitesse de rotation
-const zoomSpeed = 1; // Vitesse de zoom
+const zoomSpeed = 0.5; // Vitesse de zoom
 const inertia = 0.95; // Coefficient d'inertie (0.95 = 95% de conservation de la vélocité)
 
 function setup() {
@@ -48,7 +48,7 @@ function setup() {
 }
 
 function draw() {
-	background(220);
+	background(255);
 
 	// Dessiner la vidéo et les mains en 2D
 	push();
@@ -137,8 +137,10 @@ function draw() {
 		cubeRotationX += rotationVelocityX;
 		cubeRotationY -= rotationVelocityY;
 
-		for (const landmarks of results.multiHandLandmarks) {
-			drawHand(landmarks);
+		if (CONFIG.drawHandLandmarks) {
+			for (const landmarks of results.multiHandLandmarks) {
+				drawHand(landmarks);
+			}
 		}
 	} else {
 		// Pas de résultats, réinitialiser
@@ -166,15 +168,25 @@ function draw() {
 		}
 	}
 
+	// Dessiner un indicateur de position de la lumière
+	push();
+	fill(255, 255, 0, 200);
+	noStroke();
+	circle(mouseX, mouseY, 15);
+	fill(255, 255, 0, 100);
+	circle(mouseX, mouseY, 30);
+	pop();
+
 	// Texte en 2D
 	fill(0);
 	noStroke();
 	text(`FPS: ${floor(frameRate())}`, 10, 20);
 	text(`Taille: ${floor(rectSize)}`, 10, 40);
 	text(`Mains détectées: ${results?.multiHandLandmarks?.length || 0}`, 10, 60);
+	text(`Lumière: (${mouseX}, ${mouseY})`, 10, 80);
 
 	// Afficher les modes actifs avec statut de zone
-	let y = 80;
+	let y = 100;
 	if (results?.multiHandedness) {
 		let leftHand = null;
 		let rightHand = null;
@@ -214,16 +226,33 @@ function draw() {
 
 	// Dessiner le cube au centre en 3D
 	push();
+
+	// Ajouter l'éclairage qui suit la souris
+	// Convertir la position de la souris en coordonnées 3D
+	const lightX = mouseX - width / 2;
+	const lightY = mouseY - height / 2;
+	const lightZ = 200; // Distance de la lumière en profondeur
+
+	// Lumière ambiante douce
+	ambientLight(0, 255, 255);
+
+	// Lumière directionnelle qui suit la souris
+	pointLight(255, 0, 255, lightX, lightY, lightZ);
+
+	// Lumière d'appoint pour ne pas avoir de zones trop sombres
+	pointLight(255, 255, 0, -200, 0, 100);
+
 	// Utiliser la rotation contrôlée par la main
 	rotateX(cubeRotationX);
 	rotateY(cubeRotationY);
 
 	// Style du cube
-	fill(100, 150, 255, 200);
+	fill(100, 150, 255);
 	stroke(50, 100, 200);
 	strokeWeight(2);
 
 	// Dessiner le cube avec la taille calculée
+	specularMaterial(120);
 	box(rectSize);
 	pop();
 }

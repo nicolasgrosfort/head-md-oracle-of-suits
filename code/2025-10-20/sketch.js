@@ -1,5 +1,9 @@
 /** biome-ignore-all lint/correctness/noUnusedVariables: <> */
 
+const CONFIG = {
+	showVideo: false,
+};
+
 let capture;
 let hands;
 let results;
@@ -35,7 +39,7 @@ function draw() {
 	push();
 	translate(width, 0);
 	scale(-1, 1);
-	image(capture, 0, 0, width, height);
+	CONFIG.showVideo && image(capture, 0, 0, width, height);
 	pop();
 
 	if (results?.multiHandLandmarks) {

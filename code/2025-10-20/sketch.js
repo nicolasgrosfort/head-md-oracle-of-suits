@@ -8,9 +8,10 @@ let capture;
 let hands;
 let results;
 let rectSize = 100; // Taille initiale du rectangle
+let cubeRotation = 0; // Rotation du cube
 
 function setup() {
-	createCanvas(640, 480);
+	createCanvas(640, 480, WEBGL);
 
 	capture = createCapture(VIDEO);
 	capture.size(640, 480);
@@ -37,6 +38,11 @@ function setup() {
 function draw() {
 	background(220);
 
+	// Dessiner la vidéo et les mains en 2D
+	push();
+	// Revenir en mode 2D pour la vidéo
+	translate(-width / 2, -height / 2);
+
 	push();
 	translate(width, 0);
 	scale(-1, 1);
@@ -53,19 +59,28 @@ function draw() {
 		}
 	}
 
-	// Dessiner le rectangle au centre
-	push();
-	rectMode(CENTER);
-	fill(100, 150, 255, 150);
-	stroke(50, 100, 200);
-	strokeWeight(3);
-	rect(width / 2, height / 2, rectSize, rectSize);
-	pop();
-
+	// Texte en 2D
 	fill(0);
 	noStroke();
 	text(`FPS: ${floor(frameRate())}`, 10, 20);
 	text(`Taille: ${floor(rectSize)}`, 10, 40);
+	pop();
+
+	// Dessiner le cube au centre en 3D
+	push();
+	// Rotation automatique du cube
+	cubeRotation += 0.01;
+	rotateX(cubeRotation);
+	rotateY(cubeRotation * 0.7);
+
+	// Style du cube
+	fill(100, 150, 255, 200);
+	stroke(50, 100, 200);
+	strokeWeight(2);
+
+	// Dessiner le cube avec la taille calculée
+	box(rectSize);
+	pop();
 }
 
 function onResults(res) {

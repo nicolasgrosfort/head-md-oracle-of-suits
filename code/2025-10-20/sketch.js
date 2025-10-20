@@ -10,14 +10,17 @@ let results;
 let rectSize = 100; // Taille initiale du rectangle
 let cubeRotationX = 0; // Rotation du cube sur l'axe X
 let cubeRotationY = 0; // Rotation du cube sur l'axe Y
+let rotationVelocityX = 0; // Vélocité de rotation sur l'axe X
+let rotationVelocityY = 0; // Vélocité de rotation sur l'axe Y
 let previousPalmX = null; // Position précédente de la paume en X
 let previousPalmY = null; // Position précédente de la paume en Y
 let previousDistance = null; // Distance précédente entre les doigts
-const rotationSpeed = 0.5; // Vitesse de rotation
+const rotationSpeed = 0.1; // Vitesse de rotation
 const zoomSpeed = 1; // Vitesse de zoom
+const inertia = 0.95; // Coefficient d'inertie (0.95 = 95% de conservation de la vélocité)
 
 function setup() {
-	createCanvas(640, 480, WEBGL);
+	createCanvas(windowWidth, windowHeight, WEBGL);
 
 	capture = createCapture(VIDEO);
 	capture.size(640, 480);
@@ -105,9 +108,9 @@ function draw() {
 				const deltaX = palm.x - previousPalmX;
 				const deltaY = palm.y - previousPalmY;
 
-				// Incrémenter la rotation en fonction du mouvement (inversé)
-				cubeRotationY -= deltaX * rotationSpeed * 10;
-				cubeRotationX -= deltaY * rotationSpeed * 10;
+				// Ajouter à la vélocité au lieu d'incrémenter directement
+				rotationVelocityY += deltaX * rotationSpeed * 10;
+				rotationVelocityX -= deltaY * rotationSpeed * 10;
 			}
 
 			// Sauvegarder la position actuelle pour la prochaine frame
@@ -118,6 +121,14 @@ function draw() {
 			previousPalmX = null;
 			previousPalmY = null;
 		}
+
+		// Appliquer l'inertie à la vélocité
+		rotationVelocityX *= inertia;
+		rotationVelocityY *= inertia;
+
+		// Appliquer la vélocité à la rotation
+		cubeRotationX += rotationVelocityX;
+		cubeRotationY += rotationVelocityY;
 
 		for (const landmarks of results.multiHandLandmarks) {
 			drawHand(landmarks);

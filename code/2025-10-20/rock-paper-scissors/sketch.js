@@ -168,8 +168,8 @@ function drawLiveGame() {
 			// Détecter le geste avec probabilités
 			const gestureResult = detectRockPaperScissors(hand);
 
-			// Afficher le résultat en position fixe (gauche ou droite)
-			displayGestureResultFixed(gestureResult, i + 1);
+			// Afficher le résultat à côté de la main (simplifié)
+			displayGestureResultSimple(hand, gestureResult, i + 1);
 		}
 	}
 }
@@ -179,11 +179,11 @@ function drawFrozenGame() {
 	if (frozenResults) {
 		// Joueur 1
 		drawHandLandmarks(frozenResults.player1.hand);
-		displayGestureResultFixed(frozenResults.player1.gesture, 1);
+		displayGestureResultSimple(frozenResults.player1.hand, frozenResults.player1.gesture, 1);
 
 		// Joueur 2
 		drawHandLandmarks(frozenResults.player2.hand);
-		displayGestureResultFixed(frozenResults.player2.gesture, 2);
+		displayGestureResultSimple(frozenResults.player2.hand, frozenResults.player2.gesture, 2);
 
 		// Afficher le gagnant au centre
 		push();
@@ -376,7 +376,51 @@ function calculateScissorsScore(fingerStates) {
 	return max(score, 0);
 }
 
-// Nouvelle fonction : Afficher le résultat en position fixe
+// Nouvelle fonction simplifiée : Afficher seulement Joueur, Posture et %
+function displayGestureResultSimple(hand, gestureResult, playerNumber) {
+	// Position de la main (utiliser le poignet)
+	const wrist = hand[0];
+	const x = width - wrist.x * width;
+	const y = wrist.y * height;
+
+	push();
+
+	// Fond semi-transparent compact
+	fill(0, 0, 0, 200);
+	stroke(playerNumber === 1 ? color(100, 200, 255) : color(255, 100, 200));
+	strokeWeight(2);
+	noStroke();
+	rectMode(CENTER);
+	const boxWidth = 200;
+	const boxHeight = 70;
+	rect(x, y - 60, boxWidth, boxHeight, 8);
+
+	// Couleur du joueur
+	const playerColor = playerNumber === 1 ? color(100, 200, 255) : color(255, 100, 200);
+
+	// Ligne 1 : Joueur X
+	fill(playerColor);
+	textAlign(CENTER, CENTER);
+	textSize(16);
+	textStyle(BOLD);
+	text(`JOUEUR ${playerNumber}`, x, y - 80);
+
+	// Ligne 2 : Posture
+	fill(255);
+	textSize(24);
+	textStyle(BOLD);
+	text(gestureResult.gesture, x, y - 55);
+
+	// Ligne 3 : Pourcentage
+	fill(200);
+	textSize(14);
+	textStyle(NORMAL);
+	text(`(${gestureResult.confidence.toFixed(0)}%)`, x, y - 30);
+
+	pop();
+}
+
+// Ancienne fonction : Afficher le résultat en position fixe (gardée pour compatibilité)
 function displayGestureResultFixed(gestureResult, playerNumber) {
 	// Position fixe selon le numéro du joueur
 	// Joueur 1 = en haut à gauche, Joueur 2 = en haut à droite

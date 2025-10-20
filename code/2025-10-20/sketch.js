@@ -7,6 +7,7 @@ const CONFIG = {
 let capture;
 let hands;
 let results;
+let rectSize = 100; // Taille initiale du rectangle
 
 function setup() {
 	createCanvas(640, 480);
@@ -43,14 +44,28 @@ function draw() {
 	pop();
 
 	if (results?.multiHandLandmarks) {
+		if (results.multiHandLandmarks.length === 2) {
+			rectSize = getRectSize(results.multiHandLandmarks);
+		}
+
 		for (const landmarks of results.multiHandLandmarks) {
 			drawHand(landmarks);
 		}
 	}
 
+	// Dessiner le rectangle au centre
+	push();
+	rectMode(CENTER);
+	fill(100, 150, 255, 150);
+	stroke(50, 100, 200);
+	strokeWeight(3);
+	rect(width / 2, height / 2, rectSize, rectSize);
+	pop();
+
 	fill(0);
 	noStroke();
 	text(`FPS: ${floor(frameRate())}`, 10, 20);
+	text(`Taille: ${floor(rectSize)}`, 10, 40);
 }
 
 function onResults(res) {
@@ -117,4 +132,25 @@ function drawHand(landmarks) {
 		const y = landmark.y * height;
 		circle(x, y, 8);
 	}
+}
+
+function getRectSize(multiHandLandmarks) {
+	const hand1 = multiHandLandmarks[0];
+	const hand2 = multiHandLandmarks[1];
+
+	// Index tip est le landmark numéro 8
+	const index1 = hand1[8];
+	const index2 = hand2[8];
+
+	// Convertir les coordonnées normalisées en pixels
+	const x1 = width - index1.x * width;
+	const y1 = index1.y * height;
+	const x2 = width - index2.x * width;
+	const y2 = index2.y * height;
+
+	// Calculer la distance entre les deux index
+	const distance = dist(x1, y1, x2, y2);
+
+	// Ajuster la taille du rectangle (minimum 50, maximum 400)
+	return constrain(distance, 50, 400);
 }

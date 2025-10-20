@@ -4,12 +4,12 @@
 
 There are **cards made specifically for throwing**.
 
-![alt text](reddit-5.png)
+![Card for throwing](./images/reddit-5.png)
 
 - [Throwing cards](https://www.ricksmithjr.com/products/banshees-advanced)
-- [Target throwing cards](https://www.ricksmithjr.com/products/banshees-advanced)![[
+- [Target throwing cards](https://www.ricksmithjr.com/products/banshees-advanced)
 
-Card throwing seems to be an **official practice**, part of the world of _magic_ or _illusionism_. #throwing 
+Card throwing seems to be an **official practice**, part of the world of _magic_ or _illusionism_. #throwing
 
 I’m taking a step back.
 

@@ -15,13 +15,13 @@ My current work investigates how this tension — between hand and machine, intu
 1. **Parallel Evolution**
 
     Cheating and card manufacturing evolved together: each technical innovation came to address flaws exploited by cheaters.
-    ![Manufacture](process/concepts/images/manufacture.png)
+    ![Manufacture](./images/manufacture.png)
 
 2. **Different types of card marking**
 
     Card marking takes many forms — blisters, tinting, shading, or subtle cuts — each technique revealing how cheaters learned to manipulate the material limits of paper and ink.
 
-    ![Marked card](process/concepts/images/marked-cards.png)
+    ![Marked card](./images/marked-cards.png)
 
 3. **Industrial Scam**
 
@@ -33,15 +33,15 @@ My current work investigates how this tension — between hand and machine, intu
 
     Although conceptually evocative, the mirror proved to be a poor simulation — a false affordance that produced more spectacle than sense. Its gesture felt detached from the logic of cheating, turning the device into a narrative gadget rather than an investigative tool.
 
-    ![Gadget Shiner](process/concepts/images/gadget-shiner-action.gif)
-    ![Setup](process/concepts/images/gadger-shiner-setup.jpg)
+    ![Gadget Shiner](./images/gadget-shiner-action.gif)
+    ![Setup](./images/gadger-shiner-setup.jpg)
 
 5. **The card as an interface**
 
     The card itself becomes the controller, merging tactile intuition and technical revelation.
 
-    ![Card as interface](process/concepts/images/card-as-interface-action.gif)
-    ![Setup](process/concepts/images/card-as-interface-setup.jpg)
+    ![Card as interface](./images/card-as-interface-action.gif)
+    ![Setup](./images/card-as-interface-setup.jpg)
 
 ### Sources
 
@@ -111,5 +111,6 @@ Tactility
 - Entry point: `Card`
 - Interaction: `Inspect`
 - Feedback: `Verdict`
+
 ---
-![Sketch](process/concepts/images/entropy-of-trust-sketch.png)
+![Sketch](./images/entropy-of-trust-sketch.png)

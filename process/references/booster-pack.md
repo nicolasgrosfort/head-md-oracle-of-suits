@@ -1,6 +1,6 @@
 # Booster pack
 
-A **booster pack** (or simply _booster_) is a **small sealed pack** containing a limited number of cards (usually 5 to 15). #sealed 
+A **booster pack** (or simply _booster_) is a **small sealed pack** containing a limited number of cards (usually 5 to 15). #sealed
 
 The cards inside are **random**, with a distribution designed by the publisher (common, uncommon, rare, special cards, etc.).
 
@@ -10,5 +10,5 @@ It’s the card game equivalent of **blind packs** found in other worlds — lik
 
 ## Sources
 
-- https://en.wikipedia.org/wiki/Booster_pack
-- https://en.wikipedia.org/wiki/Gashapon
+- <https://en.wikipedia.org/wiki/Booster_pack>
+- <https://en.wikipedia.org/wiki/Gashapon>

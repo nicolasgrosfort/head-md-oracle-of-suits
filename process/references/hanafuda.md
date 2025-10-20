@@ -8,4 +8,4 @@ Like most card games, it’s a mix of chance and strategy — at least, that’s
 
 ## Sources
 
-- https://fr.wikipedia.org/wiki/Hanafuda
+- <https://fr.wikipedia.org/wiki/Hanafuda>

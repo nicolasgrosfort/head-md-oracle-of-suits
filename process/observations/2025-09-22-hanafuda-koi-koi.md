@@ -8,7 +8,7 @@ The game originated from **Portuguese playing cards**, which were **re-appropria
 
 **Nintendo** roughly means _“leave luck to heaven”_ (interpretation). #fun-fact #nintendo
 
-![alt text](youtube-2.png)
+![Nintendo logo](./images/youtube-2.png)
 
 [Nintendo's logo through the years](http://blog.beforemario.com/2012/03/nintendos-logo-through-years.html)
 

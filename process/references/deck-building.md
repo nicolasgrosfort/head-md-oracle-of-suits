@@ -8,4 +8,4 @@ The rules are shared, but the **cards themselves are different**, which creates 
 
 ## Sources
 
-- https://en.wikipedia.org/wiki/Deck-building_game
+- <https://en.wikipedia.org/wiki/Deck-building_game>

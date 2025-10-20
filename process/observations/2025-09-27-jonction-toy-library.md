@@ -3,9 +3,10 @@
 ## Setup
 
 Visit, observation, immersion, and encounter at the Jonction toy library
+
 - Arrival 11:30 AM, departure 1:00 PM. Sunny, 13 °C.
--  Phones prohibited → No photos, no recordings
--  20 to 30 families present
+- Phones prohibited → No photos, no recordings
+- 20 to 30 families present
 
 ## Journal
 
@@ -15,7 +16,7 @@ Very family-oriented, lots of people — mostly children and their parents. I’
 
 I’m welcomed by **Sarah**, one of the four toy librarians on site. She’s dressed as a **cosmonaut**, since she’s hosting one of the two rooms dedicated to role-playing games — today’s theme is _space_. It immediately sets the mood.
 
-I have to take off my shoes. Everyone is in socks. It makes me feel at home. It gives the moment a different _tone_, a warmer one. It makes me want to stay a bit longer. I settle in and slowly start to feel like part of the place. 
+I have to take off my shoes. Everyone is in socks. It makes me feel at home. It gives the moment a different _tone_, a warmer one. It makes me want to stay a bit longer. I settle in and slowly start to feel like part of the place.
 
 💡 I wonder if keeping my shoes on would have emphasized the feeling of being just passing through, in transition. There’s something interesting to explore in the simple act of taking off one’s shoes. #shoes
 
@@ -27,35 +28,37 @@ Sarah gives me a tour of the place and explains how the different areas and game
 
 She immediately mentions **preteens**. With that age group, she says, she often pulls out games where cheating is _part of the game_ — sometimes even a condition for participation or victory — such as _Mytho_ or _Werewolf_, where players have to lie about being the werewolf. #cheating #teenager
 
-There are around 20 to 30 families present, mostly with children aged **4 to 12**. 
+There are around 20 to 30 families present, mostly with children aged **4 to 12**.
 The space is quite large, and I’d say it could easily accommodate another 20 families.  
 
-There are few preteens — maybe 3 or 4. Two hang around without really engaging, while two others are playing at the **only video game console** in the room: a Nintendo Switch. #teenager 
+There are few preteens — maybe 3 or 4. Two hang around without really engaging, while two others are playing at the **only video game console** in the room: a Nintendo Switch. #teenager
 
 Sarah explains that they’ve **intentionally left only a small space for video games**. For example, it’s not possible to borrow them. #video-game
 
 Finally, she tells me that they decided to **move away from age-based labels** for the games, and instead use a **5-star rating system** to indicate the game’s **complexity level**: ⭐️⭐️⭐️⭐️⭐️
 
-💡 The absence of video games might _correlate_ with the absence of preteens. #video-game #teenager 
+💡 The absence of video games might _correlate_ with the absence of preteens. #video-game #teenager
 
 💡 I wonder if **cheating** could be an effective entry point for children aged 6–10? #cheating #children
 
 ### Map of space
-![[toy-library-map-space.png]]
+
+![Toy library map](./images/toy-library-map-space.png)
 
 ### Sitting and observe
 
 Tour of the place done. I sit down at one of the gaming tables, take notes, and observe.
 
-There are **seven tables** available to the public, including two child-sized ones. On about half of them, games are already set up — lowering barriers to participation and making it easier to discover new games. #rule 
+There are **seven tables** available to the public, including two child-sized ones. On about half of them, games are already set up — lowering barriers to participation and making it easier to discover new games. #rule
 
 This week’s theme: **retro games**.
   
 I notice:
+
 - _Monopoly_, _Mille Bornes_, _Master Mind_, _Ploum_ and _Dix de chute_
 - A collective puzzle, half completed. No one is playing with it.
 
-Among these games, only _Mille Bornes_ is a **pure card game**. 
+Among these games, only _Mille Bornes_ is a **pure card game**.
 
 Two others include cards as part of the game, but they’re not the central element.
 
@@ -65,7 +68,7 @@ I listen in: Arnaud is explaining the rules of the game — but first, he contex
 
 It’s funny: 100% of the kids sitting at the tables are **kneeling on their chairs**, whether they’re sitting on child-sized or adult chairs. #sitting
 
-![[toy-library-sketch-sitting.png]]
+![Sitting children sketch](./images/toy-library-sketch-sitting.png)
 
 ### Unformal interview
 
@@ -77,11 +80,13 @@ Back near Sarah, the space starts to clear out a bit — things calm down. I tak
     - Mostly families with **young children**. A few preteens, but they’re rare. Few or no young adults up to 25 years old. Then some adults over 25, often _board game enthusiasts_. #age
 3. **What do people enjoy the most here — in terms of games, activities, etc.? Why do they come?**
     - She doesn’t answer directly. Instead, she talks about _pleasure_. That’s what people come here to find. #pleasure
-    - She also says that play — unlike a library, for example — creates a **shared space and time** for different audiences to meet, without language, cultural, or other barriers. _“Play is almost universal,”_ she says. They try to make the space as inclusive as possible by removing as many entry barriers as they can. #inclusive 
-4. I ask her about **rules as an entry barrier**. 
-	- She gives the example of _foosball_ or simple, manual games, where you don’t need to know the rules to take the first action. _The simpler the game, the more inclusive it is!_ But the **object** itself — its **form** — plays an important role too. #rule #inclusive
-	- She explains that they often do a **practice round** first. It’s a good way to onboard players and get around the rule barrier. But it’s probably harder to do with a **card game**. #onboarding 
-	- 💡 I wonder if **cards — by their very nature — prevent players from learning by doing**, unlike other objects whose _form more easily suggests a function_. I’ll keep this in mind. Worth digging deeper.
+    - She also says that play — unlike a library, for example — creates a **shared space and time** for different audiences to meet, without language, cultural, or other barriers. _“Play is almost universal,”_ she says. They try to make the space as inclusive as possible by removing as many entry barriers as they can. #inclusive
+4. I ask her about **rules as an entry barrier**.
+
+   - She gives the example of _foosball_ or simple, manual games, where you don’t need to know the rules to take the first action. _The simpler the game, the more inclusive it is!_ But the **object** itself — its **form** — plays an important role too. #rule #inclusive
+   - She explains that they often do a **practice round** first. It’s a good way to onboard players and get around the rule barrier. But it’s probably harder to do with a **card game**. #onboarding
+   - 💡 I wonder if **cards — by their very nature — prevent players from learning by doing**, unlike other objects whose _form more easily suggests a function_. I’ll keep this in mind. Worth digging deeper.
+  
 5. **Why are we barefoot / in socks?**
     - It’s not to make people feel more at home, but to **protect children** — especially those crawling or playing on the floor — from small stones or sharp objects brought in from outside. #shoes
 
@@ -94,6 +99,7 @@ The conversation turned into a natural exchange, one I can’t fully recall or t
 Sarah then introduces me to **Arnaud**, who seems to know more about games that specifically involve playing cards. I ask him what he thinks about the **role of playing cards** in board games in general.  I’m trying to find out whether there’s some kind of **common denominator** — to understand the **purpose** a card serves within a game. #board-game #mechanics
 
 He lists several points:
+
 - **Randomness**
 - **Easy to produce**, inexpensive, just printed
 - **Freedom of expression** — more flexibility than a pawn or token
@@ -102,7 +108,7 @@ He lists several points:
 Very quickly, he suggests **unpacking a few games** to look at how they’re made.
 On the way, he gives me a few references: _Alice in Wonderland_, **Yu-Gi-Oh!** (as a collectible card game), and talks about **Dominion** — a type of game called [[deck-building]]. He also mentions the classic **“Seven Families”** card game as another reference. #deck-building #collection
 
-He also mentions **Bridge** as possibly **the most complex card game in the world** — using traditional playing cards. Along the way, he brings up **7 Wonders** and **Citadels**, highlighting them as examples of interesting **mechanics and gestures** to explore — since in these games, cards are **passed from hand to hand**, from one player to another. #gesture #mechanics 
+He also mentions **Bridge** as possibly **the most complex card game in the world** — using traditional playing cards. Along the way, he brings up **7 Wonders** and **Citadels**, highlighting them as examples of interesting **mechanics and gestures** to explore — since in these games, cards are **passed from hand to hand**, from one player to another. #gesture #mechanics
 
 Finally, he talks about [[factory-sealed]] as an interesting **psychological mechanic** to explore — the idea of _not knowing what’s inside the pack_, like with a [[booster-pack]]. That element of **surprise** is compelling. #sealed #booster
 
@@ -118,7 +124,7 @@ According to him, the **main role of a card** in a game is to **move the game fo
 
 We start with Munchkin Quest — a **card game turned into a board game**. Along the way, I pick up some terminology: _tile_ (the cardboard pieces that make up the board), _pawns_, _cards_, _figurines_, … #terminology
 
-I notice that there are **several different card backs**. The back of the card also serves as a **categorization system** — allowing for the creation of **different types of decks**, each with distinct actions and roles. #card-back #deck 
+I notice that there are **several different card backs**. The back of the card also serves as a **categorization system** — allowing for the creation of **different types of decks**, each with distinct actions and roles. #card-back #deck
 
 💡 I also notice inside the box an **inventory sheet**, which provides clues about how the pieces are **named and grouped**. I don’t discover any new terms here, but it gives me the idea to explore other games in search of new **pieces or terminology**. Something to dig into.
 
@@ -126,10 +132,11 @@ Still on the topic of cards — and transitioning to the next game — he shows 
 
 #### Activate a card
 
-The principle is to **rotate a card 90°**, either in your hand or on the board, to indicate that it’s been **activated**. Here, the sketch shows a **rotational movement** using the **thumb and index finger of the same hand**. #gesture 
+The principle is to **rotate a card 90°**, either in your hand or on the board, to indicate that it’s been **activated**. Here, the sketch shows a **rotational movement** using the **thumb and index finger of the same hand**. #gesture
 
-![[toy-library-activate-card-1.png]]![[toy-library-activate-card-2.png]]
-![[toy-library-activate-card-3.png]]
+![toy-library-activate-card-1.png](./images/toy-library-activate-card-1.png)
+![toy-library-activate-card-2.png](./images/toy-library-activate-card-2.png)
+![toy-library-activate-card-3.png](./images/toy-library-activate-card-3.png)
 
 Next up is **Palm Laboratory** — a **solo game** that relies 100% on the **mechanic of card rotation**.  Each card has **four faces** (two on each side). There’s **no hidden side**, since there’s no opponent — no one to hide information from. This game is an **evolution of Palm Island**. #solitaire
 

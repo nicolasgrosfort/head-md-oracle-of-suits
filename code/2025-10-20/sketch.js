@@ -10,6 +10,11 @@ let results;
 let rectSize = 100; // Taille initiale du rectangle
 let cubeRotationX = 0; // Rotation du cube sur l'axe X
 let cubeRotationY = 0; // Rotation du cube sur l'axe Y
+let previousPalmX = null; // Position précédente de la paume en X
+let previousPalmY = null; // Position précédente de la paume en Y
+let previousDistance = null; // Distance précédente entre les doigts
+const rotationSpeed = 0.5; // Vitesse de rotation
+const zoomSpeed = 1; // Vitesse de zoom
 
 function setup() {
 	createCanvas(640, 480, WEBGL);
@@ -51,25 +56,77 @@ function draw() {
 	pop();
 
 	if (results?.multiHandLandmarks) {
-		if (results.multiHandLandmarks.length === 2) {
-			// Deux mains : contrôler la taille
-			rectSize = getRectSize(results.multiHandLandmarks);
-		} else if (results.multiHandLandmarks.length === 1) {
-			// Une seule main : contrôler la rotation
-			const hand = results.multiHandLandmarks[0];
-			// Utiliser la paume (landmark 0) pour contrôler la rotation
-			const palm = hand[0];
+		// Identifier les mains gauche et droite
+		let leftHand = null;
+		let rightHand = null;
 
-			// Convertir la position normalisée en angles de rotation
-			// X de la main contrôle la rotation Y du cube (gauche/droite)
-			// Y de la main contrôle la rotation X du cube (haut/bas)
-			cubeRotationY = map(palm.x, 0, 1, -PI, PI);
-			cubeRotationX = map(palm.y, 0, 1, -PI, PI);
+		if (results.multiHandedness) {
+			for (let i = 0; i < results.multiHandLandmarks.length; i++) {
+				const handedness = results.multiHandedness[i].label;
+				// Note: MediaPipe retourne "Left" pour la main droite à cause du miroir
+				if (handedness === "Left") {
+					// C'est la main droite (inversée par le miroir)
+					rightHand = results.multiHandLandmarks[i];
+				} else if (handedness === "Right") {
+					// C'est la main gauche (inversée par le miroir)
+					leftHand = results.multiHandLandmarks[i];
+				}
+			}
+		}
+
+		// Main droite : contrôler le zoom avec pinch
+		if (rightHand) {
+			const currentDistance = getPinchDistance(rightHand);
+
+			if (previousDistance !== null) {
+				// Calculer le changement de distance
+				const deltaDistance = currentDistance - previousDistance;
+
+				// Incrémenter la taille en fonction du changement
+				rectSize += deltaDistance * zoomSpeed;
+
+				// Contraindre la taille entre 50 et 400
+				rectSize = constrain(rectSize, 50, 400);
+			}
+
+			// Sauvegarder la distance actuelle
+			previousDistance = currentDistance;
+		} else {
+			// Pas de main droite, réinitialiser
+			previousDistance = null;
+		}
+
+		// Main gauche : contrôler la rotation
+		if (leftHand) {
+			const palm = leftHand[0];
+
+			if (previousPalmX !== null && previousPalmY !== null) {
+				// Calculer le déplacement de la main
+				const deltaX = palm.x - previousPalmX;
+				const deltaY = palm.y - previousPalmY;
+
+				// Incrémenter la rotation en fonction du mouvement (inversé)
+				cubeRotationY -= deltaX * rotationSpeed * 10;
+				cubeRotationX -= deltaY * rotationSpeed * 10;
+			}
+
+			// Sauvegarder la position actuelle pour la prochaine frame
+			previousPalmX = palm.x;
+			previousPalmY = palm.y;
+		} else {
+			// Pas de main gauche, réinitialiser
+			previousPalmX = null;
+			previousPalmY = null;
 		}
 
 		for (const landmarks of results.multiHandLandmarks) {
 			drawHand(landmarks);
 		}
+	} else {
+		// Pas de résultats, réinitialiser
+		previousPalmX = null;
+		previousPalmY = null;
+		previousDistance = null;
 	}
 
 	// Texte en 2D
@@ -78,10 +135,19 @@ function draw() {
 	text(`FPS: ${floor(frameRate())}`, 10, 20);
 	text(`Taille: ${floor(rectSize)}`, 10, 40);
 	text(`Mains détectées: ${results?.multiHandLandmarks?.length || 0}`, 10, 60);
-	if (results?.multiHandLandmarks?.length === 1) {
-		text(`Mode: Rotation`, 10, 80);
-	} else if (results?.multiHandLandmarks?.length === 2) {
-		text(`Mode: Taille`, 10, 80);
+
+	// Afficher les modes actifs
+	let y = 80;
+	if (results?.multiHandedness) {
+		for (let i = 0; i < results.multiHandedness.length; i++) {
+			const handedness = results.multiHandedness[i].label;
+			if (handedness === "Left") {
+				text(`Main droite: Zoom (Pinch)`, 10, y);
+			} else if (handedness === "Right") {
+				text(`Main gauche: Rotation`, 10, y);
+			}
+			y += 20;
+		}
 	}
 	pop();
 
@@ -167,7 +233,7 @@ function drawHand(landmarks) {
 	}
 }
 
-function getRectSize(multiHandLandmarks) {
+function getHandsDistance(multiHandLandmarks) {
 	const hand1 = multiHandLandmarks[0];
 	const hand2 = multiHandLandmarks[1];
 
@@ -181,9 +247,21 @@ function getRectSize(multiHandLandmarks) {
 	const x2 = width - index2.x * width;
 	const y2 = index2.y * height;
 
-	// Calculer la distance entre les deux index
-	const distance = dist(x1, y1, x2, y2);
+	// Calculer et retourner la distance entre les deux index
+	return dist(x1, y1, x2, y2);
+}
 
-	// Ajuster la taille du rectangle (minimum 50, maximum 400)
-	return constrain(distance, 50, 400);
+function getPinchDistance(hand) {
+	// Pouce tip = landmark 4, Index tip = landmark 8
+	const thumb = hand[4];
+	const index = hand[8];
+
+	// Convertir les coordonnées normalisées en pixels
+	const x1 = width - thumb.x * width;
+	const y1 = thumb.y * height;
+	const x2 = width - index.x * width;
+	const y2 = index.y * height;
+
+	// Calculer et retourner la distance entre le pouce et l'index
+	return dist(x1, y1, x2, y2);
 }

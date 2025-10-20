@@ -2,6 +2,7 @@
 
 const CONFIG = {
 	showVideo: false,
+	showAmbiantLight: false,
 	drawManipulationZone: true,
 	drawPalmPosition: true,
 	drawHandLandmarks: false,
@@ -54,7 +55,7 @@ function setup() {
 }
 
 function draw() {
-	background(255);
+	background(0);
 
 	// Dessiner la vidéo et les mains en 2D
 	push();
@@ -242,14 +243,16 @@ function draw() {
 	const lightY = mouseY - height / 2;
 	const lightZ = 200; // Distance de la lumière en profondeur
 
-	// Lumière ambiante douce
-	ambientLight(0, 255, 255);
-
 	// Lumière directionnelle qui suit la souris
 	pointLight(255, 0, 255, lightX, lightY, lightZ);
 
-	// Lumière d'appoint pour ne pas avoir de zones trop sombres
-	pointLight(255, 255, 0, -200, 0, 100);
+	if (CONFIG.showAmbiantLight) {
+		// Lumière ambiante douce
+		ambientLight(0, 255, 255);
+
+		// Lumière d'appoint pour ne pas avoir de zones trop sombres
+		pointLight(255, 255, 0, -200, 0, 100);
+	}
 
 	// Utiliser la rotation contrôlée par la main
 	rotateX(cubeRotationX);

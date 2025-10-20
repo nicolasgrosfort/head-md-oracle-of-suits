@@ -179,11 +179,19 @@ function drawFrozenGame() {
 	if (frozenResults) {
 		// Joueur 1
 		drawHandLandmarks(frozenResults.player1.hand);
-		displayGestureResultSimple(frozenResults.player1.hand, frozenResults.player1.gesture, 1);
+		displayGestureResultSimple(
+			frozenResults.player1.hand,
+			frozenResults.player1.gesture,
+			1,
+		);
 
 		// Joueur 2
 		drawHandLandmarks(frozenResults.player2.hand);
-		displayGestureResultSimple(frozenResults.player2.hand, frozenResults.player2.gesture, 2);
+		displayGestureResultSimple(
+			frozenResults.player2.hand,
+			frozenResults.player2.gesture,
+			2,
+		);
 
 		// Afficher le gagnant au centre
 		push();
@@ -396,7 +404,8 @@ function displayGestureResultSimple(hand, gestureResult, playerNumber) {
 	rect(x, y - 60, boxWidth, boxHeight, 8);
 
 	// Couleur du joueur
-	const playerColor = playerNumber === 1 ? color(100, 200, 255) : color(255, 100, 200);
+	const playerColor =
+		playerNumber === 1 ? color(100, 200, 255) : color(255, 100, 200);
 
 	// Ligne 1 : Joueur X
 	fill(playerColor);

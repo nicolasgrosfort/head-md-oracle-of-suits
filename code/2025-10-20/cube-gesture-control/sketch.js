@@ -5,6 +5,7 @@ const CONFIG = {
 	showAmbientLight: false,
 	drawHandLandmarks: false,
 	drawIndicators: false,
+	drawLightsIndicator: true,
 };
 
 let capture;
@@ -20,6 +21,9 @@ let rotationVelocityY = 0; // Vélocité de rotation sur l'axe Y
 let previousPalmX = null; // Position précédente de la paume en X
 let previousPalmY = null; // Position précédente de la paume en Y
 let previousDistance = null; // Distance précédente entre les doigts
+// Lumières colorées
+const lights = [];
+let draggedLight = null;
 const rotationSpeed = 0.1; // Vitesse de rotation
 const zoomSpeed = 0.5; // Vitesse de zoom
 const inertia = 0.95; // Coefficient d'inertie (0.95 = 95% de conservation de la vélocité)
@@ -33,6 +37,37 @@ let rightHandInZone = false,
 
 function setup() {
 	createCanvas(windowWidth, windowHeight, WEBGL);
+
+	// Initialiser les 3 lumières colorées
+	lights.push({
+		x: width / 4,
+		y: height / 4,
+		z: 200,
+		color: [255, 0, 255], // Fuschia
+		name: "Fuschia",
+		radius: 20,
+		dragging: false,
+	});
+
+	lights.push({
+		x: width / 2,
+		y: height / 4,
+		z: 200,
+		color: [255, 255, 0], // Jaune
+		name: "Jaune",
+		radius: 20,
+		dragging: false,
+	});
+
+	lights.push({
+		x: (3 * width) / 4,
+		y: height / 4,
+		z: 200,
+		color: [0, 255, 255], // Cyan
+		name: "Cyan",
+		radius: 20,
+		dragging: false,
+	});
 
 	capture = createCapture(VIDEO);
 	capture.size(640, 480);
@@ -184,15 +219,24 @@ function draw() {
 		}
 	}
 
-	if (CONFIG.drawIndicators) {
-		// Dessiner un indicateur de position de la lumière
-		push();
-		fill(255, 255, 0, 200);
-		noStroke();
-		circle(mouseX, mouseY, 15);
-		fill(255, 255, 0, 100);
-		circle(mouseX, mouseY, 30);
-		pop();
+	if (CONFIG.drawLightsIndicator) {
+		// Dessiner les indicateurs des 3 lumières
+		for (const light of lights) {
+			push();
+			// Cercle coloré pour la lumière
+			fill(light.color[0], light.color[1], light.color[2], 200);
+			stroke(255);
+			strokeWeight(2);
+			circle(light.x, light.y, light.radius * 2);
+
+			// Nom de la lumière
+			fill(255);
+			noStroke();
+			textAlign(CENTER, CENTER);
+			textSize(12);
+			text(light.name, light.x, light.y);
+			pop();
+		}
 	}
 
 	// Texte en 2D
@@ -201,7 +245,6 @@ function draw() {
 	text(`FPS: ${floor(frameRate())}`, 10, 20);
 	text(`Taille: ${floor(rectSize)}`, 10, 40);
 	text(`Mains détectées: ${results?.multiHandLandmarks?.length || 0}`, 10, 60);
-	text(`Lumière: (${mouseX}, ${mouseY})`, 10, 80);
 
 	// Afficher les modes actifs avec statut de zone
 	let y = 100;
@@ -245,21 +288,23 @@ function draw() {
 	// Dessiner le cube au centre en 3D
 	push();
 
-	// Ajouter l'éclairage qui suit la souris
-	// Convertir la position de la souris en coordonnées 3D
-	const lightX = mouseX - width / 2;
-	const lightY = mouseY - height / 2;
-	const lightZ = 200; // Distance de la lumière en profondeur
-
-	// Lumière directionnelle qui suit la souris
-	pointLight(255, 0, 255, lightX, lightY, lightZ);
+	// Appliquer les 3 lumières colorées
+	for (const light of lights) {
+		const lightX = light.x - width / 2;
+		const lightY = light.y - height / 2;
+		pointLight(
+			light.color[0],
+			light.color[1],
+			light.color[2],
+			lightX,
+			lightY,
+			light.z,
+		);
+	}
 
 	if (CONFIG.showAmbientLight) {
 		// Lumière ambiante douce
-		ambientLight(0, 255, 255);
-
-		// Lumière d'appoint pour ne pas avoir de zones trop sombres
-		pointLight(255, 255, 0, -200, 0, 100);
+		ambientLight(50, 50, 50);
 	}
 
 	// Utiliser la rotation contrôlée par la main
@@ -297,6 +342,34 @@ function updateSizeSpring() {
 
 	// Contraindre la taille entre 50 et 400
 	rectSize = constrain(rectSize, 50, 400);
+}
+
+function mousePressed() {
+	// Vérifier si on clique sur une lumière
+	for (const light of lights) {
+		const d = dist(mouseX, mouseY, light.x, light.y);
+		if (d < light.radius) {
+			draggedLight = light;
+			light.dragging = true;
+			break;
+		}
+	}
+}
+
+function mouseDragged() {
+	// Déplacer la lumière sélectionnée
+	if (draggedLight) {
+		draggedLight.x = mouseX;
+		draggedLight.y = mouseY;
+	}
+}
+
+function mouseReleased() {
+	// Relâcher la lumière
+	if (draggedLight) {
+		draggedLight.dragging = false;
+		draggedLight = null;
+	}
 }
 
 function onResults(res) {

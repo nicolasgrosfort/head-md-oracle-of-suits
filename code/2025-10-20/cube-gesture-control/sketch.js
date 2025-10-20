@@ -11,9 +11,11 @@ const CONFIG = {
 let capture;
 let hands;
 let results;
-let rectSize = 100; // Taille initiale du rectangle
-let targetRectSize = 100; // Taille cible pour l'effet spring
+let rectSize = 120; // Taille initiale du rectangle
+let targetRectSize = rectSize; // Taille cible pour l'effet spring
 let rectVelocity = 0; // Vélocité du redimensionnement
+let baseRotationX = 0; // Rotation de base aléatoire sur l'axe X
+let baseRotationY = 0; // Rotation de base aléatoire sur l'axe Y
 let cubeRotationX = 0; // Rotation du cube sur l'axe X
 let cubeRotationY = 0; // Rotation du cube sur l'axe Y
 let rotationVelocityX = 0; // Vélocité de rotation sur l'axe X
@@ -49,6 +51,10 @@ function setup() {
 
 	textFont(myFont);
 	textSize(16);
+
+	// Définir une rotation de base aléatoire pour le cube
+	baseRotationX = random(TWO_PI);
+	baseRotationY = random(TWO_PI);
 
 	// Initialiser les 3 lumières colorées
 	lights.push({
@@ -319,9 +325,9 @@ function draw() {
 		ambientLight(50, 50, 50);
 	}
 
-	// Utiliser la rotation contrôlée par la main
-	rotateX(cubeRotationX);
-	rotateY(cubeRotationY);
+	// Appliquer la rotation de base aléatoire + rotation contrôlée par la main
+	rotateX(baseRotationX + cubeRotationX);
+	rotateY(baseRotationY + cubeRotationY);
 
 	// Style du cube
 	fill(255, 255, 255);

@@ -3,6 +3,7 @@
 const CONFIG = {
 	drawGrid: false,
 	amountOfBoxes: 200,
+	collisionDistance: 100, // Distance de collision avec les cubes
 };
 
 let cam;
@@ -13,6 +14,35 @@ let camY = 0; // Hauteur de la caméra (peut maintenant changer)
 let camZ = 500; // Distance initiale de l'objet
 
 const boxes = []; // Array pour stocker les positions et propriétés des boîtes
+let osc; // Oscillateur pour générer le son
+
+// Fonction pour vérifier la collision entre la caméra et un cube
+function checkCollision(box) {
+	// Calculer la distance entre la caméra et le centre du cube
+	const distance = dist(camX, camY, camZ, box.x, box.y, box.z);
+	// Collision si la distance est inférieure à la somme des rayons
+	// (rayon du cube = size/2, rayon du joueur = collisionDistance)
+	return distance < box.size / 2 + CONFIG.collisionDistance;
+}
+
+// Fonction pour jouer un son aléatoire lors de la capture d'un cube
+function playCaptureSound() {
+	// Créer un oscillateur si ce n'est pas déjà fait
+	if (!osc) {
+		osc = new p5.Oscillator();
+		osc.setType("sine"); // Type d'onde: sine, triangle, square, sawtooth
+		osc.start();
+		osc.amp(0); // Commencer avec une amplitude de 0 (silence)
+	}
+
+	// Fréquence aléatoire entre 200 et 800 Hz pour varier les sons
+	const freq = random(200, 800);
+	osc.freq(freq);
+
+	// Envelope pour créer un "bip" court
+	osc.amp(0.3, 0.01); // Monter à 0.3 en 0.01 seconde
+	osc.amp(0, 0.15); // Descendre à 0 en 0.15 seconde
+}
 
 function setup() {
 	createCanvas(windowWidth, windowHeight, WEBGL);
@@ -117,7 +147,17 @@ function draw() {
 		updateCameraLookAt();
 	}
 
-	// Dessiner toutes les boîtes
+	// Vérifier et gérer les collisions avec les cubes
+	for (let i = boxes.length - 1; i >= 0; i--) {
+		if (checkCollision(boxes[i])) {
+			// Jouer le son de capture
+			playCaptureSound();
+			// Supprimer le cube du tableau
+			boxes.splice(i, 1);
+		}
+	}
+
+	// Dessiner toutes les boîtes restantes
 	for (let i = 0; i < boxes.length; i++) {
 		push();
 		translate(boxes[i].x, boxes[i].y, boxes[i].z);

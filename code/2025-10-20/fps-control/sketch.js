@@ -1,5 +1,9 @@
 /** biome-ignore-all lint/correctness/noUnusedVariables: <> */
 
+const CONFIG = {
+	drawGrid: false,
+};
+
 let cam;
 let cameraAngleY = 0; // Rotation horizontale (gauche/droite)
 let cameraAngleX = 0; // Rotation verticale (haut/bas)
@@ -21,13 +25,13 @@ function setup() {
 	requestPointerLock();
 
 	// Créer plusieurs boîtes dispersées aléatoirement
-	const numBoxes = 150; // Nombre de boîtes
+	const numBoxes = 15; // Nombre de boîtes
 	for (let i = 0; i < numBoxes; i++) {
 		boxes.push({
-			x: random(-2000, 2000),
-			y: random(-1000, 1000),
-			z: random(-2000, 2000),
-			size: random(50, 200),
+			x: random(-1000, 1000),
+			y: random(-500, 500),
+			z: random(-1000, 1000),
+			size: random(50, 150),
 			rotX: random(TWO_PI),
 			rotY: random(TWO_PI),
 			rotZ: random(TWO_PI),
@@ -46,11 +50,36 @@ function updateCameraLookAt() {
 }
 
 function draw() {
-	background(220);
+	background(0); // Environnement totalement noir
 
 	const rotationSpeed = 0.03;
 	const moveSpeed = 5;
 	const mouseSensitivity = 0.002;
+
+	// Configurer la lampe torche (spotlight) qui suit la caméra
+	// Direction de la lampe = direction du regard
+	const spotDirX = -sin(cameraAngleY) * cos(cameraAngleX);
+	const spotDirY = -sin(cameraAngleX);
+	const spotDirZ = -cos(cameraAngleY) * cos(cameraAngleX);
+
+	// Lumière ambiante très faible
+	//ambientLight(10, 10, 10);
+
+	// Spotlight qui suit la caméra
+	//pointLight(255, 255, 200, camX, camY, camZ); // Lumière ponctuelle à la position de la caméra
+	spotLight(
+		250,
+		250,
+		250,
+		camX,
+		camY,
+		camZ,
+		spotDirX,
+		spotDirY,
+		spotDirZ,
+		PI / 10,
+		100,
+	); // Lampe torche
 
 	// Contrôle souris pour regarder autour (FPS style)
 	if (document.pointerLockElement === canvas) {
@@ -96,22 +125,27 @@ function draw() {
 		rotateY(boxes[i].rotY);
 		rotateZ(boxes[i].rotZ);
 		fill(boxes[i].color);
+		specularMaterial(boxes[i].color); // Matériau qui réagit à la lumière
 		box(boxes[i].size);
 		pop();
 	}
 
-	// Dessiner un sol de référence (grille)
-	push();
-	rotateX(HALF_PI);
-	stroke(150);
-	noFill();
-	for (let x = -1000; x <= 1000; x += 200) {
-		line(x, -1000, x, 1000);
+	if (CONFIG.drawGrid) {
+		// Dessiner un sol de référence (grille) - maintenant visible avec la lampe
+		push();
+		translate(0, 200, 0); // Sol plus bas
+		rotateX(HALF_PI);
+		stroke(80, 80, 80);
+		strokeWeight(1);
+		noFill();
+		for (let x = -2000; x <= 2000; x += 200) {
+			line(x, -2000, x, 2000);
+		}
+		for (let z = -2000; z <= 2000; z += 200) {
+			line(-2000, z, 2000, z);
+		}
+		pop();
 	}
-	for (let z = -1000; z <= 1000; z += 200) {
-		line(-1000, z, 1000, z);
-	}
-	pop();
 }
 
 // Capturer la souris quand on clique

@@ -2,6 +2,9 @@
 
 const CONFIG = {
 	showVideo: false,
+	drawManipulationZone: true,
+	drawPalmPosition: true,
+	drawHandLandmarks: true,
 };
 
 let capture;
@@ -77,8 +80,12 @@ function draw() {
 			}
 		}
 
-		// Main droite : contrôler le zoom avec pinch
-		if (rightHand) {
+		// Vérifier si les mains sont dans la zone
+		const rightHandInZone = rightHand && isHandInManipulationZone(rightHand);
+		const leftHandInZone = leftHand && isHandInManipulationZone(leftHand);
+
+		// Main droite : contrôler le zoom avec pinch (seulement si dans la zone)
+		if (rightHandInZone) {
 			const currentDistance = getPinchDistance(rightHand);
 
 			if (previousDistance !== null) {
@@ -95,12 +102,12 @@ function draw() {
 			// Sauvegarder la distance actuelle
 			previousDistance = currentDistance;
 		} else {
-			// Pas de main droite, réinitialiser
+			// Pas de main droite ou hors de la zone, réinitialiser
 			previousDistance = null;
 		}
 
-		// Main gauche : contrôler la rotation
-		if (leftHand) {
+		// Main gauche : contrôler la rotation (seulement si dans la zone)
+		if (leftHandInZone) {
 			const palm = leftHand[0];
 
 			if (previousPalmX !== null && previousPalmY !== null) {
@@ -117,7 +124,7 @@ function draw() {
 			previousPalmX = palm.x;
 			previousPalmY = palm.y;
 		} else {
-			// Pas de main gauche, réinitialiser
+			// Pas de main gauche ou hors de la zone, réinitialiser
 			previousPalmX = null;
 			previousPalmY = null;
 		}
@@ -128,7 +135,7 @@ function draw() {
 
 		// Appliquer la vélocité à la rotation
 		cubeRotationX += rotationVelocityX;
-		cubeRotationY += rotationVelocityY;
+		cubeRotationY -= rotationVelocityY;
 
 		for (const landmarks of results.multiHandLandmarks) {
 			drawHand(landmarks);
@@ -140,6 +147,25 @@ function draw() {
 		previousDistance = null;
 	}
 
+	// Dessiner la zone de manipulation
+	drawManipulationZone();
+
+	// Dessiner la position des paumes pour debug
+	if (results?.multiHandLandmarks) {
+		for (let i = 0; i < results.multiHandLandmarks.length; i++) {
+			const hand = results.multiHandLandmarks[i];
+			const palm = hand[0];
+			const handX = width - palm.x * width;
+			const handY = palm.y * height;
+
+			// Dessiner un cercle à la position de la paume
+			const inZone = isHandInManipulationZone(hand);
+			fill(inZone ? color(0, 255, 0, 150) : color(255, 0, 0, 150));
+			noStroke();
+			circle(handX, handY, 30);
+		}
+	}
+
 	// Texte en 2D
 	fill(0);
 	noStroke();
@@ -147,16 +173,40 @@ function draw() {
 	text(`Taille: ${floor(rectSize)}`, 10, 40);
 	text(`Mains détectées: ${results?.multiHandLandmarks?.length || 0}`, 10, 60);
 
-	// Afficher les modes actifs
+	// Afficher les modes actifs avec statut de zone
 	let y = 80;
 	if (results?.multiHandedness) {
-		for (let i = 0; i < results.multiHandedness.length; i++) {
+		let leftHand = null;
+		let rightHand = null;
+
+		for (let i = 0; i < results.multiHandLandmarks.length; i++) {
 			const handedness = results.multiHandedness[i].label;
 			if (handedness === "Left") {
-				text(`Main droite: Zoom (Pinch)`, 10, y);
+				rightHand = results.multiHandLandmarks[i];
 			} else if (handedness === "Right") {
-				text(`Main gauche: Rotation`, 10, y);
+				leftHand = results.multiHandLandmarks[i];
 			}
+		}
+
+		if (rightHand) {
+			const inZone = isHandInManipulationZone(rightHand);
+			fill(inZone ? color(0, 200, 0) : color(200, 0, 0));
+			text(
+				`Main droite: Zoom ${inZone ? "✓ DANS LA ZONE" : "✗ Hors zone"}`,
+				10,
+				y,
+			);
+			y += 20;
+		}
+
+		if (leftHand) {
+			const inZone = isHandInManipulationZone(leftHand);
+			fill(inZone ? color(0, 200, 0) : color(200, 0, 0));
+			text(
+				`Main gauche: Rotation ${inZone ? "✓ DANS LA ZONE" : "✗ Hors zone"}`,
+				10,
+				y,
+			);
 			y += 20;
 		}
 	}
@@ -275,4 +325,107 @@ function getPinchDistance(hand) {
 
 	// Calculer et retourner la distance entre le pouce et l'index
 	return dist(x1, y1, x2, y2);
+}
+
+function isHandInManipulationZone(hand) {
+	// Utiliser la paume (landmark 0) pour détecter la position de la main
+	const palm = hand[0];
+
+	// Convertir les coordonnées normalisées en pixels
+	const handX = width - palm.x * width;
+	const handY = palm.y * height;
+
+	// Définir la zone de manipulation (1/3 de la hauteur et largeur, centrée)
+	const zoneWidth = width / 3;
+	const zoneHeight = height / 3;
+	const zoneX = width / 2 - zoneWidth / 2;
+	const zoneY = height / 2 - zoneHeight / 2;
+
+	// Vérifier si la main est dans la zone
+	return (
+		handX > zoneX &&
+		handX < zoneX + zoneWidth &&
+		handY > zoneY &&
+		handY < zoneY + zoneHeight
+	);
+}
+
+function drawManipulationZone() {
+	// Dessiner la zone de manipulation en 2D
+	const zoneWidth = width / 3;
+	const zoneHeight = height / 3;
+
+	push();
+	noFill();
+	stroke(100, 200, 255, 150);
+	strokeWeight(3);
+	rectMode(CENTER);
+	rect(width / 2, height / 2, zoneWidth, zoneHeight);
+
+	// Ajouter des coins pour mieux visualiser
+	stroke(100, 200, 255, 200);
+	strokeWeight(5);
+	const cornerSize = 20;
+	const halfW = zoneWidth / 2;
+	const halfH = zoneHeight / 2;
+	const centerX = width / 2;
+	const centerY = height / 2;
+
+	// Coin haut gauche
+	line(
+		centerX - halfW,
+		centerY - halfH,
+		centerX - halfW + cornerSize,
+		centerY - halfH,
+	);
+	line(
+		centerX - halfW,
+		centerY - halfH,
+		centerX - halfW,
+		centerY - halfH + cornerSize,
+	);
+
+	// Coin haut droit
+	line(
+		centerX + halfW,
+		centerY - halfH,
+		centerX + halfW - cornerSize,
+		centerY - halfH,
+	);
+	line(
+		centerX + halfW,
+		centerY - halfH,
+		centerX + halfW,
+		centerY - halfH + cornerSize,
+	);
+
+	// Coin bas gauche
+	line(
+		centerX - halfW,
+		centerY + halfH,
+		centerX - halfW + cornerSize,
+		centerY + halfH,
+	);
+	line(
+		centerX - halfW,
+		centerY + halfH,
+		centerX - halfW,
+		centerY + halfH - cornerSize,
+	);
+
+	// Coin bas droit
+	line(
+		centerX + halfW,
+		centerY + halfH,
+		centerX + halfW - cornerSize,
+		centerY + halfH,
+	);
+	line(
+		centerX + halfW,
+		centerY + halfH,
+		centerX + halfW,
+		centerY + halfH - cornerSize,
+	);
+
+	pop();
 }

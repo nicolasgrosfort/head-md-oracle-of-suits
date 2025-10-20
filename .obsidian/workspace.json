@@ -13,7 +13,7 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "process/references/hanafuda.md",
+                "file": "process/references/sleeve.md",
                 "mode": "source",
                 "source": false,
                 "backlinks": true,
@@ -28,7 +28,7 @@
                 }
               },
               "icon": "lucide-file",
-              "title": "hanafuda"
+              "title": "sleeve"
             }
           }
         ]
@@ -178,16 +178,16 @@
   },
   "active": "7ba679f29c07597f",
   "lastOpenFiles": [
+    "process/references/references.base",
+    "process/README.md",
+    "process/references/hanafuda.md",
     "process/observations/2025-09-22-hanafuda-koi-koi.md",
     "process/observations/2025-09-22-hanafuda.md",
     "process/observations/observations.base",
-    "process/references/hanafuda.md",
     "process/observations/2025-09-22-anyone-got-any-tips-for-getting-into-throwing-cards.md",
     "process/observations/2025-09-22-bought-two-new-decks.md",
     "process/concepts/2025-10-08-cartidge.md",
     "README.md",
-    "process/README.md",
-    "process/references/references.base",
     "process/observations/2025-09-27-jonction-toy-library.md",
     "process/references/booster-pack.md",
     "process/references/factory-sealed.md",

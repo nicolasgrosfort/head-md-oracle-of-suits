@@ -1,6 +1,6 @@
 # Sleeve
 
-A **plastic sleeve** used to protect individual cards.
+A **plastic sleeve** used to protect individual cards. #plastic
 
 ## Sources
 

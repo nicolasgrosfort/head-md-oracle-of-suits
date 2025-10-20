@@ -2,7 +2,7 @@
 
 ## Journal
 
-[[process/references/hanafuda|hanafuda]] is the **Japanese equivalent of our playing cards** — so it can also be played with different sets of rules. **Koï-Koï** is the most popular game played with Hanafuda cards. #hanafuda #koi-koi
+[Hanafuda](../references/hanafuda.md) is the **Japanese equivalent of our playing cards** — so it can also be played with different sets of rules. **Koï-Koï** is the most popular game played with Hanafuda cards. #hanafuda #koi-koi
 
 The game originated from **Portuguese playing cards**, which were **re-appropriated by the Japanese in the 16th century**.
 

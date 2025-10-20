@@ -106,13 +106,13 @@ He lists several points:
 - **Symbols on the cards** make it possible to overcome **language barriers**
 
 Very quickly, he suggests **unpacking a few games** to look at how they’re made.
-On the way, he gives me a few references: _Alice in Wonderland_, **Yu-Gi-Oh!** (as a collectible card game), and talks about **Dominion** — a type of game called [[deck-building]]. He also mentions the classic **“Seven Families”** card game as another reference. #deck-building #collection
+On the way, he gives me a few references: _Alice in Wonderland_, **Yu-Gi-Oh!** (as a collectible card game), and talks about **Dominion** — a type of game called [Deck Building](../references/deck-building.md). He also mentions the classic **“Seven Families”** card game as another reference. #deck-building #collection
 
 He also mentions **Bridge** as possibly **the most complex card game in the world** — using traditional playing cards. Along the way, he brings up **7 Wonders** and **Citadels**, highlighting them as examples of interesting **mechanics and gestures** to explore — since in these games, cards are **passed from hand to hand**, from one player to another. #gesture #mechanics
 
-Finally, he talks about [[factory-sealed]] as an interesting **psychological mechanic** to explore — the idea of _not knowing what’s inside the pack_, like with a [[booster-pack]]. That element of **surprise** is compelling. #sealed #booster
+Finally, he talks about [Factory Sealed](../references/factory-sealed.md) as an interesting **psychological mechanic** to explore — the idea of _not knowing what’s inside the pack_, like with a [Booster Pack](../references/booster-pack.md). That element of **surprise** is compelling. #sealed #booster
 
-He also explains that some games have all their cards **protected in [[sleeve]]** to preserve their quality and **maintain their value**. #protection #sleeve
+He also explains that some games have all their cards **protected in [sleeve](../references/sleeve.md)** to preserve their quality and **maintain their value**. #protection #sleeve
 
 This mechanic, he says, is **unique to cards**, because **pawns or other physical objects don’t have a hidden side** — they’re **revealed instantly** when the box is opened. They’re transparent, simple to understand… but maybe **they reveal themselves too quickly**? #surprise
 

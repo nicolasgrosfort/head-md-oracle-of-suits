@@ -2,7 +2,7 @@
 
 ## Journal
 
-The person seems to have either bought or made **throwing cards**. You can see they have **reinforced edges**. It reminds me a bit of [[process/references/hanafuda|hanafuda]] cards. #hanafuda
+The person seems to have either bought or made **throwing cards**. You can see they have **reinforced edges**. It reminds me a bit of [Hanafuda](../references/hanafuda.md) cards. #hanafuda
 
 ![Sharp throwing card](./images/reddit-4.png)
 

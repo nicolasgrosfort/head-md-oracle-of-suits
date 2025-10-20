@@ -4,7 +4,7 @@ let cam;
 let cameraAngleY = 0; // Rotation horizontale (gauche/droite)
 let cameraAngleX = 0; // Rotation verticale (haut/bas)
 let camX = 0;
-const camY = 0; // Même niveau que l'objet
+let camY = 0; // Hauteur de la caméra (peut maintenant changer)
 let camZ = 500; // Distance initiale de l'objet
 
 const boxes = []; // Array pour stocker les positions et propriétés des boîtes
@@ -71,17 +71,19 @@ function draw() {
 		cameraAngleY -= rotationSpeed;
 		updateCameraLookAt();
 	}
-	// W ou Flèche haut - avancer dans la direction où on regarde
+	// W ou Flèche haut - avancer dans la direction où on regarde (en 3D complet)
 	if (keyIsDown(87) || keyIsDown(UP_ARROW)) {
-		camX -= sin(cameraAngleY) * moveSpeed;
-		camZ -= cos(cameraAngleY) * moveSpeed;
+		camX -= sin(cameraAngleY) * moveSpeed * cos(cameraAngleX);
+		camY -= sin(cameraAngleX) * moveSpeed;
+		camZ -= cos(cameraAngleY) * moveSpeed * cos(cameraAngleX);
 		cam.setPosition(camX, camY, camZ);
 		updateCameraLookAt();
 	}
-	// S ou Flèche bas - reculer dans la direction où on regarde
+	// S ou Flèche bas - reculer dans la direction où on regarde (en 3D complet)
 	if (keyIsDown(83) || keyIsDown(DOWN_ARROW)) {
-		camX += sin(cameraAngleY) * moveSpeed;
-		camZ += cos(cameraAngleY) * moveSpeed;
+		camX += sin(cameraAngleY) * moveSpeed * cos(cameraAngleX);
+		camY += sin(cameraAngleX) * moveSpeed;
+		camZ += cos(cameraAngleY) * moveSpeed * cos(cameraAngleX);
 		cam.setPosition(camX, camY, camZ);
 		updateCameraLookAt();
 	}

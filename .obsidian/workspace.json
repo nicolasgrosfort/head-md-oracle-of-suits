@@ -167,6 +167,8 @@
   },
   "active": "7ba679f29c07597f",
   "lastOpenFiles": [
+    "code/2025-10-20/map/sketch.js",
+    "code/2025-10-20/map",
     "code/2025-10-20/fps-control/libraries/p5.sound.min.js",
     "code/2025-10-20/fps-control/libraries/p5.min.js",
     "code/2025-10-20/fps-control/style.css",
@@ -176,8 +178,6 @@
     "code/2025-10-20/fps-control/index.html",
     "code/2025-10-20/fps-control",
     "code/2025-10-20/map/jsconfig.json",
-    "code/2025-10-20/map/libraries/p5.sound.min.js",
-    "code/2025-10-20/map/libraries/p5.min.js",
     "process/references/sleeve.md",
     "process/README.md",
     "process/references/hanafuda.md",

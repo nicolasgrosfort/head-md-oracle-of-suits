@@ -2,10 +2,9 @@
 
 const CONFIG = {
 	showVideo: false,
-	showAmbiantLight: false,
-	drawManipulationZone: true,
-	drawPalmPosition: true,
+	showAmbientLight: false,
 	drawHandLandmarks: false,
+	drawIndicators: false,
 };
 
 let capture;
@@ -28,6 +27,9 @@ const inertia = 0.95; // Coefficient d'inertie (0.95 = 95% de conservation de la
 const springK = 0.15; // Constante de ressort (rigidité)
 const springDamp = 0.8; // Amortissement du ressort
 const springMass = 0.5; // Masse pour la simulation
+
+let rightHandInZone = false,
+	leftHandInZone = false;
 
 function setup() {
 	createCanvas(windowWidth, windowHeight, WEBGL);
@@ -88,8 +90,8 @@ function draw() {
 		}
 
 		// Vérifier si les mains sont dans la zone
-		const rightHandInZone = rightHand && isHandInManipulationZone(rightHand);
-		const leftHandInZone = leftHand && isHandInManipulationZone(leftHand);
+		rightHandInZone = rightHand && isHandInManipulationZone(rightHand);
+		leftHandInZone = leftHand && isHandInManipulationZone(leftHand);
 
 		// Main droite : contrôler le zoom avec pinch (seulement si dans la zone)
 		if (rightHandInZone) {
@@ -159,8 +161,10 @@ function draw() {
 	// Appliquer l'effet spring au redimensionnement du cube
 	updateSizeSpring();
 
-	// Dessiner la zone de manipulation
-	drawManipulationZone();
+	if (CONFIG.drawIndicators) {
+		// Dessiner la zone de manipulation
+		drawManipulationZone();
+	}
 
 	// Dessiner la position des paumes pour debug
 	if (results?.multiHandLandmarks) {
@@ -170,22 +174,26 @@ function draw() {
 			const handX = width - palm.x * width;
 			const handY = palm.y * height;
 
-			// Dessiner un cercle à la position de la paume
-			const inZone = isHandInManipulationZone(hand);
-			fill(inZone ? color(0, 255, 0, 150) : color(255, 0, 0, 150));
-			noStroke();
-			circle(handX, handY, 30);
+			if (CONFIG.drawIndicators) {
+				// Dessiner un cercle à la position de la paume
+				const inZone = isHandInManipulationZone(hand);
+				fill(inZone ? color(0, 255, 0, 150) : color(255, 0, 0, 150));
+				noStroke();
+				circle(handX, handY, 30);
+			}
 		}
 	}
 
-	// Dessiner un indicateur de position de la lumière
-	push();
-	fill(255, 255, 0, 200);
-	noStroke();
-	circle(mouseX, mouseY, 15);
-	fill(255, 255, 0, 100);
-	circle(mouseX, mouseY, 30);
-	pop();
+	if (CONFIG.drawIndicators) {
+		// Dessiner un indicateur de position de la lumière
+		push();
+		fill(255, 255, 0, 200);
+		noStroke();
+		circle(mouseX, mouseY, 15);
+		fill(255, 255, 0, 100);
+		circle(mouseX, mouseY, 30);
+		pop();
+	}
 
 	// Texte en 2D
 	fill(0);
@@ -246,7 +254,7 @@ function draw() {
 	// Lumière directionnelle qui suit la souris
 	pointLight(255, 0, 255, lightX, lightY, lightZ);
 
-	if (CONFIG.showAmbiantLight) {
+	if (CONFIG.showAmbientLight) {
 		// Lumière ambiante douce
 		ambientLight(0, 255, 255);
 
@@ -259,8 +267,12 @@ function draw() {
 	rotateY(cubeRotationY);
 
 	// Style du cube
-	fill(100, 150, 255);
-	stroke(50, 100, 200);
+	fill(255, 255, 255);
+	if (rightHandInZone || leftHandInZone) {
+		stroke(0, 255, 0);
+	} else {
+		stroke(0, 0, 0);
+	}
 	strokeWeight(2);
 
 	// Dessiner le cube avec la taille calculée

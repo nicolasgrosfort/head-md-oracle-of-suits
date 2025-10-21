@@ -150,12 +150,35 @@ function draw() {
 	// Dessiner les doigts détectés pour chaque main
 	if (handsData.left) {
 		drawFinger(handsData.left.index, 255, 60);
-		drawFinger(handsData.left.thumb, 255, 60);
+		//drawFinger(handsData.left.thumb, 255, 60);
 	}
 
 	if (handsData.right) {
 		drawFinger(handsData.right.index, 255, 60);
-		drawFinger(handsData.right.thumb, 255, 60);
+		//drawFinger(handsData.right.thumb, 255, 60);
+	}
+
+	// Draw a rectangle betewwn the two index fingers if both are detected, height should be related to distance between thumbs and indexes
+	if (handsData.left && handsData.right) {
+		const leftIndexPos = normalizedToScreen(
+			handsData.left.index.smooth.x,
+			handsData.left.index.smooth.y,
+		);
+		const rightIndexPos = normalizedToScreen(
+			handsData.right.index.smooth.x,
+			handsData.right.index.smooth.y,
+		);
+
+		const rectX = leftIndexPos.x;
+		const rectY = rightIndexPos.y + (leftIndexPos.y - rightIndexPos.y) / 2;
+		const rectWidth = rightIndexPos.x - leftIndexPos.x;
+		const rectHeight = Math.abs(rightIndexPos.y - leftIndexPos.y);
+
+		noFill();
+		stroke(0, 255, 0);
+		strokeWeight(3);
+		rectMode(CENTER);
+		rect(rectX + rectWidth / 2, rectY, rectWidth, rectHeight);
 	}
 }
 

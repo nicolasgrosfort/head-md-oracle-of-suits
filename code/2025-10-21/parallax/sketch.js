@@ -56,10 +56,19 @@ const cube = {
 };
 
 const handCalibration = {
+	// Z axis (depth)
 	zMin: -0.5,
 	zMax: 0.3,
 	zMultiplier: 1.5,
 	zOffset: 0,
+
+	// X axis (left-right)
+	xMultiplier: 1.0, // Adjust: sensitivity for left-right movement
+	xOffset: 0, // Adjust: center offset
+
+	// Y axis (up-down)
+	yMultiplier: 1.0, // Adjust: sensitivity for up-down movement
+	yOffset: 0, // Adjust: center offset
 };
 
 const smoothing = {
@@ -260,19 +269,28 @@ function drawDebugInfo() {
 	textAlign(LEFT, TOP);
 
 	if (handDetected) {
-		text(`Hand Z raw: ${handsResults[0][8].z.toFixed(4)}`, 10, 20);
-		text(`Hand Z mapped: ${handZ.toFixed(1)}`, 10, 40);
+		const indexTip = handsResults[0][8];
 		text(
-			`Hand position: X=${handX.toFixed(0)}, Y=${handY.toFixed(0)}, Z=${handZ.toFixed(0)}`,
+			`Hand raw: X=${indexTip.x.toFixed(3)}, Y=${indexTip.y.toFixed(3)}, Z=${indexTip.z.toFixed(4)}`,
+			10,
+			20,
+		);
+		text(
+			`Hand mapped: X=${handX.toFixed(0)}, Y=${handY.toFixed(0)}, Z=${handZ.toFixed(0)}`,
+			10,
+			40,
+		);
+		text(
+			`Smoothed: X=${smoothHandX.toFixed(0)}, Y=${smoothHandY.toFixed(0)}, Z=${smoothHandZ.toFixed(0)}`,
 			10,
 			60,
 		);
 		text(
-			`Light at hand: X=${smoothHandX.toFixed(0)}, Y=${smoothHandY.toFixed(0)}, Z=${smoothHandZ.toFixed(0)}`,
+			`Multipliers: X=${handCalibration.xMultiplier}, Y=${handCalibration.yMultiplier}, Z=${handCalibration.zMultiplier}`,
 			10,
 			80,
 		);
-		text("Point light intensity: 500 (white)", 10, 100);
+		text("Adjust handCalibration.xMultiplier/yMultiplier/zMultiplier", 10, 100);
 	} else {
 		text("No hand detected", 10, 20);
 	}
@@ -298,26 +316,12 @@ function drawWall(w, h, gridSize) {
 }
 
 function drawCubes() {
-	// Use smoothed hand position for collision detection
-	const handPos = { x: smoothHandX, y: smoothHandY, z: smoothHandZ };
-
 	for (const c of cubes) {
 		push();
 		translate(c.x, c.y, c.z);
-
-		// Check collision with hand and change stroke color
-		if (handDetected && checkCollision(c, handPos)) {
-			// Use material that reacts to light for collision
-			fill(255, 0, 255);
-			stroke(255);
-			strokeWeight(1);
-		} else {
-			// Use material that reacts to light for normal cubes
-			fill(c.fill[0], c.fill[1], c.fill[2]);
-			strokeWeight(1);
-			stroke(c.stroke);
-		}
-
+		fill(c.fill[0], c.fill[1], c.fill[2]);
+		strokeWeight(1);
+		stroke(c.stroke);
 		box(c.size);
 		pop();
 	}
@@ -390,12 +394,20 @@ function onHandsResults(results) {
 		const indexTip = handsResults[0][8];
 
 		// Map hand position to 3D space
-		// Invert X because camera is mirrored
-		handX = map(1 - indexTip.x, 0, 1, -cube.range.x, cube.range.x);
-		handY = map(indexTip.y, 0, 1, -cube.range.y, cube.range.y);
+		// X axis (left-right) - Invert X because camera is mirrored
+		handX =
+			map(1 - indexTip.x, 0, 1, -cube.range.x, cube.range.x) *
+				handCalibration.xMultiplier +
+			handCalibration.xOffset;
 
-		// Calibrated Z mapping with increased amplitude
-		const zRange = cube.range.z * 3; // Double the range for more amplitude
+		// Y axis (up-down)
+		handY =
+			map(indexTip.y, 0, 1, -cube.range.y, cube.range.y) *
+				handCalibration.yMultiplier +
+			handCalibration.yOffset;
+
+		// Z axis (depth) - Calibrated mapping with increased amplitude
+		const zRange = cube.range.z * 3;
 		handZ =
 			map(
 				indexTip.z,

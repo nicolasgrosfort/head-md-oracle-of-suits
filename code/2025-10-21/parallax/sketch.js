@@ -2,12 +2,62 @@
 
 let faceMesh;
 let video;
+
 let noseX = 0;
 let noseY = 0;
+
 let faces = [];
+const cubes = [];
+
+const grid = {
+	size: 50,
+	stroke: [255, 255, 255],
+};
+
+const app = {
+	background: [0, 0, 0],
+};
+
+const cube = {
+	spacing: 150,
+	stroke: [0, 0, 0],
+	fill: [
+		[255, 0, 255],
+		[0, 255, 255],
+		[255, 255, 0],
+		[0, 255, 0],
+		[255, 165, 0],
+		[255, 192, 203],
+	],
+	size: {
+		min: 20,
+		max: 100,
+	},
+	range: {
+		x: 300,
+		y: 300,
+		z: 600,
+	},
+};
 
 function setup() {
 	createCanvas(windowWidth, windowHeight, WEBGL);
+
+	// Créer les cubes
+	for (let x = -cube.range.x; x <= cube.range.x; x += cube.spacing) {
+		for (let y = -cube.range.y; y <= cube.range.y; y += cube.spacing) {
+			for (let z = -cube.range.z; z <= cube.range.z; z += cube.spacing) {
+				cubes.push({
+					x,
+					y,
+					z,
+					size: random(cube.size.min, cube.size.max),
+					fill: random(cube.fill),
+					stroke: cube.stroke,
+				});
+			}
+		}
+	}
 
 	// Créer la capture vidéo (cachée)
 	video = createCapture(VIDEO);
@@ -38,6 +88,7 @@ function setup() {
 		width: 640,
 		height: 480,
 	});
+
 	camera.start();
 }
 
@@ -54,13 +105,66 @@ function onResults(results) {
 	}
 }
 
-function draw() {
-	background(220);
+function drawWall(w, h, gridSize) {
+	// Dessiner une grille sur un plan
+	stroke(grid.stroke);
+	strokeWeight(1);
+	noFill();
 
+	// Lignes horizontales
+	for (let y = -h / 2; y <= h / 2; y += gridSize) {
+		line(-w / 2, y, w / 2, y);
+	}
+
+	// Lignes verticales
+	for (let x = -w / 2; x <= w / 2; x += gridSize) {
+		line(x, -h / 2, x, h / 2);
+	}
+}
+
+function drawCubes() {
+	for (const c of cubes) {
+		push();
+		translate(c.x, c.y, c.z);
+		fill(c.fill);
+		stroke(c.stroke);
+		box(c.size);
+		pop();
+	}
+}
+
+function drawGrid() {
+	// Mur gauche
 	push();
-	fill(150, 0, 150);
-	box(100);
+	translate(-width * 0.5, 0, 0);
+	rotateY(HALF_PI);
+	drawWall(width, height, grid.size);
 	pop();
+
+	// Mur droite
+	push();
+	translate(width * 0.5, 0, 0);
+	rotateY(-HALF_PI);
+	drawWall(width, height, grid.size);
+	pop();
+
+	// Mur haut
+	push();
+	translate(0, -height * 0.5, 0);
+	rotateX(HALF_PI);
+	drawWall(width, width, grid.size);
+	pop();
+
+	// Mur bas
+	push();
+	translate(0, height * 0.5, 0);
+	rotateX(-HALF_PI);
+	drawWall(width, width, grid.size);
+	pop();
+}
+
+function draw() {
+	background(app.background);
 
 	// Utiliser la position du nez au lieu de la souris
 	const camX = map(noseX, 0, width, -250, 250);
@@ -68,4 +172,7 @@ function draw() {
 	const camZ = height / 2 / tan(PI / 6);
 
 	camera(camX, camY, camZ, 0, 0, 0, 0, 1, 0);
+
+	drawCubes();
+	drawGrid();
 }

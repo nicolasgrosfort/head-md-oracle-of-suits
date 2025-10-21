@@ -244,16 +244,14 @@ function applyLights() {
 	ambientLight(0, 0, 0);
 
 	// Add bright point light that follows the hand
-	if (handDetected) {
-		pointLight(
-			255,
-			255,
-			255, // Intense white light (values > 255 for more power)
-			smoothHandX,
-			smoothHandY,
-			smoothHandZ,
-		);
-	}
+	pointLight(
+		255,
+		255,
+		255, // Intense white light (values > 255 for more power)
+		smoothHandX,
+		smoothHandY,
+		smoothHandZ,
+	);
 }
 
 function drawDebugInfo() {

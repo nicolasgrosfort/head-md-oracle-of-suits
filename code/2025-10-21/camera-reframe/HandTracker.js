@@ -108,12 +108,14 @@ class HandTracker {
 			thumb: {
 				x: thumbPos.x,
 				y: thumbPos.y,
-				smooth: { x: thumbPos.x, y: thumbPos.y },
+				z: thumbPos.z,
+				smooth: { x: thumbPos.x, y: thumbPos.y, z: thumbPos.z },
 			},
 			index: {
 				x: indexPos.x,
 				y: indexPos.y,
-				smooth: { x: indexPos.x, y: indexPos.y },
+				z: indexPos.z,
+				smooth: { x: indexPos.x, y: indexPos.y, z: indexPos.z },
 			},
 		};
 	}
@@ -125,6 +127,7 @@ class HandTracker {
 		// Update thumb
 		handData.thumb.x = thumbPos.x;
 		handData.thumb.y = thumbPos.y;
+		handData.thumb.z = thumbPos.z;
 		handData.thumb.smooth = this.smoothPosition(
 			handData.thumb.smooth,
 			thumbPos,
@@ -134,6 +137,7 @@ class HandTracker {
 		// Update index
 		handData.index.x = indexPos.x;
 		handData.index.y = indexPos.y;
+		handData.index.z = indexPos.z;
 		handData.index.smooth = this.smoothPosition(
 			handData.index.smooth,
 			indexPos,
@@ -146,11 +150,12 @@ class HandTracker {
 	 */
 	smoothPosition(current, target, smoothing = 0.5) {
 		if (!current) {
-			return { x: target.x, y: target.y };
+			return { x: target.x, y: target.y, z: target.z };
 		}
 		return {
 			x: lerp(current.x, target.x, smoothing),
 			y: lerp(current.y, target.y, smoothing),
+			z: lerp(current.z || 0, target.z || 0, smoothing),
 		};
 	}
 
@@ -211,5 +216,24 @@ class HandTracker {
 			hand[finger].smooth.x,
 			hand[finger].smooth.y,
 		);
+	}
+
+	/**
+	 * Get average depth (z coordinate) of both index fingers
+	 * Returns null if both hands are not detected
+	 * Lower z value = closer to camera
+	 */
+	getAverageIndexDepth() {
+		const leftHand = this.getLeftHand();
+		const rightHand = this.getRightHand();
+
+		if (!leftHand || !rightHand) {
+			return null;
+		}
+
+		const leftZ = leftHand.index.smooth.z || 0;
+		const rightZ = rightHand.index.smooth.z || 0;
+
+		return (leftZ + rightZ) / 2;
 	}
 }

@@ -36,7 +36,8 @@ const CONFIG = {
 		alpha: 0.15, // 0.05-0.3 recommended
 	},
 	pixelation: {
-		size: 25, // Size of pixelation blocks
+		minSize: 5, // Minimum pixel size (far from camera)
+		maxSize: 50, // Maximum pixel size (close to camera)
 	},
 	hands: {
 		maxNumHands: 2,
@@ -102,8 +103,8 @@ function setup() {
 		CONFIG.grain.alpha,
 	);
 
-	// Initialize pixelation effect
-	pixelationEffect = new PixelationEffect(CONFIG.pixelation.size);
+	// Initialize pixelation effect (start with min size)
+	pixelationEffect = new PixelationEffect(CONFIG.pixelation.minSize);
 }
 
 /**
@@ -115,6 +116,9 @@ function draw() {
 
 	// Update hand tracker with video dimensions for coordinate conversion
 	handTracker.setVideoDimensions({ drawWidth, drawHeight, drawX, drawY });
+
+	// Update pixelation size based on hand depth
+	updatePixelationSize();
 
 	// Calculate pixelation rectangle if both hands are detected
 	const pixelationRect = calculatePixelationRect();
@@ -140,6 +144,43 @@ function draw() {
 	if (pixelationRect) {
 		drawPixelationOutline(pixelationRect);
 	}
+}
+
+/**
+ * Update pixelation size based on hand depth
+ * Closer to camera = larger pixels (more blur)
+ * Further from camera = smaller pixels (less blur)
+ */
+function updatePixelationSize() {
+	const depth = handTracker.getAverageIndexDepth();
+
+	if (depth === null) {
+		return; // No hands detected
+	}
+
+	// Debug: log depth values
+	console.log("Depth:", depth);
+
+	// MediaPipe z values typically range from -0.3 (close) to 0.3 (far)
+	// Adjust range for better sensitivity
+	const normalizedDepth = constrain(map(depth, -0.1, 0.01, 0, 1), 0, 1);
+
+	// Invert: close to camera (low z) = large pixels
+	const invertedDepth = 1 - normalizedDepth;
+
+	// Map to pixel size range
+	const pixelSize = map(
+		invertedDepth,
+		0,
+		1,
+		CONFIG.pixelation.minSize,
+		CONFIG.pixelation.maxSize,
+	);
+
+	console.log("Pixel size:", Math.round(pixelSize));
+
+	// Update pixelation effect
+	pixelationEffect.setPixelSize(pixelSize);
 }
 
 /**

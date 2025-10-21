@@ -20,7 +20,7 @@ An interactive p5.js sketch that uses hand tracking to create real-time video ce
 
 ## Project Structure
 
-```
+```bash
 camera-reframe/
 ├── index-new.html          # Main HTML file
 ├── sketch-new.js           # Main p5.js sketch
@@ -35,25 +35,33 @@ camera-reframe/
 ## Classes
 
 ### HandTracker
+
 Manages hand detection using MediaPipe Hands library.
+
 - Tracks up to 2 hands simultaneously
 - Provides smooth position interpolation
 - Converts normalized coordinates to screen space
 
 ### VideoProcessor
+
 Handles video capture and processing.
+
 - Grayscale conversion with adjustable saturation
 - Cover mode display (fills screen without stretching)
 - Mirrored video for intuitive interaction
 
 ### PixelationEffect
+
 Applies pixelation/censorship to rectangular areas.
+
 - Configurable pixel size
 - Handles coordinate transformation
 - Efficient block-based processing
 
 ### FilmGrainEffect
+
 Creates realistic film grain overlay.
+
 - Pre-generated noise patterns for performance
 - Animated grain effect
 - Adjustable opacity and tile size

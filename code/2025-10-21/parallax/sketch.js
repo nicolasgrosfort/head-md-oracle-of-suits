@@ -27,15 +27,15 @@ const app = {
 };
 
 const cube = {
-	spacing: 150,
+	spacing: 100,
 	stroke: [0, 0, 0],
 	fill: [255],
 	size: {
-		min: 20,
-		max: 100,
+		min: 25,
+		max: 50,
 	},
 	range: {
-		x: 300,
+		x: 400,
 		y: 300,
 		z: 600,
 	},
@@ -67,18 +67,62 @@ function setup() {
 	textFont(myFont);
 	textSize(16);
 
-	// Create cubes
+	// Create cubes using 3D noise
+	const noiseScale = 0.005; // Scale for noise sampling
+	const noiseThreshold = 0.3; // Threshold to create cubes
+
 	for (let x = -cube.range.x; x <= cube.range.x; x += cube.spacing) {
 		for (let y = -cube.range.y; y <= cube.range.y; y += cube.spacing) {
 			for (let z = -cube.range.z; z <= cube.range.z; z += cube.spacing) {
-				cubes.push({
-					x,
-					y,
-					z,
-					size: random(cube.size.min, cube.size.max),
-					fill: random(cube.fill),
-					stroke: cube.stroke,
-				});
+				// Sample 3D noise at this position
+				const noiseValue = noise(
+					x * noiseScale,
+					y * noiseScale,
+					z * noiseScale,
+				);
+
+				// Only create cube if noise value is above threshold
+				if (noiseValue > noiseThreshold) {
+					// Use noise to offset position slightly
+					const offsetX = map(
+						noise(x * noiseScale + 100, y * noiseScale, z * noiseScale),
+						0,
+						1,
+						-30,
+						30,
+					);
+					const offsetY = map(
+						noise(x * noiseScale, y * noiseScale + 100, z * noiseScale),
+						0,
+						1,
+						-30,
+						30,
+					);
+					const offsetZ = map(
+						noise(x * noiseScale, y * noiseScale, z * noiseScale + 100),
+						0,
+						1,
+						-30,
+						30,
+					);
+
+					// Use noise to determine size
+					const sizeNoise = noise(
+						x * noiseScale + 200,
+						y * noiseScale + 200,
+						z * noiseScale + 200,
+					);
+					const cubeSize = map(sizeNoise, 0, 1, cube.size.min, cube.size.max);
+
+					cubes.push({
+						x: x + offsetX,
+						y: y + offsetY,
+						z: z + offsetZ,
+						size: cubeSize,
+						fill: random(cube.fill),
+						stroke: cube.stroke,
+					});
+				}
 			}
 		}
 	}

@@ -26,9 +26,11 @@ function draw() {
 		? handTracker.getPinchScale(0.5, 2.0)
 		: null;
 
-	// Dessiner tous les shards avec le pinch scale
+	// Dessiner tous les shards
+	// Seulement le shard survolé réagit au pinch
 	for (const shard of shards) {
-		shard.draw(pinchScale);
+		const isHovered = shard.isHovered(mouseX, mouseY);
+		shard.draw(pinchScale, isHovered);
 	}
 
 	// Afficher un indicateur si le hand tracking est actif

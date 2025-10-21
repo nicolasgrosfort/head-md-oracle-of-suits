@@ -98,7 +98,7 @@ class HandTracker {
 		this.smoothedPinchDistance = lerp(
 			this.smoothedPinchDistance,
 			targetPinchDistance,
-			this.smoothingFactor
+			this.smoothingFactor,
 		);
 	}
 

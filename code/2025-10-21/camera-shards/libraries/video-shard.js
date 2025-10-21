@@ -34,28 +34,47 @@ class VideoShard {
 		// Variation plus importante pour des vitesses très différentes
 		this.parallaxFactor = random(0.1, 2);
 
-		// Scale de base
-		this.baseScale = 1.0;
+		// Scale actuel du shard (mémorisé)
+		this.currentScale = 1.0;
+
+		// Scale précédent du pinch (pour détecter le changement)
+		this.lastPinchScale = null;
 	}
 
-	draw(pinchScale = null) {
-		let currentScale;
+	/**
+	 * Vérifie si la souris est au-dessus du shard
+	 */
+	isHovered(mx, my) {
+		return (
+			mx >= this.x &&
+			mx <= this.x + this.displayW &&
+			my >= this.y &&
+			my <= this.y + this.displayH
+		);
+	}
 
-		if (pinchScale !== null) {
-			// Mode pinch : utiliser le pinch pour contrôler le scale
-			// Chaque shard réagit différemment selon son parallaxFactor
-			const pinchNormalized = (pinchScale - 1) * this.parallaxFactor;
-			currentScale = this.baseScale * (1 + pinchNormalized);
-		} else {
-			// Mode souris (fallback) : utiliser mouseY
-			const mouseYNormalized = (mouseY / height) * 2 - 1;
-			const parallaxScale = 1.0 + mouseYNormalized * 0.5 * this.parallaxFactor;
-			currentScale = this.baseScale * parallaxScale;
+	draw(pinchScale = null, isHovered = false) {
+		// Appliquer le pinch uniquement si le shard est survolé
+		if (isHovered && pinchScale !== null) {
+			// Calculer le delta depuis la dernière valeur
+			if (this.lastPinchScale !== null) {
+				const delta = pinchScale - this.lastPinchScale;
+				// Appliquer le changement avec le facteur de parallaxe
+				this.currentScale += delta * this.parallaxFactor * 0.5;
+				// Limiter le scale entre 0.1 et 5.0
+				this.currentScale = constrain(this.currentScale, 0.1, 5.0);
+			}
+			this.lastPinchScale = pinchScale;
+		} else if (!isHovered) {
+			// Réinitialiser le pinch précédent si on ne survole plus
+			this.lastPinchScale = null;
 		}
+
+		const displayScale = this.currentScale;
 
 		push();
 		translate(this.x + this.displayW / 2, this.y + this.displayH / 2);
-		scale(-currentScale, currentScale);
+		scale(-displayScale, displayScale);
 
 		image(
 			this.sourceVideo,
@@ -69,9 +88,10 @@ class VideoShard {
 			this.captureH,
 		);
 
+		// Bordure : blanche par défaut, verte si survolé
 		noFill();
-		stroke(255);
-		strokeWeight(2 / currentScale); // Ajuster l'épaisseur du trait
+		stroke(isHovered ? color(0, 255, 0) : color(255));
+		strokeWeight(2 / displayScale);
 		rect(-this.displayW / 2, -this.displayH / 2, this.displayW, this.displayH);
 
 		pop();

@@ -4,7 +4,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-    <title>Sketch</title>
+    <title>Camera Reframe - Interactive Video Censorship</title>
 
     <link rel="stylesheet" type="text/css" href="style.css" />
 
@@ -32,9 +32,16 @@
       src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js"
       crossorigin="anonymous"
     ></script>
+
+    <!-- Class files - load before sketch.js -->
+    <script src="FilmGrainEffect.js"></script>
+    <script src="VideoProcessor.js"></script>
+    <script src="HandTracker.js"></script>
+    <script src="PixelationEffect.js"></script>
+
+    <!-- Main sketch -->
+    <script src="sketch.js"></script>
   </head>
 
-  <body>
-    <script src="sketch.js"></script>
-  </body>
+  <body></body>
 </html>

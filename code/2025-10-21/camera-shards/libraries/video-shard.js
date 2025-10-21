@@ -30,8 +30,9 @@ class VideoShard {
 			this.y = random(0, height - displayH);
 		}
 
-		// Facteur de parallaxe unique pour chaque shard (entre 0.5 et 2.0)
-		this.parallaxFactor = random(0.5, 2.0);
+		// Facteur de parallaxe unique pour chaque shard
+		// Variation plus importante pour des vitesses très différentes
+		this.parallaxFactor = random(0.1, 1);
 
 		// Scale de base
 		this.baseScale = 1.0;
@@ -42,9 +43,9 @@ class VideoShard {
 		// mouseY normalisé entre -1 et 1
 		const mouseYNormalized = (mouseY / height) * 2 - 1;
 
-		// Appliquer le parallax : plus le facteur est élevé, plus l'effet est prononcé
-		// Range: 0.8 à 1.2 (modulé par le parallaxFactor)
-		const parallaxScale = 1.0 + mouseYNormalized * 0.2 * this.parallaxFactor;
+		// Appliquer le parallax avec une amplitude plus grande
+		// Les shards auront des comportements très différents
+		const parallaxScale = 1.0 + mouseYNormalized * 0.5 * this.parallaxFactor;
 		const currentScale = this.baseScale * parallaxScale;
 
 		push();

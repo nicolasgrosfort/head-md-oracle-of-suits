@@ -44,4 +44,18 @@ class Video {
 	getVideo() {
 		return this.video;
 	}
+
+	canvasToVideoCoords(canvasX, canvasY) {
+		const { drawWidth, drawHeight, drawX, drawY } = this.getCoverDimensions();
+
+		const mirroredX = width - canvasX;
+
+		const relativeX = mirroredX - drawX;
+		const relativeY = canvasY - drawY;
+
+		const videoX = (relativeX / drawWidth) * this.videoWidth;
+		const videoY = (relativeY / drawHeight) * this.videoHeight;
+
+		return { videoX, videoY };
+	}
 }

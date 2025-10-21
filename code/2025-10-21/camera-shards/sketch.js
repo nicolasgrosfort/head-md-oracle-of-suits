@@ -22,12 +22,14 @@ function draw() {
 	}
 }
 
-function createRandomShards(x, y) {
-	const captureSize = random(20, 200);
-	const displaySize = random(100, 300);
+function createShard(x, y) {
+	const captureSize = random(10, 100);
+	const displaySize = random(100, 200);
 
-	const captureX = random(x);
-	const captureY = random(y);
+	const { videoX, videoY } = video.canvasToVideoCoords(x, y);
+
+	const captureX = constrain(videoX - captureSize / 2, 0, 640 - captureSize);
+	const captureY = constrain(videoY - captureSize / 2, 0, 480 - captureSize);
 
 	const shard = new VideoShard(
 		video.getVideo(),
@@ -37,11 +39,13 @@ function createRandomShards(x, y) {
 		captureSize,
 		displaySize,
 		displaySize,
+		x,
+		y,
 	);
 
 	shards.push(shard);
 }
 
-function mouseMoved() {
-	createRandomShards(mouseX, mouseY);
+function mousePressed() {
+	createShard(mouseX, mouseY);
 }

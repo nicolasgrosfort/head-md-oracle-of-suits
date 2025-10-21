@@ -9,6 +9,8 @@ class VideoShard {
 		captureH,
 		displayW,
 		displayH,
+		displayX = null,
+		displayY = null,
 	) {
 		this.sourceVideo = sourceVideo;
 
@@ -20,8 +22,13 @@ class VideoShard {
 		this.displayW = displayW;
 		this.displayH = displayH;
 
-		this.x = random(0, width - displayW);
-		this.y = random(0, height - displayH);
+		if (displayX !== null && displayY !== null) {
+			this.x = displayX - displayW / 2;
+			this.y = displayY - displayH / 2;
+		} else {
+			this.x = random(0, width - displayW);
+			this.y = random(0, height - displayH);
+		}
 	}
 
 	draw() {

@@ -30,7 +30,7 @@ function createShard(x, y) {
 		height: randomSize(),
 	};
 
-	const scaleFactor = random(0.5, 5);
+	const scaleFactor = random(2, 5);
 
 	const { videoX, videoY } = video.canvasToVideoCoords(x, y);
 

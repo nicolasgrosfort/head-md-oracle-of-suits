@@ -87,7 +87,7 @@ function displayPinchIndicator(pinchScale, anyHovered, hoveredShardId) {
 	textAlign(LEFT, TOP);
 	textSize(12); // Même taille pour tout
 	textStyle(NORMAL);
-	textFont('monospace'); // Police à chasse fixe (terminal)
+	textFont("monospace"); // Police à chasse fixe (terminal)
 
 	const x = 15;
 	let y = 15;

@@ -1,32 +1,41 @@
 /** biome-ignore-all lint/correctness/noUnusedVariables: <> */
 
+// Global variables
 let video;
 let handTracker;
 const shards = [];
 
+/**
+ * Setup - Initialize canvas, video, and hand tracking
+ */
 function setup() {
 	createCanvas(windowWidth, windowHeight);
 	video = new Video(640, 480);
-
-	// Initialiser le hand tracker
 	handTracker = new HandTracker(video.getVideo());
 }
 
+/**
+ * Handle window resize
+ */
 function windowResized() {
 	resizeCanvas(windowWidth, windowHeight);
 }
 
+/**
+ * Main draw loop
+ */
 function draw() {
 	background(255);
 
+	// Draw background video with blur effect
 	video.draw();
 
-	// Obtenir le scale du pinch si le tracker est prêt
+	// Get pinch scale if hand tracking is ready
 	const pinchScale = handTracker?.ready()
 		? handTracker.getPinchScale(0.5, 2.0)
 		: null;
 
-	// Vérifier si au moins un shard est survolé et récupérer son ID
+	// Check if any shard is hovered and get its ID
 	let anyHovered = false;
 	let hoveredShardId = null;
 	for (const shard of shards) {
@@ -37,63 +46,61 @@ function draw() {
 		}
 	}
 
-	// Dessiner tous les shards
-	// Si un shard est survolé : seul celui-ci réagit au pinch
-	// Si aucun n'est survolé : tous réagissent au pinch
+	// Draw all shards
+	// If a shard is hovered: only that one reacts to pinch
+	// If none are hovered: all shards react to pinch
 	for (const shard of shards) {
 		const isHovered = shard.isHovered(mouseX, mouseY);
 		const shouldApplyPinch = anyHovered ? isHovered : true;
 		shard.draw(pinchScale, shouldApplyPinch);
 	}
 
-	// Afficher un indicateur si le hand tracking est actif
+	// Display info indicator when hand tracking is active
 	if (handTracker?.ready()) {
 		displayPinchIndicator(pinchScale, anyHovered, hoveredShardId);
 	}
 }
 
+/**
+ * Display pinch state indicator (terminal style)
+ * @param {number} pinchScale - Current pinch scale value
+ * @param {boolean} anyHovered - Whether any shard is hovered
+ * @param {number} hoveredShardId - ID of hovered shard (if any)
+ */
 function displayPinchIndicator(pinchScale, anyHovered, hoveredShardId) {
-	// Définir les mêmes seuils que dans VideoShard
+	// Define same thresholds as VideoShard
 	const neutralZoneMin = 1.0;
 	const neutralZoneMax = 1.5;
 
-	// Déterminer l'état
-	let state = "NEUTRE";
-	let stateColor = color(200, 200, 200); // Gris
-
+	// Determine current state
+	let state = "NEUTRAL";
 	if (pinchScale > neutralZoneMax) {
-		state = "GRANDIR ↑";
-		stateColor = color(0, 255, 0); // Vert
+		state = "GROW ↑";
 	} else if (pinchScale < neutralZoneMin) {
-		state = "RÉTRÉCIR ↓";
-		stateColor = color(255, 0, 0); // Rouge
+		state = "SHRINK ↓";
 	}
 
-	// Déterminer le mode (tous ou sélectionné)
+	// Determine mode (all or selected)
 	let mode = "";
-	let modeIcon = "";
 	if (anyHovered && hoveredShardId !== null) {
 		mode = `Shard #${hoveredShardId}`;
-		modeIcon = "🎯";
 	} else {
-		mode = "Tous les shards";
-		modeIcon = "🌐";
+		mode = "All shards";
 	}
 
+	// Terminal-style display
 	push();
-	// Style terminal : texte blanc, pas de fond, typo monospace
-	fill(255); // Blanc
+	fill(255);
 	noStroke();
 	textAlign(LEFT, TOP);
-	textSize(12); // Même taille pour tout
+	textSize(12);
 	textStyle(NORMAL);
-	textFont("monospace"); // Police à chasse fixe (terminal)
+	textFont("monospace");
 
 	const x = 15;
 	let y = 15;
 	const lineHeight = 16;
 
-	// Afficher les infos style terminal
 	text(`> STATE: ${state}`, x, y);
 	y += lineHeight;
 	text(`> PINCH: ${pinchScale.toFixed(2)}`, x, y);
@@ -103,24 +110,32 @@ function displayPinchIndicator(pinchScale, anyHovered, hoveredShardId) {
 	pop();
 }
 
+/**
+ * Create a new video shard at given position
+ * @param {number} x - X position on canvas
+ * @param {number} y - Y position on canvas
+ */
 function createShard(x, y) {
-	// Créer un shard carré
+	// Random square size for capture and display
 	const captureSize = random(25, 50);
 	const displaySize = captureSize * random(2, 4);
 
+	// Convert canvas coordinates to video coordinates
 	const { videoX, videoY } = video.canvasToVideoCoords(x, y);
 
+	// Constrain capture area within video bounds
 	const captureX = constrain(videoX - captureSize / 2, 0, 640 - captureSize);
 	const captureY = constrain(videoY - captureSize / 2, 0, 480 - captureSize);
 
+	// Create square shard (same width and height)
 	const shard = new VideoShard(
 		video.getVideo(),
 		captureX,
 		captureY,
 		captureSize,
-		captureSize, // Même taille en hauteur = carré
+		captureSize,
 		displaySize,
-		displaySize, // Même taille en hauteur = carré
+		displaySize,
 		x,
 		y,
 	);
@@ -128,6 +143,9 @@ function createShard(x, y) {
 	shards.push(shard);
 }
 
+/**
+ * Mouse press handler - Create shard at click position
+ */
 function mousePressed() {
 	createShard(mouseX, mouseY);
 }

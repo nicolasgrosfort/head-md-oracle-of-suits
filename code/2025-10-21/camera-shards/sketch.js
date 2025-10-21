@@ -26,11 +26,13 @@ function draw() {
 		? handTracker.getPinchScale(0.5, 2.0)
 		: null;
 
-	// Vérifier si au moins un shard est survolé
+	// Vérifier si au moins un shard est survolé et récupérer son ID
 	let anyHovered = false;
+	let hoveredShardId = null;
 	for (const shard of shards) {
 		if (shard.isHovered(mouseX, mouseY)) {
 			anyHovered = true;
+			hoveredShardId = shard.id;
 			break;
 		}
 	}
@@ -46,28 +48,65 @@ function draw() {
 
 	// Afficher un indicateur si le hand tracking est actif
 	if (handTracker?.ready()) {
-		displayPinchIndicator(pinchScale);
+		displayPinchIndicator(pinchScale, anyHovered, hoveredShardId);
 	}
 }
 
-function displayPinchIndicator(pinchScale) {
-	push();
-	fill(0, 0, 0);
-	noStroke();
-	const size = map(pinchScale, 0.5, 2.0, 20, 80);
-	circle(50, 50, size);
+function displayPinchIndicator(pinchScale, anyHovered, hoveredShardId) {
+	// Définir les mêmes seuils que dans VideoShard
+	const neutralZoneMin = 1.0;
+	const neutralZoneMax = 1.5;
 
-	fill(255);
-	textAlign(CENTER, CENTER);
-	textSize(12);
-	text(pinchScale.toFixed(2), 50, 50);
+	// Déterminer l'état
+	let state = "NEUTRE";
+	let stateColor = color(200, 200, 200); // Gris
+
+	if (pinchScale > neutralZoneMax) {
+		state = "GRANDIR ↑";
+		stateColor = color(0, 255, 0); // Vert
+	} else if (pinchScale < neutralZoneMin) {
+		state = "RÉTRÉCIR ↓";
+		stateColor = color(255, 0, 0); // Rouge
+	}
+
+	// Déterminer le mode (tous ou sélectionné)
+	let mode = "";
+	let modeIcon = "";
+	if (anyHovered && hoveredShardId !== null) {
+		mode = `Shard #${hoveredShardId}`;
+		modeIcon = "🎯";
+	} else {
+		mode = "Tous les shards";
+		modeIcon = "🌐";
+	}
+
+	push();
+	// Style terminal : texte blanc, pas de fond, typo monospace
+	fill(255); // Blanc
+	noStroke();
+	textAlign(LEFT, TOP);
+	textSize(12); // Même taille pour tout
+	textStyle(NORMAL);
+	textFont('monospace'); // Police à chasse fixe (terminal)
+
+	const x = 15;
+	let y = 15;
+	const lineHeight = 16;
+
+	// Afficher les infos style terminal
+	text(`> STATE: ${state}`, x, y);
+	y += lineHeight;
+	text(`> PINCH: ${pinchScale.toFixed(2)}`, x, y);
+	y += lineHeight;
+	text(`> MODE:  ${mode}`, x, y);
+
 	pop();
 }
 
 function createShard(x, y) {
 	// Créer un shard carré
-	const captureSize = random(10, 50);
-	const displaySize = captureSize * random(2, 5);
+	const captureSize = random(25, 50);
+	const displaySize = captureSize * random(2, 4);
 
 	const { videoX, videoY } = video.canvasToVideoCoords(x, y);
 

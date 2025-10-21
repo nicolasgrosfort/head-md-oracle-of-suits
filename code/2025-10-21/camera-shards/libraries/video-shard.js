@@ -62,14 +62,28 @@ class VideoShard {
 	draw(pinchScale = null, isHovered = false) {
 		// Appliquer le pinch uniquement si le shard est survolé
 		if (isHovered && pinchScale !== null) {
-			// Calculer le delta depuis la dernière valeur
-			if (this.lastPinchScale !== null) {
-				const delta = pinchScale - this.lastPinchScale;
-				// Appliquer le changement avec le facteur de parallaxe
-				this.currentScale += delta * this.parallaxFactor * 0.5;
-				// Limiter le scale entre 0.1 et 5.0
-				this.currentScale = constrain(this.currentScale, 0.1, 5.0);
+			// Définir les seuils de la zone morte (élargie)
+			const neutralZoneMin = 1.0; // En dessous : diminuer
+			const neutralZoneMax = 1.5; // Au dessus : augmenter
+
+			// Vitesse de changement continu
+			const changeSpeed = 0.01 * this.parallaxFactor;
+
+			if (pinchScale > neutralZoneMax) {
+				// Zone d'augmentation : augmenter continuellement
+				const intensity =
+					(pinchScale - neutralZoneMax) / (2.0 - neutralZoneMax);
+				this.currentScale += changeSpeed * intensity;
+			} else if (pinchScale < neutralZoneMin) {
+				// Zone de diminution : diminuer continuellement
+				const intensity =
+					(neutralZoneMin - pinchScale) / (neutralZoneMin - 0.5);
+				this.currentScale -= changeSpeed * intensity;
 			}
+			// Sinon : zone morte, ne rien faire
+
+			// Limiter le scale entre 0.1 et 5.0
+			this.currentScale = constrain(this.currentScale, 0.1, 5.0);
 			this.lastPinchScale = pinchScale;
 		} else if (!isHovered) {
 			// Réinitialiser le pinch précédent si on ne survole plus

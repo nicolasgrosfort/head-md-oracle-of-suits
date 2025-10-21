@@ -5,6 +5,7 @@ let video;
 
 let noseX = 0;
 let noseY = 0;
+let noseZ = 0;
 
 let faces = [];
 const cubes = [];
@@ -102,6 +103,8 @@ function onResults(results) {
 		// Inverser X car la caméra est en miroir
 		noseX = (1 - nose.x) * width;
 		noseY = nose.y * height;
+		// Z représente la profondeur (plus négatif = plus proche de la caméra)
+		noseZ = nose.z;
 	}
 }
 
@@ -169,7 +172,12 @@ function draw() {
 	// Utiliser la position du nez au lieu de la souris
 	const camX = map(noseX, 0, width, -250, 250);
 	const camY = map(noseY, 0, height, -250, 250);
-	const camZ = height / 2 / tan(PI / 6);
+
+	// Calculer camZ en fonction de la profondeur du nez
+	// noseZ varie généralement entre -0.15 (proche) et 0.05 (loin)
+	// On mappe cela pour modifier la distance de la caméra
+	const baseCamZ = height / 2 / tan(PI / 6);
+	const camZ = map(noseZ, -0.15, 0.05, baseCamZ * 0.5, baseCamZ * 1.5);
 
 	camera(camX, camY, camZ, 0, 0, 0, 0, 1, 0);
 

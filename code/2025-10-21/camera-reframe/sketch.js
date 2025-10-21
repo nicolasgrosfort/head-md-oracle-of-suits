@@ -228,7 +228,13 @@ function applyPixelationToImage(
 }
 
 // Fonction pour dessiner un doigt
-function drawFinger(finger, color = 255, size = 80) {
+function drawFinger(
+	finger,
+	color = 255,
+	size = 80,
+	label = "",
+	align = "RIGHT",
+) {
 	if (!finger?.smooth) return;
 
 	const pos = normalizedToScreen(finger.smooth.x, finger.smooth.y);
@@ -237,6 +243,11 @@ function drawFinger(finger, color = 255, size = 80) {
 	stroke(color);
 	strokeWeight(4);
 	circle(pos.x, pos.y, size);
+
+	noStroke();
+	fill(color);
+	textAlign(align === "RIGHT" ? RIGHT : LEFT, CENTER);
+	text(label, pos.x + (align === "RIGHT" ? -size : size), pos.y);
 }
 
 function draw() {
@@ -271,11 +282,31 @@ function draw() {
 
 	// Dessiner les doigts détectés pour chaque main
 	if (handsData.left) {
-		drawFinger(handsData.left.index, 255, 40);
+		const textPosition = normalizedToScreen(
+			handsData.left.index.smooth.x,
+			handsData.left.index.smooth.y,
+		);
+		drawFinger(
+			handsData.left.index,
+			255,
+			40,
+			`[${round(textPosition.x)}, ${round(textPosition.y)}]`,
+			"RIGHT",
+		);
 	}
 
 	if (handsData.right) {
-		drawFinger(handsData.right.index, 255, 40);
+		const textPosition = normalizedToScreen(
+			handsData.right.index.smooth.x,
+			handsData.right.index.smooth.y,
+		);
+		drawFinger(
+			handsData.right.index,
+			255,
+			40,
+			`[${round(textPosition.x)}, ${round(textPosition.y)}]`,
+			"LEFT",
+		);
 	}
 
 	// Dessiner le rectangle de censure

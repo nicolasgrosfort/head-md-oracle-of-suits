@@ -3,6 +3,7 @@
 let video;
 let font;
 let hands;
+let filmGrain; // Effet de grain
 
 // MediaPipe landmarks indices
 const LANDMARKS = {
@@ -16,6 +17,99 @@ const handsData = {
 	right: null,
 };
 
+// Classes pour l'effet de grain
+class Effects {
+	static counter = 0;
+}
+
+class FilmGrainEffect {
+	static counter = 0;
+	static index = 0;
+
+	constructor(x, y, w, h, patternSize, sampleSize = 1, patternAlpha = 0.1) {
+		this.id = `FilmGrain_${Effects.counter++}`;
+		this.reset(x, y, w, h, patternSize, sampleSize, patternAlpha);
+	}
+
+	reset(x, y, w, h, patternSize, sampleSize = 1, patternAlpha = 0.1) {
+		this.samples = [];
+		this.currentSampleSet = [];
+		this.patternRefreshInterval = 4;
+		FilmGrainEffect.counter = 0;
+		FilmGrainEffect.index = 0;
+		this.x = x;
+		this.y = y;
+		this.w = w;
+		this.h = h;
+		this.p = patternSize;
+		this.s = sampleSize;
+		this.a = map(patternAlpha, 0, 1, 0, 255);
+		for (let i = 0; i < sampleSize; i++) {
+			this.samples.push(
+				this.pattern(this.x, this.y, this.w, this.h, this.p, this.a),
+			);
+		}
+	}
+
+	pattern(x, y, w, h, patternSize, patternAlpha) {
+		// créer un nouveau canvas p5
+		const pg = createGraphics(patternSize, patternSize);
+		pg.pixelDensity(1);
+
+		// créer le bruit
+		pg.loadPixels();
+		for (let _y = 0; _y < patternSize; _y += 1) {
+			for (let _x = 0; _x < patternSize; _x += 1) {
+				const i = (_x + _y * patternSize) * 4;
+				const value = (Math.random() * 255) | 0;
+				pg.pixels[i] = value;
+				pg.pixels[i + 1] = value;
+				pg.pixels[i + 2] = value;
+				pg.pixels[i + 3] = patternAlpha;
+			}
+		}
+		pg.updatePixels();
+
+		// calculer les positions des morceaux de bruit et les sauvegarder
+		const xlen = w / patternSize;
+		const ylen = h / patternSize;
+
+		const samples = [];
+		for (let i = 0; i < ylen; i++) {
+			for (let j = 0; j < xlen; j++) {
+				const _x = x + patternSize * j;
+				const _y = y + patternSize * i;
+				samples.push({
+					canvas: pg,
+					x: _x,
+					y: _y,
+					w: patternSize,
+					h: patternSize,
+				});
+			}
+		}
+
+		return samples;
+	}
+
+	update() {
+		if (FilmGrainEffect.counter++ === this.patternRefreshInterval) {
+			FilmGrainEffect.counter = 0;
+			FilmGrainEffect.index++;
+			if (!this.samples[FilmGrainEffect.index]) {
+				FilmGrainEffect.index = 0;
+			}
+		}
+		this.currentSampleSet = this.samples[FilmGrainEffect.index];
+	}
+
+	display() {
+		for (const sample of this.currentSampleSet) {
+			image(sample.canvas, sample.x, sample.y, sample.w, sample.h);
+		}
+	}
+}
+
 function preload() {
 	font = loadFont(
 		"https://cdnjs.cloudflare.com/ajax/libs/topcoat/0.8.0/font/SourceCodePro-Regular.otf",
@@ -24,6 +118,16 @@ function preload() {
 
 function windowResized() {
 	resizeCanvas(windowWidth, windowHeight);
+	// Recréer le grain avec les nouvelles dimensions
+	filmGrain = new FilmGrainEffect(
+		0,
+		0,
+		windowWidth,
+		windowHeight,
+		128, // patternSize - taille des tuiles de grain
+		3, // sampleSize - nombre de patterns différents
+		0.15, // patternAlpha - opacité du grain (0.1 = subtil, 0.3 = fort)
+	);
 }
 
 function setup() {
@@ -35,6 +139,17 @@ function setup() {
 	video = createCapture(VIDEO);
 	video.size(640, 480);
 	video.hide();
+
+	// Initialiser l'effet de grain
+	filmGrain = new FilmGrainEffect(
+		0,
+		0,
+		windowWidth,
+		windowHeight,
+		128, // patternSize - taille des tuiles de grain
+		3, // sampleSize - nombre de patterns différents
+		0.15, // patternAlpha - opacité du grain (0.1 = subtil, 0.3 = fort)
+	);
 
 	hands = new Hands({
 		locateFile: (file) => {
@@ -106,8 +221,9 @@ function smoothPosition(current, target, smoothing = 0.5) {
 	};
 }
 
-// Fonction pour dessiner la vidéo en noir et blanc
-function drawGrayscaleVideo(pixelationRect = null) {
+// Fonction pour dessiner la vidéo avec contrôle de saturation
+function drawGrayscaleVideo(pixelationRect = null, saturation = 0) {
+	// saturation: 0 = noir et blanc, 1 = couleur complète
 	push();
 	translate(width, 0);
 	scale(-1, 1);
@@ -117,11 +233,17 @@ function drawGrayscaleVideo(pixelationRect = null) {
 	img.loadPixels();
 
 	for (let i = 0; i < video.pixels.length; i += 4) {
-		const gray =
-			(video.pixels[i] + video.pixels[i + 1] + video.pixels[i + 2]) / 3;
-		img.pixels[i] = gray;
-		img.pixels[i + 1] = gray;
-		img.pixels[i + 2] = gray;
+		const r = video.pixels[i];
+		const g = video.pixels[i + 1];
+		const b = video.pixels[i + 2];
+
+		// Calculer le niveau de gris
+		const gray = (r + g + b) / 3;
+
+		// Interpoler entre gris et couleur originale selon le niveau de saturation
+		img.pixels[i] = lerp(gray, r, saturation);
+		img.pixels[i + 1] = lerp(gray, g, saturation);
+		img.pixels[i + 2] = lerp(gray, b, saturation);
 		img.pixels[i + 3] = 255;
 	}
 	img.updatePixels();
@@ -154,7 +276,7 @@ function applyPixelationToImage(
 	drawX,
 	drawY,
 ) {
-	const pixelSize = 20; // Taille des "gros pixels" à l'écran
+	const pixelSize = 25; // Taille des "gros pixels" à l'écran
 
 	// Convertir les coordonnées écran (avec miroir) en coordonnées de l'image source
 	// 1. Inverser le miroir pour obtenir la position réelle dans l'espace affiché
@@ -244,7 +366,8 @@ function drawFinger(
 	strokeWeight(4);
 	circle(pos.x, pos.y, size);
 
-	noStroke();
+	stroke(color);
+	strokeWeight(1);
 	fill(color);
 	textAlign(align === "RIGHT" ? RIGHT : LEFT, CENTER);
 	text(label, pos.x + (align === "RIGHT" ? -size : size), pos.y);
@@ -277,8 +400,14 @@ function draw() {
 		};
 	}
 
-	// Dessiner la vidéo en noir et blanc avec pixelisation
-	drawGrayscaleVideo(pixelationRect);
+	// Dessiner la vidéo avec contrôle de saturation
+	// saturation: 0 = noir et blanc, 0.5 = mi-couleur, 1 = couleur complète
+	const saturation = 0.5; // Changez cette valeur entre 0 et 1
+	drawGrayscaleVideo(pixelationRect, saturation);
+
+	// Mettre à jour et afficher le grain de film
+	filmGrain.update();
+	filmGrain.display();
 
 	// Dessiner les doigts détectés pour chaque main
 	if (handsData.left) {

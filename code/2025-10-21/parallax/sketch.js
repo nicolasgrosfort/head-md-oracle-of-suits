@@ -16,6 +16,7 @@ let handDetected = false;
 let faces = [];
 let handsResults = [];
 const cubes = [];
+const lights = [];
 
 const grid = {
 	size: 50,
@@ -127,6 +128,19 @@ function setup() {
 		}
 	}
 
+	const numLights = 4;
+	const lightColors = [[255, 255, 255]];
+
+	for (let i = 0; i < numLights; i++) {
+		lights.push({
+			x: random(-cube.range.x, cube.range.x),
+			y: random(-cube.range.y, cube.range.y),
+			z: random(-cube.range.z, cube.range.z),
+			color: random(lightColors),
+			intensity: random(0, 255),
+		});
+	}
+
 	// Create video capture (hidden)
 	video = createCapture(VIDEO);
 	video.size(640, 480);
@@ -192,9 +206,43 @@ function draw() {
 
 	camera(camX, camY, camZ, 0, 0, 0, 0, 1, 0);
 
+	// Apply lights
+	applyLights();
+
 	drawCubes();
 	drawGrid();
+	// drawLights();
+	// drawSphere();
 	drawDebugInfo();
+}
+
+function drawLights() {
+	// Draw small spheres to visualize light positions
+	for (const light of lights) {
+		push();
+		translate(light.x, light.y, light.z);
+		fill(light.color[0], light.color[1], light.color[2], 200);
+		noStroke();
+		sphere(15);
+		pop();
+	}
+}
+
+function applyLights() {
+	// Add ambient light for base illumination
+	ambientLight(30, 30, 30);
+
+	// Apply all point lights
+	for (const light of lights) {
+		pointLight(
+			light.color[0] * (light.intensity / 255),
+			light.color[1] * (light.intensity / 255),
+			light.color[2] * (light.intensity / 255),
+			light.x,
+			light.y,
+			light.z,
+		);
+	}
 }
 
 function drawDebugInfo() {
@@ -253,7 +301,7 @@ function drawCubes() {
 		if (handDetected && checkCollision(c, handPos)) {
 			fill(255, 0, 255);
 			stroke(255);
-			strokeWeight(3);
+			strokeWeight(1);
 		} else {
 			strokeWeight(1);
 			stroke(c.stroke);
@@ -263,7 +311,9 @@ function drawCubes() {
 		box(c.size);
 		pop();
 	}
+}
 
+function drawSphere() {
 	// Draw hand indicator if detected
 	if (handDetected) {
 		push();

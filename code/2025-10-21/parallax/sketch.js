@@ -44,7 +44,7 @@ const cube = {
 function setup() {
 	createCanvas(windowWidth, windowHeight, WEBGL);
 
-	// Créer les cubes
+	// Create cubes
 	for (let x = -cube.range.x; x <= cube.range.x; x += cube.spacing) {
 		for (let y = -cube.range.y; y <= cube.range.y; y += cube.spacing) {
 			for (let z = -cube.range.z; z <= cube.range.z; z += cube.spacing) {
@@ -60,12 +60,12 @@ function setup() {
 		}
 	}
 
-	// Créer la capture vidéo (cachée)
+	// Create video capture (hidden)
 	video = createCapture(VIDEO);
 	video.size(640, 480);
 	video.hide();
 
-	// Initialiser MediaPipe Face Mesh
+	// Initialize MediaPipe Face Mesh
 	faceMesh = new FaceMesh({
 		locateFile: (file) => {
 			return `https://cdn.jsdelivr.net/npm/@mediapipe/face_mesh/${file}`;
@@ -81,7 +81,7 @@ function setup() {
 
 	faceMesh.onResults(onResults);
 
-	// Démarrer la détection
+	// Start detection
 	const camera = new Camera(video.elt, {
 		onFrame: async () => {
 			await faceMesh.send({ image: video.elt });
@@ -97,29 +97,29 @@ function onResults(results) {
 	faces = results.multiFaceLandmarks;
 
 	if (faces && faces.length > 0) {
-		// Index 1 est le bout du nez dans le modèle Face Mesh
+		// Index 1 is the nose tip in the Face Mesh model
 		const nose = faces[0][1];
 
-		// Inverser X car la caméra est en miroir
+		// Invert X because camera is mirrored
 		noseX = (1 - nose.x) * width;
 		noseY = nose.y * height;
-		// Z représente la profondeur (plus négatif = plus proche de la caméra)
+		// Z represents depth (more negative = closer to camera)
 		noseZ = nose.z;
 	}
 }
 
 function drawWall(w, h, gridSize) {
-	// Dessiner une grille sur un plan
+	// Draw a grid on a plane
 	stroke(grid.stroke);
 	strokeWeight(1);
 	noFill();
 
-	// Lignes horizontales
+	// Horizontal lines
 	for (let y = -h / 2; y <= h / 2; y += gridSize) {
 		line(-w / 2, y, w / 2, y);
 	}
 
-	// Lignes verticales
+	// Vertical lines
 	for (let x = -w / 2; x <= w / 2; x += gridSize) {
 		line(x, -h / 2, x, h / 2);
 	}
@@ -137,28 +137,28 @@ function drawCubes() {
 }
 
 function drawGrid() {
-	// Mur gauche
+	// Left wall
 	push();
 	translate(-width * 0.5, 0, 0);
 	rotateY(HALF_PI);
 	drawWall(width, height, grid.size);
 	pop();
 
-	// Mur droite
+	// Right wall
 	push();
 	translate(width * 0.5, 0, 0);
 	rotateY(-HALF_PI);
 	drawWall(width, height, grid.size);
 	pop();
 
-	// Mur haut
+	// Top wall
 	push();
 	translate(0, -height * 0.5, 0);
 	rotateX(HALF_PI);
 	drawWall(width, width, grid.size);
 	pop();
 
-	// Mur bas
+	// Bottom wall
 	push();
 	translate(0, height * 0.5, 0);
 	rotateX(-HALF_PI);
@@ -169,13 +169,13 @@ function drawGrid() {
 function draw() {
 	background(app.background);
 
-	// Utiliser la position du nez au lieu de la souris
+	// Use nose position instead of mouse
 	const camX = map(noseX, 0, width, -250, 250);
 	const camY = map(noseY, 0, height, -250, 250);
 
-	// Calculer camZ en fonction de la profondeur du nez
-	// noseZ varie généralement entre -0.15 (proche) et 0.05 (loin)
-	// On mappe cela pour modifier la distance de la caméra
+	// Calculate camZ based on nose depth
+	// noseZ typically varies between -0.15 (close) and 0.05 (far)
+	// Map this to modify camera distance
 	const baseCamZ = height / 2 / tan(PI / 6);
 	const camZ = map(noseZ, -0.15, 0.05, baseCamZ * 0.5, baseCamZ * 1.5);
 

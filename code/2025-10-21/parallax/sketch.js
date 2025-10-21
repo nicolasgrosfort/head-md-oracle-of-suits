@@ -19,7 +19,7 @@ const cubes = [];
 const lights = [];
 
 const grid = {
-	size: 50,
+	size: 100,
 	stroke: [255, 255, 255],
 };
 
@@ -30,7 +30,11 @@ const app = {
 const cube = {
 	spacing: 100,
 	stroke: [0, 0, 0],
-	fill: [255],
+	fill: [
+		[255, 255, 0],
+		[255, 0, 255],
+		[0, 255, 255],
+	],
 	size: {
 		min: 25,
 		max: 50,
@@ -128,7 +132,7 @@ function setup() {
 		}
 	}
 
-	const numLights = 4;
+	const numLights = 20;
 	const lightColors = [[255, 255, 255]];
 
 	for (let i = 0; i < numLights; i++) {
@@ -330,28 +334,28 @@ function drawGrid() {
 	push();
 	translate(-width * 0.5, 0, 0);
 	rotateY(HALF_PI);
-	drawWall(width, height, grid.size);
+	drawWall(width * 2, height, grid.size);
 	pop();
 
 	// Right wall
 	push();
 	translate(width * 0.5, 0, 0);
 	rotateY(-HALF_PI);
-	drawWall(width, height, grid.size);
+	drawWall(width * 2, height, grid.size);
 	pop();
 
 	// Top wall
 	push();
 	translate(0, -height * 0.5, 0);
 	rotateX(HALF_PI);
-	drawWall(width, width, grid.size);
+	drawWall(width, width * 2, grid.size);
 	pop();
 
 	// Bottom wall
 	push();
 	translate(0, height * 0.5, 0);
 	rotateX(-HALF_PI);
-	drawWall(width, width, grid.size);
+	drawWall(width, width * 2, grid.size);
 	pop();
 }
 

@@ -7,17 +7,26 @@ class Video {
 		this.video = createCapture(VIDEO);
 		this.video.size(this.videoWidth, this.videoHeight);
 		this.video.hide();
+
+		// Créer un graphics buffer pour le flou
+		this.blurredBuffer = createGraphics(width, height);
 	}
 
 	draw() {
-		push();
-		translate(width, 0);
-		scale(-1, 1);
-
 		const { drawWidth, drawHeight, drawX, drawY } = this.getCoverDimensions();
-		image(this.video, drawX, drawY, drawWidth, drawHeight);
 
-		pop();
+		// Dessiner la vidéo dans le buffer
+		this.blurredBuffer.push();
+		this.blurredBuffer.translate(this.blurredBuffer.width, 0);
+		this.blurredBuffer.scale(-1, 1);
+		this.blurredBuffer.image(this.video, drawX, drawY, drawWidth, drawHeight);
+		this.blurredBuffer.pop();
+
+		// Appliquer le flou au buffer
+		this.blurredBuffer.filter(BLUR, 5);
+
+		// Afficher le buffer flouté sur le canvas principal
+		image(this.blurredBuffer, 0, 0);
 	}
 
 	getCoverDimensions() {

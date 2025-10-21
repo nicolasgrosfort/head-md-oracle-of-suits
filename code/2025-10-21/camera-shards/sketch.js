@@ -1,11 +1,15 @@
 /** biome-ignore-all lint/correctness/noUnusedVariables: <> */
 
 let video;
+let handTracker;
 const shards = [];
 
 function setup() {
 	createCanvas(windowWidth, windowHeight);
 	video = new Video(640, 480);
+
+	// Initialiser le hand tracker
+	handTracker = new HandTracker(video.getVideo());
 }
 
 function windowResized() {
@@ -17,9 +21,34 @@ function draw() {
 
 	video.draw();
 
+	// Obtenir le scale du pinch si le tracker est prêt
+	const pinchScale = handTracker?.ready()
+		? handTracker.getPinchScale(0.5, 2.0)
+		: null;
+
+	// Dessiner tous les shards avec le pinch scale
 	for (const shard of shards) {
-		shard.draw();
+		shard.draw(pinchScale);
 	}
+
+	// Afficher un indicateur si le hand tracking est actif
+	if (handTracker?.ready()) {
+		displayPinchIndicator(pinchScale);
+	}
+}
+
+function displayPinchIndicator(pinchScale) {
+	push();
+	fill(0, 255, 0, 100);
+	noStroke();
+	const size = map(pinchScale, 0.5, 2.0, 20, 80);
+	circle(50, 50, size);
+
+	fill(255);
+	textAlign(CENTER, CENTER);
+	textSize(12);
+	text(pinchScale.toFixed(2), 50, 50);
+	pop();
 }
 
 function createShard(x, y) {

@@ -32,21 +32,26 @@ class VideoShard {
 
 		// Facteur de parallaxe unique pour chaque shard
 		// Variation plus importante pour des vitesses très différentes
-		this.parallaxFactor = random(0.1, 1);
+		this.parallaxFactor = random(0.1, 2);
 
 		// Scale de base
 		this.baseScale = 1.0;
 	}
 
-	draw() {
-		// Calculer le scale basé sur la position Y de la souris
-		// mouseY normalisé entre -1 et 1
-		const mouseYNormalized = (mouseY / height) * 2 - 1;
+	draw(pinchScale = null) {
+		let currentScale;
 
-		// Appliquer le parallax avec une amplitude plus grande
-		// Les shards auront des comportements très différents
-		const parallaxScale = 1.0 + mouseYNormalized * 0.5 * this.parallaxFactor;
-		const currentScale = this.baseScale * parallaxScale;
+		if (pinchScale !== null) {
+			// Mode pinch : utiliser le pinch pour contrôler le scale
+			// Chaque shard réagit différemment selon son parallaxFactor
+			const pinchNormalized = (pinchScale - 1) * this.parallaxFactor;
+			currentScale = this.baseScale * (1 + pinchNormalized);
+		} else {
+			// Mode souris (fallback) : utiliser mouseY
+			const mouseYNormalized = (mouseY / height) * 2 - 1;
+			const parallaxScale = 1.0 + mouseYNormalized * 0.5 * this.parallaxFactor;
+			currentScale = this.baseScale * parallaxScale;
+		}
 
 		push();
 		translate(this.x + this.displayW / 2, this.y + this.displayH / 2);

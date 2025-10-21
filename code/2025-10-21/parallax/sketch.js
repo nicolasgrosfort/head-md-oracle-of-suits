@@ -26,7 +26,6 @@ let smoothHandZ = 0;
 let faces = [];
 let handsResults = [];
 const cubes = [];
-const lights = [];
 
 const grid = {
 	size: 100,
@@ -57,13 +56,12 @@ const cube = {
 };
 
 const handCalibration = {
-	zMin: -0.5, // Hand far from camera (increased range)
-	zMax: 0.3, // Hand close to camera (increased range)
-	zMultiplier: 1.5, // Increased sensitivity
+	zMin: -0.5,
+	zMax: 0.3,
+	zMultiplier: 1.5,
 	zOffset: 0,
 };
 
-// Smoothing settings
 const smoothing = {
 	nose: 0.15, // Lower = smoother but more lag (0.1-0.3 recommended)
 	hand: 0.2, // Lower = smoother but more lag
@@ -148,19 +146,6 @@ function setup() {
 		}
 	}
 
-	const numLights = 20;
-	const lightColors = [[255, 255, 255]];
-
-	for (let i = 0; i < numLights; i++) {
-		lights.push({
-			x: random(-cube.range.x, cube.range.x),
-			y: random(-cube.range.y, cube.range.y),
-			z: random(-cube.range.z, cube.range.z),
-			color: random(lightColors),
-			intensity: random(0, 255),
-		});
-	}
-
 	// Create video capture (hidden)
 	video = createCapture(VIDEO);
 	video.size(640, 480);
@@ -238,47 +223,19 @@ function draw() {
 		smoothHandZ = lerp(smoothHandZ, handZ, smoothing.hand);
 	}
 
-	// Apply lights
 	applyLights();
 
-	// drawSphere();
 	drawCubes();
 	drawGrid();
-	// drawLights();
 	drawDebugInfo();
-}
-
-function drawLights() {
-	// Draw small spheres to visualize light positions
-	for (const light of lights) {
-		push();
-		translate(light.x, light.y, light.z);
-		fill(light.color[0], light.color[1], light.color[2], 200);
-		noStroke();
-		sphere(15);
-		pop();
-	}
 }
 
 function applyLights() {
 	// Add ambient light for base illumination
 	ambientLight(0, 0, 0);
 
-	// // Apply all point lights
-	// for (const light of lights) {
-	// 	pointLight(
-	// 		light.color[0] * (light.intensity / 255),
-	// 		light.color[1] * (light.intensity / 255),
-	// 		light.color[2] * (light.intensity / 255),
-	// 		light.x,
-	// 		light.y,
-	// 		light.z,
-	// 	);
-	// }
-
 	// Add bright point light that follows the hand
 	if (handDetected) {
-		// Very bright white light at hand position
 		pointLight(
 			255,
 			255,
@@ -362,18 +319,6 @@ function drawCubes() {
 		}
 
 		box(c.size);
-		pop();
-	}
-}
-
-function drawSphere() {
-	// Draw smoothed hand indicator if detected
-	if (handDetected) {
-		push();
-		translate(smoothHandX, smoothHandY, smoothHandZ);
-		fill(0);
-		noStroke();
-		sphere(10);
 		pop();
 	}
 }

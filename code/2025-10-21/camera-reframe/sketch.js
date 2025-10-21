@@ -107,7 +107,7 @@ function smoothPosition(current, target, smoothing = 0.5) {
 }
 
 // Fonction pour dessiner la vidéo en noir et blanc
-function drawGrayscaleVideo() {
+function drawGrayscaleVideo(pixelationRect = null) {
 	push();
 	translate(width, 0);
 	scale(-1, 1);
@@ -127,8 +127,104 @@ function drawGrayscaleVideo() {
 	img.updatePixels();
 
 	const { drawWidth, drawHeight, drawX, drawY } = getVideoCoverDimensions();
+
+	// Appliquer la pixelisation sur l'image source si une zone est définie
+	if (pixelationRect) {
+		applyPixelationToImage(
+			img,
+			pixelationRect,
+			drawWidth,
+			drawHeight,
+			drawX,
+			drawY,
+		);
+	}
+
 	image(img, drawX, drawY, drawWidth, drawHeight);
+
 	pop();
+}
+
+// Fonction pour pixeliser une région rectangulaire sur l'image source
+function applyPixelationToImage(
+	img,
+	pixelRect,
+	drawWidth,
+	drawHeight,
+	drawX,
+	drawY,
+) {
+	const pixelSize = 20; // Taille des "gros pixels" à l'écran
+
+	// Convertir les coordonnées écran (avec miroir) en coordonnées de l'image source
+	// 1. Inverser le miroir pour obtenir la position réelle dans l'espace affiché
+	const screenX = width - pixelRect.x - pixelRect.width;
+	const screenY = pixelRect.y - pixelRect.height / 2;
+
+	// 2. Convertir de l'espace écran vers l'espace de l'image source (640x480)
+	const scaleX = img.width / drawWidth;
+	const scaleY = img.height / drawHeight;
+
+	const imgX = (screenX - drawX) * scaleX;
+	const imgY = (screenY - drawY) * scaleY;
+	const imgWidth = pixelRect.width * scaleX;
+	const imgHeight = pixelRect.height * scaleY;
+
+	// Taille des pixels dans l'espace de l'image source
+	const imgPixelSize = pixelSize * scaleX;
+
+	img.loadPixels();
+
+	// Parcourir la zone par blocs
+	for (let y = imgY; y < imgY + imgHeight; y += imgPixelSize) {
+		for (let x = imgX; x < imgX + imgWidth; x += imgPixelSize) {
+			// Calculer la couleur moyenne du bloc
+			let r = 0,
+				g = 0,
+				b = 0,
+				count = 0;
+
+			for (let dy = 0; dy < imgPixelSize; dy++) {
+				for (let dx = 0; dx < imgPixelSize; dx++) {
+					const px = Math.floor(x + dx);
+					const py = Math.floor(y + dy);
+
+					// Vérifier les limites de l'image
+					if (px >= 0 && px < img.width && py >= 0 && py < img.height) {
+						const index = (py * img.width + px) * 4;
+						r += img.pixels[index];
+						g += img.pixels[index + 1];
+						b += img.pixels[index + 2];
+						count++;
+					}
+				}
+			}
+
+			// Calculer la moyenne
+			if (count > 0) {
+				r = Math.floor(r / count);
+				g = Math.floor(g / count);
+				b = Math.floor(b / count);
+
+				// Appliquer la couleur moyenne à tout le bloc
+				for (let dy = 0; dy < imgPixelSize; dy++) {
+					for (let dx = 0; dx < imgPixelSize; dx++) {
+						const px = Math.floor(x + dx);
+						const py = Math.floor(y + dy);
+
+						if (px >= 0 && px < img.width && py >= 0 && py < img.height) {
+							const index = (py * img.width + px) * 4;
+							img.pixels[index] = r;
+							img.pixels[index + 1] = g;
+							img.pixels[index + 2] = b;
+						}
+					}
+				}
+			}
+		}
+	}
+
+	img.updatePixels();
 }
 
 // Fonction pour dessiner un doigt
@@ -144,21 +240,9 @@ function drawFinger(finger, color = 255, size = 80) {
 }
 
 function draw() {
-	// Dessiner la vidéo en noir et blanc
-	drawGrayscaleVideo();
+	// Calculer le rectangle de pixelisation si les deux mains sont détectées
+	let pixelationRect = null;
 
-	// Dessiner les doigts détectés pour chaque main
-	if (handsData.left) {
-		drawFinger(handsData.left.index, 255, 60);
-		//drawFinger(handsData.left.thumb, 255, 60);
-	}
-
-	if (handsData.right) {
-		drawFinger(handsData.right.index, 255, 60);
-		//drawFinger(handsData.right.thumb, 255, 60);
-	}
-
-	// Draw a rectangle betewwn the two index fingers if both are detected, height should be related to distance between thumbs and indexes
 	if (handsData.left && handsData.right) {
 		const leftIndexPos = normalizedToScreen(
 			handsData.left.index.smooth.x,
@@ -174,11 +258,38 @@ function draw() {
 		const rectWidth = rightIndexPos.x - leftIndexPos.x;
 		const rectHeight = Math.abs(rightIndexPos.y - leftIndexPos.y);
 
+		pixelationRect = {
+			x: rectX,
+			y: rectY,
+			width: rectWidth,
+			height: rectHeight,
+		};
+	}
+
+	// Dessiner la vidéo en noir et blanc avec pixelisation
+	drawGrayscaleVideo(pixelationRect);
+
+	// Dessiner les doigts détectés pour chaque main
+	if (handsData.left) {
+		drawFinger(handsData.left.index, 255, 40);
+	}
+
+	if (handsData.right) {
+		drawFinger(handsData.right.index, 255, 40);
+	}
+
+	// Dessiner le rectangle de censure
+	if (pixelationRect) {
 		noFill();
-		stroke(0, 255, 0);
-		strokeWeight(3);
+		stroke(255, 255, 255);
+		strokeWeight(4);
 		rectMode(CENTER);
-		rect(rectX + rectWidth / 2, rectY, rectWidth, rectHeight);
+		rect(
+			pixelationRect.x + pixelationRect.width / 2,
+			pixelationRect.y,
+			pixelationRect.width,
+			pixelationRect.height,
+		);
 	}
 }
 

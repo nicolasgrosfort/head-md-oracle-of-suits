@@ -8,10 +8,20 @@ let noseX = 0;
 let noseY = 0;
 let noseZ = 0;
 
+// Smoothed nose position to reduce jitter
+let smoothNoseX = 0;
+let smoothNoseY = 0;
+let smoothNoseZ = 0;
+
 let handX = 0;
 let handY = 0;
 let handZ = 0;
 let handDetected = false;
+
+// Smoothed hand position to reduce jitter
+let smoothHandX = 0;
+let smoothHandY = 0;
+let smoothHandZ = 0;
 
 let faces = [];
 let handsResults = [];
@@ -51,6 +61,12 @@ const handCalibration = {
 	zMax: 0.3, // Hand close to camera (increased range)
 	zMultiplier: 1.5, // Increased sensitivity
 	zOffset: 0,
+};
+
+// Smoothing settings
+const smoothing = {
+	nose: 0.15, // Lower = smoother but more lag (0.1-0.3 recommended)
+	hand: 0.2, // Lower = smoother but more lag
 };
 
 let myFont;
@@ -198,25 +214,37 @@ function setup() {
 function draw() {
 	background(app.background);
 
-	// Use nose position instead of mouse
-	const camX = map(noseX, 0, width, -250, 250);
-	const camY = map(noseY, 0, height, -250, 250);
+	// Apply smoothing to nose position
+	smoothNoseX = lerp(smoothNoseX, noseX, smoothing.nose);
+	smoothNoseY = lerp(smoothNoseY, noseY, smoothing.nose);
+	smoothNoseZ = lerp(smoothNoseZ, noseZ, smoothing.nose);
+
+	// Use smoothed nose position for camera
+	const camX = map(smoothNoseX, 0, width, -250, 250);
+	const camY = map(smoothNoseY, 0, height, -250, 250);
 
 	// Calculate camZ based on nose depth
 	// noseZ typically varies between -0.15 (close) and 0.05 (far)
 	// Map this to modify camera distance
 	const baseCamZ = height / 2 / tan(PI / 6);
-	const camZ = map(noseZ, -0.15, 0.05, baseCamZ * 0.5, baseCamZ * 1.5);
+	const camZ = map(smoothNoseZ, -0.15, 0.05, baseCamZ * 0.5, baseCamZ * 1.5);
 
 	camera(camX, camY, camZ, 0, 0, 0, 0, 1, 0);
+
+	// Apply smoothing to hand position
+	if (handDetected) {
+		smoothHandX = lerp(smoothHandX, handX, smoothing.hand);
+		smoothHandY = lerp(smoothHandY, handY, smoothing.hand);
+		smoothHandZ = lerp(smoothHandZ, handZ, smoothing.hand);
+	}
 
 	// Apply lights
 	applyLights();
 
+	// drawSphere();
 	drawCubes();
 	drawGrid();
 	// drawLights();
-	// drawSphere();
 	drawDebugInfo();
 }
 
@@ -234,17 +262,30 @@ function drawLights() {
 
 function applyLights() {
 	// Add ambient light for base illumination
-	ambientLight(30, 30, 30);
+	ambientLight(0, 0, 0);
 
-	// Apply all point lights
-	for (const light of lights) {
+	// // Apply all point lights
+	// for (const light of lights) {
+	// 	pointLight(
+	// 		light.color[0] * (light.intensity / 255),
+	// 		light.color[1] * (light.intensity / 255),
+	// 		light.color[2] * (light.intensity / 255),
+	// 		light.x,
+	// 		light.y,
+	// 		light.z,
+	// 	);
+	// }
+
+	// Add bright point light that follows the hand
+	if (handDetected) {
+		// Very bright white light at hand position
 		pointLight(
-			light.color[0] * (light.intensity / 255),
-			light.color[1] * (light.intensity / 255),
-			light.color[2] * (light.intensity / 255),
-			light.x,
-			light.y,
-			light.z,
+			255,
+			255,
+			255, // Intense white light (values > 255 for more power)
+			smoothHandX,
+			smoothHandY,
+			smoothHandZ,
 		);
 	}
 }
@@ -269,7 +310,12 @@ function drawDebugInfo() {
 			10,
 			60,
 		);
-		text("Adjust handCalibration.zMin/zMax to calibrate Z", 10, 80);
+		text(
+			`Light at hand: X=${smoothHandX.toFixed(0)}, Y=${smoothHandY.toFixed(0)}, Z=${smoothHandZ.toFixed(0)}`,
+			10,
+			80,
+		);
+		text("Point light intensity: 500 (white)", 10, 100);
 	} else {
 		text("No hand detected", 10, 20);
 	}
@@ -295,7 +341,8 @@ function drawWall(w, h, gridSize) {
 }
 
 function drawCubes() {
-	const handPos = { x: handX, y: handY, z: handZ };
+	// Use smoothed hand position for collision detection
+	const handPos = { x: smoothHandX, y: smoothHandY, z: smoothHandZ };
 
 	for (const c of cubes) {
 		push();
@@ -303,13 +350,15 @@ function drawCubes() {
 
 		// Check collision with hand and change stroke color
 		if (handDetected && checkCollision(c, handPos)) {
+			// Use material that reacts to light for collision
 			fill(255, 0, 255);
 			stroke(255);
 			strokeWeight(1);
 		} else {
+			// Use material that reacts to light for normal cubes
+			fill(c.fill[0], c.fill[1], c.fill[2]);
 			strokeWeight(1);
 			stroke(c.stroke);
-			fill(c.fill);
 		}
 
 		box(c.size);
@@ -318,13 +367,13 @@ function drawCubes() {
 }
 
 function drawSphere() {
-	// Draw hand indicator if detected
+	// Draw smoothed hand indicator if detected
 	if (handDetected) {
 		push();
-		translate(handX, handY, handZ);
-		fill(255, 0, 255);
-		stroke(0);
-		sphere(20);
+		translate(smoothHandX, smoothHandY, smoothHandZ);
+		fill(0);
+		noStroke();
+		sphere(10);
 		pop();
 	}
 }
@@ -401,7 +450,7 @@ function onHandsResults(results) {
 		handY = map(indexTip.y, 0, 1, -cube.range.y, cube.range.y);
 
 		// Calibrated Z mapping with increased amplitude
-		const zRange = cube.range.z * 4; // Double the range for more amplitude
+		const zRange = cube.range.z * 3; // Double the range for more amplitude
 		handZ =
 			map(
 				indexTip.z,

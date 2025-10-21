@@ -1,5 +1,8 @@
 /** biome-ignore-all lint/correctness/noUnusedVariables: <> */
 
+// Compteur global pour les IDs
+let shardIdCounter = 0;
+
 class VideoShard {
 	constructor(
 		sourceVideo,
@@ -39,6 +42,9 @@ class VideoShard {
 
 		// Scale précédent du pinch (pour détecter le changement)
 		this.lastPinchScale = null;
+
+		// ID unique pour chaque shard
+		this.id = shardIdCounter++;
 	}
 
 	/**
@@ -88,11 +94,19 @@ class VideoShard {
 			this.captureH,
 		);
 
-		// Bordure : blanche par défaut, verte si survolé
+		// Bordure blanche toujours
 		noFill();
-		stroke(isHovered ? color(0, 255, 0) : color(255));
+		stroke(255);
 		strokeWeight(2 / displayScale);
 		rect(-this.displayW / 2, -this.displayH / 2, this.displayW, this.displayH);
+
+		// Afficher l'ID au milieu
+		fill(255);
+		noStroke();
+		textAlign(CENTER, CENTER);
+		textSize(16 / displayScale); // Ajuster la taille du texte selon le scale
+		scale(-1, 1); // Inverser pour que le texte soit lisible (à cause du miroir)
+		text(this.id, 0, 0);
 
 		pop();
 	}

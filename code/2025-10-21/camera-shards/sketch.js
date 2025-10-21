@@ -26,11 +26,22 @@ function draw() {
 		? handTracker.getPinchScale(0.5, 2.0)
 		: null;
 
+	// Vérifier si au moins un shard est survolé
+	let anyHovered = false;
+	for (const shard of shards) {
+		if (shard.isHovered(mouseX, mouseY)) {
+			anyHovered = true;
+			break;
+		}
+	}
+
 	// Dessiner tous les shards
-	// Seulement le shard survolé réagit au pinch
+	// Si un shard est survolé : seul celui-ci réagit au pinch
+	// Si aucun n'est survolé : tous réagissent au pinch
 	for (const shard of shards) {
 		const isHovered = shard.isHovered(mouseX, mouseY);
-		shard.draw(pinchScale, isHovered);
+		const shouldApplyPinch = anyHovered ? isHovered : true;
+		shard.draw(pinchScale, shouldApplyPinch);
 	}
 
 	// Afficher un indicateur si le hand tracking est actif
@@ -41,7 +52,7 @@ function draw() {
 
 function displayPinchIndicator(pinchScale) {
 	push();
-	fill(0, 255, 0, 100);
+	fill(0, 0, 0);
 	noStroke();
 	const size = map(pinchScale, 0.5, 2.0, 20, 80);
 	circle(50, 50, size);
@@ -54,28 +65,23 @@ function displayPinchIndicator(pinchScale) {
 }
 
 function createShard(x, y) {
-	const randomSize = () => random(10, 50);
-
-	const size = {
-		width: randomSize(),
-		height: randomSize(),
-	};
-
-	const scaleFactor = random(2, 5);
+	// Créer un shard carré
+	const captureSize = random(10, 50);
+	const displaySize = captureSize * random(2, 5);
 
 	const { videoX, videoY } = video.canvasToVideoCoords(x, y);
 
-	const captureX = constrain(videoX - size.width / 2, 0, 640 - size.width);
-	const captureY = constrain(videoY - size.height / 2, 0, 480 - size.height);
+	const captureX = constrain(videoX - captureSize / 2, 0, 640 - captureSize);
+	const captureY = constrain(videoY - captureSize / 2, 0, 480 - captureSize);
 
 	const shard = new VideoShard(
 		video.getVideo(),
 		captureX,
 		captureY,
-		size.width,
-		size.height,
-		size.width * scaleFactor,
-		size.height * scaleFactor,
+		captureSize,
+		captureSize, // Même taille en hauteur = carré
+		displaySize,
+		displaySize, // Même taille en hauteur = carré
 		x,
 		y,
 	);

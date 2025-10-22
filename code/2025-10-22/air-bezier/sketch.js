@@ -25,6 +25,10 @@ let ball = {
   friction: 0.98, // More air resistance
 };
 
+// Game scores
+let scorePlayer1 = 0; // Left player
+let scorePlayer2 = 0; // Right player
+
 function setup() {
   createCanvas(windowWidth, windowHeight);
   colorMode(HSL);
@@ -34,7 +38,7 @@ function setup() {
 }
 
 function resetBall() {
-  ball.x = random(margin + 100, width - margin - 100);
+  ball.x = width / 2; // Start at center
   ball.y = 50;
   ball.vx = random(-2, 2);
   ball.vy = 0;
@@ -100,6 +104,8 @@ function draw() {
     height * 0.5
   );
   drawBall();
+  drawScores();
+  drawMiddleLine();
 
   // make sure we have detections to draw
   if (detections) {
@@ -181,7 +187,19 @@ function updateBall(x0, y0, x1, y1, x2, y2, x3, y3) {
   }
 
   // Reset if ball goes off screen
-  if (ball.y > height + 100 || ball.x < -100 || ball.x > width + 100) {
+  if (ball.y > height + 100) {
+    resetBall();
+  }
+
+  // Check if ball goes off left side (Player 2 scores)
+  if (ball.x < -100) {
+    scorePlayer2++;
+    resetBall();
+  }
+
+  // Check if ball goes off right side (Player 1 scores)
+  if (ball.x > width + 100) {
+    scorePlayer1++;
     resetBall();
   }
 }
@@ -217,4 +235,27 @@ function drawBall() {
     ball.y - ball.radius * 0.3,
     ball.radius * 0.8
   );
+}
+
+function drawScores() {
+  textAlign(CENTER, TOP);
+  textSize(64);
+  noStroke();
+  fill(312, 85, 45);
+
+  // Player 1 score (left)
+  text(scorePlayer1, width * 0.25, 50);
+
+  // Player 2 score (right)
+  text(scorePlayer2, width * 0.75, 50);
+}
+
+function drawMiddleLine() {
+  stroke(312, 85, 45);
+  strokeWeight(STROKE_WIDTH * 0.05);
+
+  // Draw dashed line in the middle
+  drawingContext.setLineDash([STROKE_WIDTH * 0.25, STROKE_WIDTH * 0.25]);
+  line(width / 2, 0, width / 2, height);
+  drawingContext.setLineDash([]);
 }

@@ -36,7 +36,6 @@ function drawVideo(pixelSize = 1) {
         const g = video.pixels[index + 1];
         const b = video.pixels[index + 2];
 
-        // Convertir RGB en HSL si nécessaire pour manipulation
         colorMode(RGB);
         const c = color(r, g, b);
         colorMode(HSL);

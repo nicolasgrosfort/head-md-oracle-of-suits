@@ -7,10 +7,14 @@ const CONFIG = {
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
+
   colorMode(HSL);
   textFont("Monospace");
+
   setupVideo();
   setupCamera();
+
+  setupFace();
   setupHands();
 }
 
@@ -19,6 +23,8 @@ function windowResized() {
 }
 
 function draw() {
-  drawVideo(5);
+  drawVideo(1);
+  drawFaceDetections();
+  drawHandsDetections();
   // background(132, 95, 58, 0.8);
 }

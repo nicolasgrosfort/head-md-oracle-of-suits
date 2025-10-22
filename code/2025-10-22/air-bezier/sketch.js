@@ -49,6 +49,8 @@ function windowResized() {
 function draw() {
   background(132, 95, 58);
 
+  drawVideo();
+
   noFill();
   stroke(312, 85, 45);
   strokeWeight(STROKE_WIDTH);

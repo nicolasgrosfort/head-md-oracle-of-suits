@@ -102,8 +102,46 @@ function isVideoReady() {
 }
 
 function drawVideo() {
-  if (isVideoReady()) {
-    // draw the capture image
-    image(videoElement, 0, 0);
+  const transform = getVideoTransform();
+  if (!transform) return;
+
+  image(
+    videoElement,
+    transform.offsetX,
+    transform.offsetY,
+    transform.drawWidth,
+    transform.drawHeight
+  );
+}
+
+function getVideoTransform() {
+  if (!isVideoReady()) return null;
+
+  const videoRatio = videoElement.width / videoElement.height;
+  const canvasRatio = width / height;
+
+  let drawWidth,
+    drawHeight,
+    offsetX = 0,
+    offsetY = 0;
+
+  // cover: fill entire canvas (crop if necessary)
+  if (videoRatio > canvasRatio) {
+    drawHeight = height;
+    drawWidth = height * videoRatio;
+    offsetX = (width - drawWidth) / 2;
+  } else {
+    drawWidth = width;
+    drawHeight = width / videoRatio;
+    offsetY = (height - drawHeight) / 2;
   }
+
+  return {
+    drawWidth,
+    drawHeight,
+    offsetX,
+    offsetY,
+    scaleX: drawWidth / videoElement.width,
+    scaleY: drawHeight / videoElement.height,
+  };
 }

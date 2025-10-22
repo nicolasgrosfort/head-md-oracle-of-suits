@@ -1,4 +1,4 @@
-const STROKE_WIDTH = 100;
+const STROKE_WIDTH = 200;
 const margin = STROKE_WIDTH * 0.75;
 
 let right = {};
@@ -13,31 +13,33 @@ let leftVx = 0,
 let rightVx = 0,
   rightVy = 0;
 
-let ball = {
-  x: 0,
-  y: 0,
-  vx: 0,
-  vy: 0,
-  radius: 30,
+// Ball properties
+const ballConfig = {
+  radius: STROKE_WIDTH * 0.3,
   gravity: 0.8,
   damping: 0.6,
   velocityMultiplier: 0.6,
   friction: 0.98,
 };
 
+let balls = [];
+
 function setup() {
   createCanvas(windowWidth, windowHeight);
   colorMode(HSL);
+  textFont("Monospace");
   setupHands();
   setupVideo();
-  resetBall();
+  addNewBall();
 }
 
-function resetBall() {
-  ball.x = random(margin + 100, width - margin - 100);
-  ball.y = 50;
-  ball.vx = random(-2, 2);
-  ball.vy = 0;
+function addNewBall() {
+  balls.push({
+    x: random(margin + 100, width - margin - 100),
+    y: 50,
+    vx: random(-2, 2),
+    vy: 0,
+  });
 }
 
 function windowResized() {
@@ -55,10 +57,10 @@ function draw() {
   let rightIndex = right[FINGER_TIPS.index];
 
   const leftX = leftIndex?.x * width || width * 0.3;
-  const leftY = leftIndex?.y * height || height * 0.5;
+  const leftY = leftIndex?.y * height || height * 0.75;
 
   const rightX = rightIndex?.x * width || width * 0.7;
-  const rightY = rightIndex?.y * height || height * 0.5;
+  const rightY = rightIndex?.y * height || height * 0.75;
 
   // Calculate hand velocities
   leftVx = leftX - prevLeftX;
@@ -74,32 +76,64 @@ function draw() {
 
   bezier(
     margin,
-    height * 0.5,
+    height * 0.75,
     leftX,
     leftY,
     rightX,
     rightY,
     width - margin,
-    height * 0.5
+    height * 0.75
   );
 
-  strokeWeight(STROKE_WIDTH * 0.1);
+  strokeWeight(STROKE_WIDTH * 0.05);
   stroke(132, 95, 58);
   fill(312, 85, 45);
-  circle(leftX, leftY, STROKE_WIDTH * 0.5);
-  circle(rightX, rightY, STROKE_WIDTH * 0.5);
 
-  updateBall(
-    margin,
-    height * 0.5,
-    leftX,
-    leftY,
-    rightX,
+  circle(leftX, leftY, STROKE_WIDTH * 0.5 + STROKE_WIDTH * 0.05);
+  circle(rightX, rightY, STROKE_WIDTH * 0.5 + STROKE_WIDTH * 0.05);
+
+  drawCoordinates(
+    `[${rightX.toFixed(1)}, ${rightY.toFixed(1)}]`,
+    rightX + STROKE_WIDTH * 0.4,
     rightY,
-    width - margin,
-    height * 0.5
+    "left"
   );
-  drawBall();
+  drawCoordinates(
+    `[${leftX.toFixed(1)}, ${leftY.toFixed(1)}]`,
+    leftX - STROKE_WIDTH * 0.4,
+    leftY,
+    "right"
+  );
+
+  // Update and draw all balls
+  for (let i = balls.length - 1; i >= 0; i--) {
+    updateBall(
+      balls[i],
+      margin,
+      height * 0.75,
+      leftX,
+      leftY,
+      rightX,
+      rightY,
+      width - margin,
+      height * 0.75
+    );
+    drawBall(balls[i]);
+
+    // Remove balls that go off screen
+    if (
+      balls[i].y > height + 100 ||
+      balls[i].x < -100 ||
+      balls[i].x > width + 100
+    ) {
+      balls.splice(i, 1);
+    }
+  }
+
+  // Always keep at least one ball
+  if (balls.length === 0) {
+    addNewBall();
+  }
 
   // make sure we have detections to draw
   if (detections) {
@@ -124,13 +158,13 @@ function draw() {
   }
 }
 
-function updateBall(x0, y0, x1, y1, x2, y2, x3, y3) {
+function updateBall(ball, x0, y0, x1, y1, x2, y2, x3, y3) {
   // Apply gravity
-  ball.vy += ball.gravity;
+  ball.vy += ballConfig.gravity;
 
   // Apply friction
-  ball.vx *= ball.friction;
-  ball.vy *= ball.friction;
+  ball.vx *= ballConfig.friction;
+  ball.vy *= ballConfig.friction;
 
   // Update position
   ball.x += ball.vx;
@@ -151,7 +185,7 @@ function updateBall(x0, y0, x1, y1, x2, y2, x3, y3) {
   );
   let distance = dist(ball.x, ball.y, closestPoint.x, closestPoint.y);
 
-  if (distance < ball.radius + STROKE_WIDTH * 0.5) {
+  if (distance < ballConfig.radius + STROKE_WIDTH * 0.5) {
     // Calculate normal vector
     let nx = ball.x - closestPoint.x;
     let ny = ball.y - closestPoint.y;
@@ -162,27 +196,22 @@ function updateBall(x0, y0, x1, y1, x2, y2, x3, y3) {
     }
 
     // Move ball outside of curve
-    ball.x = closestPoint.x + nx * (ball.radius + STROKE_WIDTH * 0.5);
-    ball.y = closestPoint.y + ny * (ball.radius + STROKE_WIDTH * 0.5);
+    ball.x = closestPoint.x + nx * (ballConfig.radius + STROKE_WIDTH * 0.5);
+    ball.y = closestPoint.y + ny * (ballConfig.radius + STROKE_WIDTH * 0.5);
 
     // Calculate curve velocity at collision point
-    let t = closestPoint.t; // We'll get this from the function
+    let t = closestPoint.t;
     let curveVx = lerp(leftVx, rightVx, t);
     let curveVy = lerp(leftVy, rightVy, t);
 
     // Reflect velocity with damping
     let dot = ball.vx * nx + ball.vy * ny;
-    ball.vx = (ball.vx - 2 * dot * nx) * ball.damping;
-    ball.vy = (ball.vy - 2 * dot * ny) * ball.damping;
+    ball.vx = (ball.vx - 2 * dot * nx) * ballConfig.damping;
+    ball.vy = (ball.vy - 2 * dot * ny) * ballConfig.damping;
 
     // Add curve velocity (slingshot effect)
-    ball.vx += curveVx * ball.velocityMultiplier;
-    ball.vy += curveVy * ball.velocityMultiplier;
-  }
-
-  // Reset if ball goes off screen
-  if (ball.y > height + 100 || ball.x < -100 || ball.x > width + 100) {
-    resetBall();
+    ball.vx += curveVx * ballConfig.velocityMultiplier;
+    ball.vy += curveVy * ballConfig.velocityMultiplier;
   }
 }
 
@@ -205,16 +234,29 @@ function getClosestPointOnBezier(px, py, x0, y0, x1, y1, x2, y2, x3, y3) {
   return closest;
 }
 
-function drawBall() {
+function drawBall(ball) {
   noStroke();
   fill(60, 95, 65);
-  circle(ball.x, ball.y, ball.radius * 2);
+  circle(ball.x, ball.y, ballConfig.radius * 2);
 
   // Add a highlight for 3D effect
   fill(60, 95, 85, 0.6);
   circle(
-    ball.x - ball.radius * 0.3,
-    ball.y - ball.radius * 0.3,
-    ball.radius * 0.8
+    ball.x - ballConfig.radius * 0.3,
+    ball.y - ballConfig.radius * 0.3,
+    ballConfig.radius * 0.8
   );
+
+  drawCoordinates(
+    `[${ball.x.toFixed(1)}, ${ball.y.toFixed(1)}]`,
+    ball.x + ballConfig.radius + 10,
+    ball.y
+  );
+}
+
+function drawCoordinates(label, x, y, align = "left") {
+  fill(0);
+  noStroke();
+  textAlign(align === "left" ? LEFT : RIGHT, CENTER);
+  text(label, x, y);
 }

@@ -23,7 +23,7 @@ function windowResized() {
 }
 
 function draw() {
-  drawVideo(1);
+  drawVideo(10);
   drawFaceDetections();
   drawHandsDetections();
   // background(132, 95, 58, 0.8);

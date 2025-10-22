@@ -1,23 +1,57 @@
 let video = null;
 
 function setupVideo(selfieMode = true) {
-  // create a hidden video element that MediaPipe Camera util will use
   video = createCapture(VIDEO, { flipped: selfieMode });
   video.size(640, 480);
   video.hide();
 }
 
-function drawVideo() {
+function drawVideo(pixelSize = 1) {
   const transform = getVideoTransform();
   if (!transform) return;
 
-  image(
-    video,
-    transform.offsetX,
-    transform.offsetY,
-    transform.drawWidth,
-    transform.drawHeight
-  );
+  if (pixelSize <= 1) {
+    image(
+      video,
+      transform.offsetX,
+      transform.offsetY,
+      transform.drawWidth,
+      transform.drawHeight
+    );
+  } else {
+    video.loadPixels();
+
+    const cols = Math.floor(video.width / pixelSize);
+    const rows = Math.floor(video.height / pixelSize);
+
+    noStroke();
+
+    for (let y = 0; y < rows; y++) {
+      for (let x = 0; x < cols; x++) {
+        const pixelX = x * pixelSize + Math.floor(pixelSize / 2);
+        const pixelY = y * pixelSize + Math.floor(pixelSize / 2);
+        const index = (pixelX + pixelY * video.width) * 4;
+
+        const r = video.pixels[index];
+        const g = video.pixels[index + 1];
+        const b = video.pixels[index + 2];
+
+        // Convertir RGB en HSL si nécessaire pour manipulation
+        colorMode(RGB);
+        const c = color(r, g, b);
+        colorMode(HSL);
+
+        fill(c);
+
+        const screenX = transform.offsetX + x * pixelSize * transform.scaleX;
+        const screenY = transform.offsetY + y * pixelSize * transform.scaleY;
+        const rectWidth = pixelSize * transform.scaleX;
+        const rectHeight = pixelSize * transform.scaleY;
+
+        rect(screenX, screenY, rectWidth, rectHeight);
+      }
+    }
+  }
 }
 
 function getVideoTransform() {
@@ -52,7 +86,6 @@ function getVideoTransform() {
   };
 }
 
-// move the video && video.loadedmetadata checks to here
 function isVideoReady() {
   return video && video.loadedmetadata;
 }

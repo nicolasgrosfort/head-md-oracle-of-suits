@@ -18,7 +18,7 @@ const positionSmoothing = 0.3;
 const sizeSmoothing = 0.15;
 
 // grid settings
-const gridSpacing = 5;
+const gridSpacing = 10;
 let gridCircles = [];
 
 // mouth pucker threshold to start blowing
@@ -31,10 +31,10 @@ class GridCircle {
     this.homeY = y;
     this.x = x;
     this.y = y;
-    this.size = 5;
+    this.size = 10;
     this.velocityX = 0;
     this.velocityY = 0;
-    this.friction = 0.5; // very low friction so balls keep moving
+    this.friction = 0.75; // very low friction so balls keep moving
     this.isOffScreen = false;
   }
 
@@ -131,6 +131,7 @@ function draw() {
   getFaceLandmarks();
 
   background(255);
+  drawVideo();
 
   leftEyeBlink = getBlendshapeScore("eyeBlinkLeft");
   rightEyeBlink = getBlendshapeScore("eyeBlinkRight");

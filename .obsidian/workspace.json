@@ -11,13 +11,24 @@
             "id": "7ba679f29c07597f",
             "type": "leaf",
             "state": {
-              "type": "bases",
+              "type": "markdown",
               "state": {
-                "file": "process/references/references.base",
-                "viewName": "Table"
+                "file": "process/README.md",
+                "mode": "source",
+                "source": false,
+                "backlinks": true,
+                "backlinkOpts": {
+                  "collapseAll": false,
+                  "extraContext": false,
+                  "sortOrder": "alphabetical",
+                  "showSearch": false,
+                  "searchQuery": "",
+                  "backlinkCollapsed": false,
+                  "unlinkedCollapsed": true
+                }
               },
-              "icon": "lucide-table",
-              "title": "references"
+              "icon": "lucide-file",
+              "title": "README"
             }
           }
         ]
@@ -77,7 +88,7 @@
       }
     ],
     "direction": "horizontal",
-    "width": 358.5
+    "width": 251.5
   },
   "right": {
     "id": "427a7548afb67a34",
@@ -167,6 +178,13 @@
   },
   "active": "7ba679f29c07597f",
   "lastOpenFiles": [
+    "process/journal/journal.base",
+    "process/journal/2025-09-22.md",
+    "process/journal/2025-09-23.md",
+    "process/concepts/2025-10-02-shiner.md",
+    "process/concepts/2025-10-05-entropy-of-trust.md",
+    "process/concepts/2025-10-08-cartidge.md",
+    "process/references/references.base",
     "code/2025-10-20/map/sketch.js",
     "code/2025-10-20/map",
     "code/2025-10-20/fps-control/libraries/p5.sound.min.js",
@@ -175,9 +193,6 @@
     "code/2025-10-20/fps-control/sketch.js",
     "code/2025-10-20/fps-control/libraries",
     "code/2025-10-20/fps-control/jsconfig.json",
-    "code/2025-10-20/fps-control/index.html",
-    "code/2025-10-20/fps-control",
-    "code/2025-10-20/map/jsconfig.json",
     "process/references/sleeve.md",
     "process/README.md",
     "process/references/hanafuda.md",
@@ -185,16 +200,12 @@
     "process/observations/2025-09-22-hanafuda.md",
     "process/observations/2025-09-22-anyone-got-any-tips-for-getting-into-throwing-cards.md",
     "process/observations/2025-09-22-bought-two-new-decks.md",
-    "process/concepts/2025-10-08-cartidge.md",
     "README.md",
     "process/observations/2025-09-27-jonction-toy-library.md",
     "process/references/booster-pack.md",
     "process/references/factory-sealed.md",
     "process/references/deck-building.md",
-    "process/journal/2025-09-22.md",
     "Untitled.md",
-    "process/concepts/2025-10-02-shiner.md",
-    "process/concepts/2025-10-05-entropy-of-trust.md",
     "process/observations/images/toy-library-activate-card-1.png",
     "process/observations/images/toy-library-activate-card-2.png",
     "process/observations/images/toy-library-activate-card-3.png",
@@ -207,7 +218,6 @@
     "process/observations/2025-09-22-les-jeux-de-cartes-hanafuda-de-nintendo-ont-un-atout-dans-leur-manche.md",
     "process/observations/2025-09-22-free-tarot-reading.md",
     "observations/09-22-2025/hanafuda.md",
-    "process/journal/2025-09-23.md",
     "process/observations/images/the-history-of-nintendo-1.png",
     "process/observations/images/free-tarot-reading-1.png",
     "press-kit/README.md",

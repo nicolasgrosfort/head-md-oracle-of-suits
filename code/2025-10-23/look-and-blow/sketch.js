@@ -27,6 +27,10 @@ const blowThreshold = 0.5;
 // Track if user has started blowing
 let hasStartedBlowing = false;
 
+// Audio for white noise
+let noise;
+let audioStarted = false;
+
 // Grid circle class
 class GridCircle {
   constructor(x, y) {
@@ -37,50 +41,37 @@ class GridCircle {
     this.size = 10;
     this.velocityX = 0;
     this.velocityY = 0;
-    this.friction = 0.75; // very low friction so balls keep moving
+    this.friction = 0.75;
     this.isOffScreen = false;
   }
 
   update(pointerX, pointerY, pointerRadius, pushForce, canBlow) {
-    // Skip if already off screen
     if (this.isOffScreen) return;
 
-    // Only apply push force if canBlow is true
     if (canBlow) {
-      // Calculate distance from pointer
       const dx = this.x - pointerX;
       const dy = this.y - pointerY;
       const distance = sqrt(dx * dx + dy * dy);
 
-      // Check if pointer is close enough to push
       const influenceRadius = pointerRadius + 10;
       if (distance < influenceRadius && distance > 0) {
-        // Calculate push strength (stronger when closer)
         const pushStrength = map(distance, 0, influenceRadius, 1, 0);
-
-        // Random distance multiplier for each ball (0.5 to 2)
         const randomDistance = random(0.5, 2);
-
-        // Apply push force with random distance
         const force = pushStrength * pushForce * randomDistance;
         const pushX = (dx / distance) * force * 30;
         const pushY = (dy / distance) * force * 30;
 
-        // Add to velocity instead of directly to position for more natural motion
         this.velocityX += pushX;
         this.velocityY += pushY;
       }
     }
 
-    // Apply velocity to position
     this.x += this.velocityX;
     this.y += this.velocityY;
 
-    // Apply friction
     this.velocityX *= this.friction;
     this.velocityY *= this.friction;
 
-    // Check if ball is off screen and mark as off screen (don't respawn)
     const margin = 100;
     if (
       this.x < -margin ||
@@ -93,12 +84,10 @@ class GridCircle {
   }
 
   display() {
-    // Don't display if off screen
     if (this.isOffScreen) return;
 
     fill(0, 0, 0);
     noStroke();
-    // circle(this.x, this.y, this.size);
     rectMode(CENTER);
     rect(this.x, this.y, this.size, this.size);
   }
@@ -106,6 +95,8 @@ class GridCircle {
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
+
+  startAudio();
 
   textFont("Monospace");
 
@@ -132,6 +123,20 @@ function windowResized() {
   createGrid();
 }
 
+function startAudio() {
+  if (!audioStarted) {
+    userStartAudio();
+
+    // Create and start white noise
+    noise = new p5.Noise("white");
+    noise.start();
+    noise.amp(0);
+
+    audioStarted = true;
+    console.log("Audio context started!");
+  }
+}
+
 function draw() {
   getFaceLandmarks();
 
@@ -143,40 +148,31 @@ function draw() {
   jawOpen = getBlendshapeScore("jawOpen");
   mouthPucker = getBlendshapeScore("mouthPucker");
 
-  // get the iris positions
   const faces = getFaceLandmarks();
   if (faces && faces.length > 0) {
     const landmarks = faces[0];
 
-    // Left iris center is landmark 468
-    // Right iris center is landmark 473
     const leftIris = landmarks[468];
     const rightIris = landmarks[473];
 
     if (leftIris && rightIris) {
-      // Average both iris positions
       const avgX = (leftIris.x + rightIris.x) / 2;
       const avgY = (leftIris.y + rightIris.y) / 2;
 
-      // Map normalized coordinates (0-1) to screen coordinates
       const targetX = map(avgX, 0.65, 0.45, 0, width);
       const targetY = map(avgY, 0.4, 0.6, 0, height);
 
-      // Smooth position with lerp
       pointerX = lerp(pointerX, targetX, positionSmoothing);
       pointerY = lerp(pointerY, targetY, positionSmoothing);
     }
   }
 
-  // Check if mouthPucker is above threshold
   const canBlow = mouthPucker > blowThreshold;
 
-  // Track if user has started blowing
   if (canBlow) {
     hasStartedBlowing = true;
   }
 
-  // Map mouthPucker (0-1) to circle size and smooth it
   const targetSize = map(
     mouthPucker,
     blowThreshold,
@@ -186,29 +182,44 @@ function draw() {
   );
   circleSize = lerp(circleSize, targetSize, sizeSmoothing);
 
-  // Calculate push force based on mouthPucker (1 = normal, up to 5 = strong push)
   const pushForce = map(mouthPucker, 0, 1, 1, 5);
 
-  // Update and display grid circles
+  // Control white noise volume based on mouthPucker (only if audio started)
+  if (audioStarted && noise) {
+    if (canBlow) {
+      const maxNoiseVolume = 0.3;
+      let intensity = constrain(
+        (mouthPucker - blowThreshold) / (1 - blowThreshold),
+        0,
+        1
+      );
+      intensity = pow(intensity, 1.5); // ou 2 pour une montée plus douce
+      const noiseVolume = intensity * maxNoiseVolume;
+      noise.amp(noiseVolume, 0.1);
+    } else {
+      noise.amp(0, 0.2);
+    }
+  }
+
   for (let circle of gridCircles) {
     circle.update(pointerX, pointerY, circleSize / 2, pushForce, canBlow);
     circle.display();
   }
 
-  // Show instruction message if user hasn't started blowing
-  if (!hasStartedBlowing) {
-    // Semi-transparent overlay
+  // Show instruction message
+  if (!hasStartedBlowing || !audioStarted) {
     fill(0, 0, 0, 150);
     noStroke();
-    rect(0, height / 2 - 80, width, 160);
+    rect(0, height / 2 - 100, width, 200);
 
-    // Main message
     fill(255);
     textAlign(CENTER, CENTER);
     textSize(16);
-    text("blow on your screen ", width / 2, height / 2 - 20);
 
-    // Reset text align for debug info
+    if (!hasStartedBlowing) {
+      text("blow on your screen", width / 2, height / 2);
+    }
+
     textAlign(LEFT, TOP);
   }
 
@@ -217,19 +228,18 @@ function draw() {
   noStroke();
   textSize(16);
   textAlign(LEFT, TOP);
-  text(`Mouth Pucker: ${mouthPucker.toFixed(2)}`, 10, 20);
-  text(`Can Blow: ${canBlow ? "YES" : "NO"}`, 10, 40);
-  text(`Push Force: ${pushForce.toFixed(1)}x`, 10, 60);
+  text(`Audio Started: ${audioStarted ? "YES" : "NO"}`, 10, 20);
+  text(`Mouth Pucker: ${mouthPucker.toFixed(2)}`, 10, 40);
+  text(`Can Blow: ${canBlow ? "YES" : "NO"}`, 10, 60);
+  text(`Push Force: ${pushForce.toFixed(1)}x`, 10, 80);
 
-  // Count remaining balls
+  if (audioStarted && canBlow) {
+    const noiseVolume = map(mouthPucker, blowThreshold, 1, 0, 0.5);
+    text(`Noise Volume: ${noiseVolume.toFixed(2)}`, 10, 100);
+  } else {
+    text(`Noise Volume: 0.00`, 10, 100);
+  }
+
   const remainingBalls = gridCircles.filter((c) => !c.isOffScreen).length;
-  text(`Remaining: ${remainingBalls}/${gridCircles.length}`, 10, 80);
-
-  // Count moving balls
-  const movingBalls = gridCircles.filter((c) => {
-    if (c.isOffScreen) return false;
-    const speed = sqrt(c.velocityX * c.velocityX + c.velocityY * c.velocityY);
-    return speed > 0.1;
-  }).length;
-  text(`Moving: ${movingBalls}`, 10, 100);
+  text(`Remaining: ${remainingBalls}/${gridCircles.length}`, 10, 120);
 }

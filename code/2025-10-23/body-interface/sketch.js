@@ -38,12 +38,12 @@ function draw() {
 
   // display text "right eye" on the righ eye position
   if (rightEyeToggle && rightEye) {
-    text("Right Eye", rightEye.x * width, rightEye.y * height);
+    text("[left eye]", rightEye.x * width, rightEye.y * height);
   }
 
   // display text "left eye" on the left eye position
   if (leftEyeToggle && leftEye) {
-    text("Left Eye", leftEye.x * width, leftEye.y * height);
+    text("[right eye]", leftEye.x * width, leftEye.y * height);
   }
 
   if ((!hasTouchedBody && rightEyeToggle) || leftEyeToggle) {
@@ -52,6 +52,6 @@ function draw() {
 
   if (!hasTouchedBody) {
     textAlign(CENTER, CENTER);
-    text("show me where your eyes are", width / 2, height / 2);
+    text("[show me where your eyes are]", width / 2, height / 2);
   }
 }

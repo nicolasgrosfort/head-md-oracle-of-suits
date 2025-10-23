@@ -21,6 +21,9 @@ const sizeSmoothing = 0.15;
 const gridSpacing = 15;
 let gridCircles = [];
 
+// mouth pucker threshold to start blowing
+const blowThreshold = 0.3;
+
 // Grid circle class
 class GridCircle {
   constructor(x, y) {
@@ -31,32 +34,39 @@ class GridCircle {
     this.size = 10;
     this.velocityX = 0;
     this.velocityY = 0;
-    this.friction = 0.5; // friction to slow down the balls
+    this.friction = 0.98; // very low friction so balls keep moving
+    this.isOffScreen = false;
   }
 
-  update(pointerX, pointerY, pointerRadius, pushForce) {
-    // Calculate distance from pointer
-    const dx = this.x - pointerX;
-    const dy = this.y - pointerY;
-    const distance = sqrt(dx * dx + dy * dy);
+  update(pointerX, pointerY, pointerRadius, pushForce, canBlow) {
+    // Skip if already off screen
+    if (this.isOffScreen) return;
 
-    // Check if pointer is close enough to push
-    const influenceRadius = pointerRadius + 10;
-    if (distance < influenceRadius && distance > 0) {
-      // Calculate push strength (stronger when closer)
-      const pushStrength = map(distance, 0, influenceRadius, 1, 0);
+    // Only apply push force if canBlow is true
+    if (canBlow) {
+      // Calculate distance from pointer
+      const dx = this.x - pointerX;
+      const dy = this.y - pointerY;
+      const distance = sqrt(dx * dx + dy * dy);
 
-      // Random distance multiplier for each ball (0.5 to 1.5)
-      const randomDistance = random(0.5, 1.5);
+      // Check if pointer is close enough to push
+      const influenceRadius = pointerRadius + 10;
+      if (distance < influenceRadius && distance > 0) {
+        // Calculate push strength (stronger when closer)
+        const pushStrength = map(distance, 0, influenceRadius, 1, 0);
 
-      // Apply push force with random distance
-      const force = pushStrength * pushForce * randomDistance;
-      const pushX = (dx / distance) * force * 30;
-      const pushY = (dy / distance) * force * 30;
+        // Random distance multiplier for each ball (0.5 to 2)
+        const randomDistance = random(0.5, 2);
 
-      // Add to velocity instead of directly to position for more natural motion
-      this.velocityX += pushX;
-      this.velocityY += pushY;
+        // Apply push force with random distance
+        const force = pushStrength * pushForce * randomDistance;
+        const pushX = (dx / distance) * force * 30;
+        const pushY = (dy / distance) * force * 30;
+
+        // Add to velocity instead of directly to position for more natural motion
+        this.velocityX += pushX;
+        this.velocityY += pushY;
+      }
     }
 
     // Apply velocity to position
@@ -67,17 +77,33 @@ class GridCircle {
     this.velocityX *= this.friction;
     this.velocityY *= this.friction;
 
-    // Return to home position with spring effect
-    const returnSpeed = 0.05;
-    const homeForceX = (this.homeX - this.x) * returnSpeed;
-    const homeForceY = (this.homeY - this.y) * returnSpeed;
-
-    this.velocityX += homeForceX;
-    this.velocityY += homeForceY;
+    // Check if ball is off screen and mark as off screen (don't respawn)
+    const margin = 100;
+    if (
+      this.x < -margin ||
+      this.x > width + margin ||
+      this.y < -margin ||
+      this.y > height + margin
+    ) {
+      this.isOffScreen = true;
+    }
   }
 
   display() {
-    fill(100, 150, 255);
+    // Don't display if off screen
+    if (this.isOffScreen) return;
+
+    // Color based on velocity (faster = more red)
+    const speed = sqrt(
+      this.velocityX * this.velocityX + this.velocityY * this.velocityY
+    );
+    const colorFactor = constrain(map(speed, 0, 20, 0, 1), 0, 1);
+
+    fill(
+      100 + colorFactor * 155, // R: 100 -> 255
+      150 - colorFactor * 50, // G: 150 -> 100
+      255 - colorFactor * 155 // B: 255 -> 100
+    );
     noStroke();
     circle(this.x, this.y, this.size);
   }
@@ -144,16 +170,39 @@ function draw() {
     }
   }
 
+  // Check if mouthPucker is above threshold
+  const canBlow = mouthPucker > blowThreshold;
+
   // Map mouthPucker (0-1) to circle size and smooth it
   const targetSize = map(mouthPucker, 0, 1, minCircleSize, maxCircleSize);
   circleSize = lerp(circleSize, targetSize, sizeSmoothing);
 
-  // Calculate push force based on mouthPucker (1 = normal, up to 3 = strong push)
-  const pushForce = map(mouthPucker, 0, 1, 1, 3);
+  // Calculate push force based on mouthPucker (1 = normal, up to 5 = strong push)
+  const pushForce = map(mouthPucker, 0, 1, 1, 5);
 
   // Update and display grid circles
   for (let circle of gridCircles) {
-    circle.update(pointerX, pointerY, circleSize / 2, pushForce);
+    circle.update(pointerX, pointerY, circleSize / 2, pushForce, canBlow);
     circle.display();
   }
+
+  // Debug info
+  fill(0);
+  noStroke();
+  textSize(16);
+  text(`Mouth Pucker: ${mouthPucker.toFixed(2)}`, 10, 20);
+  text(`Can Blow: ${canBlow ? "YES" : "NO"}`, 10, 40);
+  text(`Push Force: ${pushForce.toFixed(1)}x`, 10, 60);
+
+  // Count remaining balls
+  const remainingBalls = gridCircles.filter((c) => !c.isOffScreen).length;
+  text(`Remaining: ${remainingBalls}/${gridCircles.length}`, 10, 80);
+
+  // Count moving balls
+  const movingBalls = gridCircles.filter((c) => {
+    if (c.isOffScreen) return false;
+    const speed = sqrt(c.velocityX * c.velocityX + c.velocityY * c.velocityY);
+    return speed > 0.1;
+  }).length;
+  text(`Moving: ${movingBalls}`, 10, 100);
 }

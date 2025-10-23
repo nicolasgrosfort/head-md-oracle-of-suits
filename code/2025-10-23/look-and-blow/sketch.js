@@ -9,8 +9,8 @@ let pointerX = 0;
 let pointerY = 0;
 
 // circle size
-let circleSize = 10;
-const minCircleSize = 10;
+let circleSize = 1;
+const minCircleSize = 1;
 const maxCircleSize = 400;
 
 // smoothing factors
@@ -29,6 +29,9 @@ class GridCircle {
     this.x = x;
     this.y = y;
     this.size = 10;
+    this.velocityX = 0;
+    this.velocityY = 0;
+    this.friction = 0.5; // friction to slow down the balls
   }
 
   update(pointerX, pointerY, pointerRadius, pushForce) {
@@ -39,34 +42,44 @@ class GridCircle {
 
     // Check if pointer is close enough to push
     const influenceRadius = pointerRadius + 10;
-    if (distance < influenceRadius) {
+    if (distance < influenceRadius && distance > 0) {
       // Calculate push strength (stronger when closer)
       const pushStrength = map(distance, 0, influenceRadius, 1, 0);
 
-      // Apply push force (multiplied by mouthPucker effect)
-      const force = pushStrength * pushForce;
+      // Random distance multiplier for each ball (0.5 to 1.5)
+      const randomDistance = random(0.5, 1.5);
+
+      // Apply push force with random distance
+      const force = pushStrength * pushForce * randomDistance;
       const pushX = (dx / distance) * force * 30;
       const pushY = (dy / distance) * force * 30;
 
-      this.x += pushX;
-      this.y += pushY;
+      // Add to velocity instead of directly to position for more natural motion
+      this.velocityX += pushX;
+      this.velocityY += pushY;
     }
 
+    // Apply velocity to position
+    this.x += this.velocityX;
+    this.y += this.velocityY;
+
+    // Apply friction
+    this.velocityX *= this.friction;
+    this.velocityY *= this.friction;
+
     // Return to home position with spring effect
-    const returnSpeed = 0.1;
-    this.x = lerp(this.x, this.homeX, returnSpeed);
-    this.y = lerp(this.y, this.homeY, returnSpeed);
+    const returnSpeed = 0.05;
+    const homeForceX = (this.homeX - this.x) * returnSpeed;
+    const homeForceY = (this.homeY - this.y) * returnSpeed;
+
+    this.velocityX += homeForceX;
+    this.velocityY += homeForceY;
   }
 
   display() {
     fill(100, 150, 255);
     noStroke();
     circle(this.x, this.y, this.size);
-
-    // Optional: draw a subtle line to home position
-    // stroke(100, 150, 255, 50);
-    // strokeWeight(1);
-    // line(this.x, this.y, this.homeX, this.homeY);
   }
 }
 
@@ -79,7 +92,6 @@ function setup() {
   pointerX = width / 2;
   pointerY = height / 2;
 
-  // Create grid of circles
   createGrid();
 }
 
@@ -144,35 +156,4 @@ function draw() {
     circle.update(pointerX, pointerY, circleSize / 2, pushForce);
     circle.display();
   }
-
-  // Draw the pointer with variable size
-  fill(255, 0, 0, 150);
-  noStroke();
-  // circle(pointerX, pointerY, circleSize);
-
-  // Optional: draw a crosshair
-  stroke(255, 0, 0);
-  strokeWeight(2);
-  const crosshairSize = circleSize * 0.75;
-  // line(pointerX - crosshairSize, pointerY, pointerX + crosshairSize, pointerY);
-  // line(pointerX, pointerY - crosshairSize, pointerX, pointerY + crosshairSize);
-
-  // Debug info
-  fill(0);
-  noStroke();
-  textSize(16);
-  text(
-    `Eyes Blink: L=${leftEyeBlink.toFixed(2)} R=${rightEyeBlink.toFixed(2)}`,
-    10,
-    20
-  );
-  text(`Jaw Open: ${jawOpen.toFixed(2)}`, 10, 40);
-  text(`Pointer: ${pointerX.toFixed(0)}, ${pointerY.toFixed(0)}`, 10, 60);
-  text(
-    `Mouth Pucker: ${mouthPucker.toFixed(2)} | Size: ${circleSize.toFixed(
-      0
-    )} | Force: ${pushForce.toFixed(1)}x`,
-    10,
-    80
-  );
 }

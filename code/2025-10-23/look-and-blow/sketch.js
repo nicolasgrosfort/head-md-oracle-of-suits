@@ -93,7 +93,7 @@ class GridCircle {
     // Don't display if off screen
     if (this.isOffScreen) return;
 
-    fill(255, 0, 255);
+    fill(0, 0, 0);
     noStroke();
     // circle(this.x, this.y, this.size);
     rectMode(CENTER);
@@ -131,7 +131,7 @@ function draw() {
   getFaceLandmarks();
 
   background(255);
-  drawVideo();
+  drawVideo(5);
 
   leftEyeBlink = getBlendshapeScore("eyeBlinkLeft");
   rightEyeBlink = getBlendshapeScore("eyeBlinkRight");
@@ -155,7 +155,7 @@ function draw() {
 
       // Map normalized coordinates (0-1) to screen coordinates
       const targetX = map(avgX, 0.65, 0.45, 0, width);
-      const targetY = map(avgY, 0.45, 0.65, 0, height);
+      const targetY = map(avgY, 0.4, 0.6, 0, height);
 
       // Smooth position with lerp
       pointerX = lerp(pointerX, targetX, positionSmoothing);

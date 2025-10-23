@@ -676,6 +676,12 @@ function drawVideo(pixelSize = 1) {
   const transform = getVideoTransform();
   if (!transform) return;
 
+  push(); // Sauvegarder l'état de transformation
+
+  // Appliquer la transformation miroir
+  translate(width, 0); // Déplacer l'origine vers le bord droit
+  scale(-1, 1); // Inverser horizontalement
+
   if (pixelSize <= 1) {
     image(
       videoElement,
@@ -696,7 +702,7 @@ function drawVideo(pixelSize = 1) {
       for (let x = 0; x < cols; x++) {
         const pixelX = x * pixelSize + Math.floor(pixelSize / 2);
         const pixelY = y * pixelSize + Math.floor(pixelSize / 2);
-        const index = (pixelX + pixelY * video.width) * 4;
+        const index = (pixelX + pixelY * videoElement.width) * 4;
 
         const r = videoElement.pixels[index];
         const g = videoElement.pixels[index + 1];
@@ -717,6 +723,8 @@ function drawVideo(pixelSize = 1) {
       }
     }
   }
+
+  pop();
 }
 
 function getVideoTransform() {

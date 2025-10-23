@@ -684,3 +684,86 @@ window.isVideoReady = isVideoReady;
 window.markToPixel = markToPixel;
 window.getFaceConnectors = getFaceConnectors;
 window.getFaceFeature = getFaceFeature;
+
+function drawVideo(pixelSize = 1) {
+  const transform = getVideoTransform();
+  if (!transform) return;
+
+  if (pixelSize <= 1) {
+    image(
+      videoElement,
+      transform.offsetX,
+      transform.offsetY,
+      transform.drawWidth,
+      transform.drawHeight
+    );
+  } else {
+    videoElement.loadPixels();
+
+    const cols = Math.floor(videoElement.width / pixelSize);
+    const rows = Math.floor(videoElement.height / pixelSize);
+
+    noStroke();
+
+    for (let y = 0; y < rows; y++) {
+      for (let x = 0; x < cols; x++) {
+        const pixelX = x * pixelSize + Math.floor(pixelSize / 2);
+        const pixelY = y * pixelSize + Math.floor(pixelSize / 2);
+        const index = (pixelX + pixelY * videoElement.width) * 4;
+
+        const r = videoElement.pixels[index];
+        const g = videoElement.pixels[index + 1];
+        const b = videoElement.pixels[index + 2];
+
+        colorMode(RGB);
+        const c = color(r, g, b);
+        colorMode(HSL);
+
+        fill(c);
+
+        const screenX = transform.offsetX + x * pixelSize * transform.scaleX;
+        const screenY = transform.offsetY + y * pixelSize * transform.scaleY;
+        const rectWidth = pixelSize * transform.scaleX;
+        const rectHeight = pixelSize * transform.scaleY;
+
+        rect(screenX, screenY, rectWidth, rectHeight);
+      }
+    }
+  }
+}
+
+function getVideoTransform() {
+  if (!isVideoReady()) return null;
+
+  const videoRatio = videoElement.width / videoElement.height;
+  const canvasRatio = width / height;
+
+  let drawWidth,
+    drawHeight,
+    offsetX = 0,
+    offsetY = 0;
+
+  // cover: fill entire canvas (crop if necessary)
+  if (videoRatio > canvasRatio) {
+    drawHeight = height;
+    drawWidth = height * videoRatio;
+    offsetX = (width - drawWidth) / 2;
+  } else {
+    drawWidth = width;
+    drawHeight = width / videoRatio;
+    offsetY = (height - drawHeight) / 2;
+  }
+
+  return {
+    drawWidth,
+    drawHeight,
+    offsetX,
+    offsetY,
+    scaleX: drawWidth / videoElement.width,
+    scaleY: drawHeight / videoElement.height,
+  };
+}
+
+function isVideoReady() {
+  return videoElement && videoElement.loadedmetadata;
+}

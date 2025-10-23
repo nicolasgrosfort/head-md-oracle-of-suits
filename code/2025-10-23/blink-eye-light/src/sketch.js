@@ -107,6 +107,26 @@ function draw() {
 
   background(0, 0, 0);
 
+  push();
+  scale(-1, 1);
+
+  push();
+  translate(-width / 2, -height / 2);
+
+  drawVideo();
+  const opacity = map(0.8, 0, 1, 0, 255);
+  console.log(opacity);
+  fill(0, opacity);
+  // rect(0, 0, width, height);
+  pop();
+  pop();
+
+  // Dessiner la vidéo et les mains en 2D
+  push();
+  // Revenir en mode 2D pour la vidéo
+  translate(-width / 2, -height / 2);
+  pop();
+
   // Vue isométrique avec rotation contrôlée par le regard
   ortho(-width / 2, width / 2, -height / 2, height / 2, 0, 2000);
   rotateX(cameraRotationX);

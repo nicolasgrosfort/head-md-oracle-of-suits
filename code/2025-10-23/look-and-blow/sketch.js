@@ -2,10 +2,20 @@
 let leftEyeBlink = 0.0;
 let rightEyeBlink = 0.0;
 let jawOpen = 0.0;
+let mouthPucker = 0.0;
 
 // pointer position
 let pointerX = 0;
 let pointerY = 0;
+
+// circle size
+let circleSize = 20;
+const minCircleSize = 20;
+const maxCircleSize = 100;
+
+// smoothing factors
+const positionSmoothing = 0.3;
+const sizeSmoothing = 0.15;
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
@@ -29,6 +39,7 @@ function draw() {
   leftEyeBlink = getBlendshapeScore("eyeBlinkLeft");
   rightEyeBlink = getBlendshapeScore("eyeBlinkRight");
   jawOpen = getBlendshapeScore("jawOpen");
+  mouthPucker = getBlendshapeScore("mouthPucker");
 
   // get the iris positions
   const faces = getFaceLandmarks();
@@ -46,27 +57,30 @@ function draw() {
       const avgY = (leftIris.y + rightIris.y) / 2;
 
       // Map normalized coordinates (0-1) to screen coordinates
-      pointerX = map(avgX, 0.65, 0.45, 0, width);
-      pointerY = map(avgY, 0.45, 0.65, 0, height);
+      const targetX = map(avgX, 0.65, 0.45, 0, width);
+      const targetY = map(avgY, 0.45, 0.65, 0, height);
 
-      const targetX = pointerX;
-      const targetY = pointerY;
-
-      pointerX = lerp(pointerX, targetX, 0.3);
-      pointerY = lerp(pointerY, targetY, 0.3);
+      // Smooth position with lerp
+      pointerX = lerp(pointerX, targetX, positionSmoothing);
+      pointerY = lerp(pointerY, targetY, positionSmoothing);
     }
   }
 
-  // Draw the pointer
+  // Map mouthPucker (0-1) to circle size and smooth it
+  const targetSize = map(mouthPucker, 0, 1, minCircleSize, maxCircleSize);
+  circleSize = lerp(circleSize, targetSize, sizeSmoothing);
+
+  // Draw the pointer with variable size
   fill(255, 0, 0);
   noStroke();
-  circle(pointerX, pointerY, 20);
+  circle(pointerX, pointerY, circleSize);
 
   // Optional: draw a crosshair
   stroke(255, 0, 0);
   strokeWeight(2);
-  line(pointerX - 15, pointerY, pointerX + 15, pointerY);
-  line(pointerX, pointerY - 15, pointerX, pointerY + 15);
+  const crosshairSize = circleSize * 0.75;
+  line(pointerX - crosshairSize, pointerY, pointerX + crosshairSize, pointerY);
+  line(pointerX, pointerY - crosshairSize, pointerX, pointerY + crosshairSize);
 
   // Debug info
   fill(0);
@@ -79,4 +93,9 @@ function draw() {
   );
   text(`Jaw Open: ${jawOpen.toFixed(2)}`, 10, 40);
   text(`Pointer: ${pointerX.toFixed(0)}, ${pointerY.toFixed(0)}`, 10, 60);
+  text(
+    `Mouth Pucker: ${mouthPucker.toFixed(2)} | Size: ${circleSize.toFixed(0)}`,
+    10,
+    80
+  );
 }

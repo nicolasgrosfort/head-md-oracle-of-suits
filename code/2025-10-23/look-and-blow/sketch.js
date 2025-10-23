@@ -18,11 +18,11 @@ const positionSmoothing = 0.3;
 const sizeSmoothing = 0.15;
 
 // grid settings
-const gridSpacing = 15;
+const gridSpacing = 5;
 let gridCircles = [];
 
 // mouth pucker threshold to start blowing
-const blowThreshold = 0.3;
+const blowThreshold = 0.5;
 
 // Grid circle class
 class GridCircle {
@@ -31,10 +31,10 @@ class GridCircle {
     this.homeY = y;
     this.x = x;
     this.y = y;
-    this.size = 10;
+    this.size = 5;
     this.velocityX = 0;
     this.velocityY = 0;
-    this.friction = 0.98; // very low friction so balls keep moving
+    this.friction = 0.5; // very low friction so balls keep moving
     this.isOffScreen = false;
   }
 
@@ -93,19 +93,11 @@ class GridCircle {
     // Don't display if off screen
     if (this.isOffScreen) return;
 
-    // Color based on velocity (faster = more red)
-    const speed = sqrt(
-      this.velocityX * this.velocityX + this.velocityY * this.velocityY
-    );
-    const colorFactor = constrain(map(speed, 0, 20, 0, 1), 0, 1);
-
-    fill(
-      100 + colorFactor * 155, // R: 100 -> 255
-      150 - colorFactor * 50, // G: 150 -> 100
-      255 - colorFactor * 155 // B: 255 -> 100
-    );
+    fill(255, 0, 255);
     noStroke();
-    circle(this.x, this.y, this.size);
+    // circle(this.x, this.y, this.size);
+    rectMode(CENTER);
+    rect(this.x, this.y, this.size, this.size);
   }
 }
 
@@ -174,7 +166,13 @@ function draw() {
   const canBlow = mouthPucker > blowThreshold;
 
   // Map mouthPucker (0-1) to circle size and smooth it
-  const targetSize = map(mouthPucker, 0, 1, minCircleSize, maxCircleSize);
+  const targetSize = map(
+    mouthPucker,
+    blowThreshold,
+    1,
+    minCircleSize,
+    maxCircleSize
+  );
   circleSize = lerp(circleSize, targetSize, sizeSmoothing);
 
   // Calculate push force based on mouthPucker (1 = normal, up to 5 = strong push)

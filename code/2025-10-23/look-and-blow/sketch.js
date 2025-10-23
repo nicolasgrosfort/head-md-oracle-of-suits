@@ -24,6 +24,9 @@ let gridCircles = [];
 // mouth pucker threshold to start blowing
 const blowThreshold = 0.5;
 
+// Track if user has started blowing
+let hasStartedBlowing = false;
+
 // Grid circle class
 class GridCircle {
   constructor(x, y) {
@@ -104,6 +107,8 @@ class GridCircle {
 function setup() {
   createCanvas(windowWidth, windowHeight);
 
+  textFont("Monospace");
+
   setupFace();
   setupVideo();
 
@@ -115,8 +120,8 @@ function setup() {
 
 function createGrid() {
   gridCircles = [];
-  for (let x = gridSpacing * 0.5; x < width; x += gridSpacing) {
-    for (let y = gridSpacing * 0.5; y < height; y += gridSpacing) {
+  for (let x = gridSpacing * 0.5; x < width; x += gridSpacing * 0.5) {
+    for (let y = gridSpacing * 0.5; y < height; y += gridSpacing * 0.5) {
       gridCircles.push(new GridCircle(x, y));
     }
   }
@@ -166,6 +171,11 @@ function draw() {
   // Check if mouthPucker is above threshold
   const canBlow = mouthPucker > blowThreshold;
 
+  // Track if user has started blowing
+  if (canBlow) {
+    hasStartedBlowing = true;
+  }
+
   // Map mouthPucker (0-1) to circle size and smooth it
   const targetSize = map(
     mouthPucker,
@@ -185,10 +195,28 @@ function draw() {
     circle.display();
   }
 
+  // Show instruction message if user hasn't started blowing
+  if (!hasStartedBlowing) {
+    // Semi-transparent overlay
+    fill(0, 0, 0, 150);
+    noStroke();
+    rect(0, height / 2 - 80, width, 160);
+
+    // Main message
+    fill(255);
+    textAlign(CENTER, CENTER);
+    textSize(16);
+    text("blow on your screen ", width / 2, height / 2 - 20);
+
+    // Reset text align for debug info
+    textAlign(LEFT, TOP);
+  }
+
   // Debug info
   fill(0);
   noStroke();
   textSize(16);
+  textAlign(LEFT, TOP);
   text(`Mouth Pucker: ${mouthPucker.toFixed(2)}`, 10, 20);
   text(`Can Blow: ${canBlow ? "YES" : "NO"}`, 10, 40);
   text(`Push Force: ${pushForce.toFixed(1)}x`, 10, 60);

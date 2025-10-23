@@ -1,0 +1,688 @@
+/** biome-ignore-all lint/correctness/noUnusedVariables: <> */
+
+const CONFIG = {
+  showVideo: false,
+  showAmbientLight: false,
+  drawHandLandmarks: false,
+  drawIndicators: false,
+  drawLightsIndicator: true,
+};
+
+let capture;
+let hands;
+let results;
+let rectSize = 120; // Taille initiale du rectangle
+let targetRectSize = rectSize; // Taille cible pour l'effet spring
+let rectVelocity = 0; // Vélocité du redimensionnement
+let baseRotationX = 0; // Rotation de base aléatoire sur l'axe X
+let baseRotationY = 0; // Rotation de base aléatoire sur l'axe Y
+let cubeRotationX = 0; // Rotation du cube sur l'axe X
+let cubeRotationY = 0; // Rotation du cube sur l'axe Y
+let rotationVelocityX = 0; // Vélocité de rotation sur l'axe X
+let rotationVelocityY = 0; // Vélocité de rotation sur l'axe Y
+let previousPalmX = null; // Position précédente de la paume en X
+let previousPalmY = null; // Position précédente de la paume en Y
+let previousDistance = null; // Distance précédente entre les doigts
+// Lumières colorées
+const lights = [];
+let draggedLight = null;
+const rotationSpeed = 0.1; // Vitesse de rotation
+const zoomSpeed = 0.5; // Vitesse de zoom
+const inertia = 0.95; // Coefficient d'inertie (0.95 = 95% de conservation de la vélocité)
+// Constantes pour l'effet spring du zoom
+const springK = 0.15; // Constante de ressort (rigidité)
+const springDamp = 0.8; // Amortissement du ressort
+const springMass = 0.5; // Masse pour la simulation
+
+let rightHandInZone = false,
+  leftHandInZone = false;
+
+let myFont;
+
+function preload() {
+  // Charger une police pour WEBGL
+  myFont = loadFont(
+    "https://cdnjs.cloudflare.com/ajax/libs/topcoat/0.8.0/font/SourceCodePro-Regular.otf"
+  );
+}
+
+function setup() {
+  createCanvas(windowWidth, windowHeight, WEBGL);
+
+  textFont(myFont);
+  textSize(16);
+
+  // Définir une rotation de base aléatoire pour le cube
+  baseRotationX = random(TWO_PI);
+  baseRotationY = random(TWO_PI);
+
+  // Initialiser les 3 lumières colorées
+  lights.push({
+    x: width / 4,
+    y: height / 4,
+    z: 200,
+    color: [255, 0, 255], // Fuschia
+    name: "Fuschia",
+    radius: 20,
+    dragging: false,
+  });
+
+  lights.push({
+    x: width / 2,
+    y: height / 4,
+    z: 200,
+    color: [255, 255, 0], // Jaune
+    name: "Jaune",
+    radius: 20,
+    dragging: false,
+  });
+
+  lights.push({
+    x: (3 * width) / 4,
+    y: height / 4,
+    z: 200,
+    color: [0, 255, 255], // Cyan
+    name: "Cyan",
+    radius: 20,
+    dragging: false,
+  });
+
+  capture = createCapture(VIDEO);
+  capture.size(640, 480);
+  capture.hide();
+
+  hands = new Hands({
+    locateFile: (file) => {
+      return `https://cdn.jsdelivr.net/npm/@mediapipe/hands/${file}`;
+    },
+  });
+
+  hands.setOptions({
+    maxNumHands: 2,
+    modelComplexity: 1,
+    minDetectionConfidence: 0.5,
+    minTrackingConfidence: 0.5,
+  });
+
+  hands.onResults(onResults);
+
+  detectHands();
+}
+
+function draw() {
+  push();
+  scale(-1, 1);
+
+  push();
+  translate(-width / 2, -height / 2);
+
+  drawVideo();
+  const opacity = map(0.8, 0, 1, 0, 255);
+  console.log(opacity);
+  fill(0, opacity);
+  rect(0, 0, width, height);
+  pop();
+  pop();
+
+  // Dessiner la vidéo et les mains en 2D
+  push();
+  // Revenir en mode 2D pour la vidéo
+  translate(-width / 2, -height / 2);
+
+  push();
+  translate(width, 0);
+  scale(-1, 1);
+  CONFIG.showVideo && image(capture, 0, 0, width, height);
+  pop();
+
+  if (results?.multiHandLandmarks) {
+    // Identifier les mains gauche et droite
+    let leftHand = null;
+    let rightHand = null;
+
+    if (results.multiHandedness) {
+      for (let i = 0; i < results.multiHandLandmarks.length; i++) {
+        const handedness = results.multiHandedness[i].label;
+        // Note: MediaPipe retourne "Left" pour la main droite à cause du miroir
+        if (handedness === "Left") {
+          // C'est la main droite (inversée par le miroir)
+          rightHand = results.multiHandLandmarks[i];
+        } else if (handedness === "Right") {
+          // C'est la main gauche (inversée par le miroir)
+          leftHand = results.multiHandLandmarks[i];
+        }
+      }
+    }
+
+    // Vérifier si les mains sont dans la zone
+    rightHandInZone = rightHand && isHandInManipulationZone(rightHand);
+    leftHandInZone = leftHand && isHandInManipulationZone(leftHand);
+
+    // Main droite : contrôler le zoom avec pinch (seulement si dans la zone)
+    if (rightHandInZone) {
+      const currentDistance = getPinchDistance(rightHand);
+
+      if (previousDistance !== null) {
+        // Calculer le changement de distance
+        const deltaDistance = currentDistance - previousDistance;
+
+        // Mettre à jour la taille CIBLE au lieu de la taille directe
+        targetRectSize += deltaDistance * zoomSpeed;
+
+        // Contraindre la taille cible entre 50 et 400
+        targetRectSize = constrain(targetRectSize, 50, 400);
+      }
+
+      // Sauvegarder la distance actuelle
+      previousDistance = currentDistance;
+    } else {
+      // Pas de main droite ou hors de la zone, réinitialiser
+      previousDistance = null;
+    }
+
+    // Main gauche : contrôler la rotation (seulement si dans la zone)
+    if (leftHandInZone) {
+      const palm = leftHand[0];
+
+      if (previousPalmX !== null && previousPalmY !== null) {
+        // Calculer le déplacement de la main
+        const deltaX = palm.x - previousPalmX;
+        const deltaY = palm.y - previousPalmY;
+
+        // Ajouter à la vélocité au lieu d'incrémenter directement
+        rotationVelocityY += deltaX * rotationSpeed * 10;
+        rotationVelocityX -= deltaY * rotationSpeed * 10;
+      }
+
+      // Sauvegarder la position actuelle pour la prochaine frame
+      previousPalmX = palm.x;
+      previousPalmY = palm.y;
+    } else {
+      // Pas de main gauche ou hors de la zone, réinitialiser
+      previousPalmX = null;
+      previousPalmY = null;
+    }
+
+    // Appliquer l'inertie à la vélocité de rotation
+    rotationVelocityX *= inertia;
+    rotationVelocityY *= inertia;
+
+    // Appliquer la vélocité à la rotation
+    cubeRotationX += rotationVelocityX;
+    cubeRotationY -= rotationVelocityY;
+
+    if (CONFIG.drawHandLandmarks) {
+      for (const landmarks of results.multiHandLandmarks) {
+        drawHand(landmarks);
+      }
+    }
+  } else {
+    // Pas de résultats, réinitialiser
+    previousPalmX = null;
+    previousPalmY = null;
+    previousDistance = null;
+  }
+
+  // Appliquer l'effet spring au redimensionnement du cube
+  updateSizeSpring();
+
+  if (CONFIG.drawIndicators) {
+    // Dessiner la zone de manipulation
+    drawManipulationZone();
+  }
+
+  // Dessiner la position des paumes pour debug
+  if (results?.multiHandLandmarks) {
+    for (let i = 0; i < results.multiHandLandmarks.length; i++) {
+      const hand = results.multiHandLandmarks[i];
+      const palm = hand[0];
+      const handX = width - palm.x * width;
+      const handY = palm.y * height;
+
+      if (CONFIG.drawIndicators) {
+        // Dessiner un cercle à la position de la paume
+        const inZone = isHandInManipulationZone(hand);
+        fill(inZone ? color(0, 255, 0, 150) : color(255, 0, 0, 150));
+        noStroke();
+        circle(handX, handY, 30);
+      }
+    }
+  }
+
+  if (CONFIG.drawLightsIndicator) {
+    // Dessiner les indicateurs des 3 lumières
+    for (const light of lights) {
+      push();
+      // Cercle coloré pour la lumière
+      fill(light.color[0], light.color[1], light.color[2], 200);
+      stroke(255);
+      strokeWeight(2);
+      circle(light.x, light.y, light.radius * 2);
+
+      // Nom de la lumière
+      fill(255);
+      noStroke();
+      textAlign(CENTER, CENTER);
+      textSize(12);
+      text(light.name, light.x, light.y);
+      pop();
+    }
+  }
+
+  // Texte en 2D
+  fill(255);
+  noStroke();
+  text(`FPS: ${floor(frameRate())}`, 10, 20);
+  text(`Taille: ${floor(rectSize)}`, 10, 40);
+  text(`Mains détectées: ${results?.multiHandLandmarks?.length || 0}`, 10, 60);
+
+  // Afficher les modes actifs avec statut de zone
+  let y = 100;
+  if (results?.multiHandedness) {
+    let leftHand = null;
+    let rightHand = null;
+
+    for (let i = 0; i < results.multiHandLandmarks.length; i++) {
+      const handedness = results.multiHandedness[i].label;
+      if (handedness === "Left") {
+        rightHand = results.multiHandLandmarks[i];
+      } else if (handedness === "Right") {
+        leftHand = results.multiHandLandmarks[i];
+      }
+    }
+
+    if (rightHand) {
+      const inZone = isHandInManipulationZone(rightHand);
+      fill(255);
+      text(
+        `Main droite: Zoom ${inZone ? "✓ DANS LA ZONE" : "✗ Hors zone"}`,
+        10,
+        y
+      );
+      y += 20;
+    }
+
+    if (leftHand) {
+      const inZone = isHandInManipulationZone(leftHand);
+      fill(255);
+      text(
+        `Main gauche: Rotation ${inZone ? "✓ DANS LA ZONE" : "✗ Hors zone"}`,
+        10,
+        y
+      );
+      y += 20;
+    }
+  }
+  pop();
+
+  // Dessiner le cube au centre en 3D
+  push();
+
+  // Appliquer les 3 lumières colorées
+  for (const light of lights) {
+    const lightX = light.x - width / 2;
+    const lightY = light.y - height / 2;
+    pointLight(
+      light.color[0],
+      light.color[1],
+      light.color[2],
+      lightX,
+      lightY,
+      light.z
+    );
+  }
+
+  if (CONFIG.showAmbientLight) {
+    // Lumière ambiante douce
+    ambientLight(50, 50, 50);
+  }
+
+  // Appliquer la rotation de base aléatoire + rotation contrôlée par la main
+  rotateX(baseRotationX + cubeRotationX);
+  rotateY(baseRotationY + cubeRotationY);
+
+  // Style du cube
+  fill(255, 255, 255);
+  if (rightHandInZone || leftHandInZone) {
+    stroke(0, 255, 0);
+  } else {
+    stroke(0, 0, 0);
+  }
+  strokeWeight(2);
+
+  // Dessiner le cube avec la taille calculée
+  specularMaterial(120);
+  box(rectSize);
+  pop();
+}
+
+function updateSizeSpring() {
+  // Simulation de ressort pour le redimensionnement du cube
+  // f = -k * (position - restPosition)
+  const force = -springK * (rectSize - targetRectSize);
+
+  // a = f / m
+  const accel = force / springMass;
+
+  // Appliquer l'accélération à la vélocité avec amortissement
+  rectVelocity = springDamp * (rectVelocity + accel);
+
+  // Mettre à jour la position (taille)
+  rectSize += rectVelocity;
+
+  // Contraindre la taille entre 50 et 400
+  rectSize = constrain(rectSize, 50, 400);
+}
+
+function mousePressed() {
+  // Vérifier si on clique sur une lumière
+  for (const light of lights) {
+    const d = dist(mouseX, mouseY, light.x, light.y);
+    if (d < light.radius) {
+      draggedLight = light;
+      light.dragging = true;
+      break;
+    }
+  }
+}
+
+function mouseDragged() {
+  // Déplacer la lumière sélectionnée
+  if (draggedLight) {
+    draggedLight.x = mouseX;
+    draggedLight.y = mouseY;
+  }
+}
+
+function mouseReleased() {
+  // Relâcher la lumière
+  if (draggedLight) {
+    draggedLight.dragging = false;
+    draggedLight = null;
+  }
+}
+
+function onResults(res) {
+  results = res;
+}
+
+async function detectHands() {
+  if (capture.loadedmetadata) {
+    await hands.send({ image: capture.elt });
+  }
+  requestAnimationFrame(detectHands);
+}
+
+function drawHand(landmarks) {
+  // Draw connections between landmarks
+  stroke(0, 255, 0);
+  strokeWeight(2);
+  noFill();
+
+  const connections = [
+    [0, 1],
+    [1, 2],
+    [2, 3],
+    [3, 4], // Thumb
+    [0, 5],
+    [5, 6],
+    [6, 7],
+    [7, 8], // Index
+    [0, 9],
+    [9, 10],
+    [10, 11],
+    [11, 12], // Middle
+    [0, 13],
+    [13, 14],
+    [14, 15],
+    [15, 16], // Ring
+    [0, 17],
+    [17, 18],
+    [18, 19],
+    [19, 20], // Pinky
+    [5, 9],
+    [9, 13],
+    [13, 17], // Palm
+  ];
+
+  for (const connection of connections) {
+    const point1 = landmarks[connection[0]];
+    const point2 = landmarks[connection[1]];
+
+    const x1 = width - point1.x * width;
+    const y1 = point1.y * height;
+    const x2 = width - point2.x * width;
+    const y2 = point2.y * height;
+
+    line(x1, y1, x2, y2);
+  }
+
+  // Draw landmarks
+  fill(255, 0, 0);
+  noStroke();
+
+  for (const landmark of landmarks) {
+    const x = width - landmark.x * width;
+    const y = landmark.y * height;
+    circle(x, y, 8);
+  }
+}
+
+function getHandsDistance(multiHandLandmarks) {
+  const hand1 = multiHandLandmarks[0];
+  const hand2 = multiHandLandmarks[1];
+
+  // Index tip est le landmark numéro 8
+  const index1 = hand1[8];
+  const index2 = hand2[8];
+
+  // Convertir les coordonnées normalisées en pixels
+  const x1 = width - index1.x * width;
+  const y1 = index1.y * height;
+  const x2 = width - index2.x * width;
+  const y2 = index2.y * height;
+
+  // Calculer et retourner la distance entre les deux index
+  return dist(x1, y1, x2, y2);
+}
+
+function getPinchDistance(hand) {
+  // Pouce tip = landmark 4, Index tip = landmark 8
+  const thumb = hand[4];
+  const index = hand[8];
+
+  // Convertir les coordonnées normalisées en pixels
+  const x1 = width - thumb.x * width;
+  const y1 = thumb.y * height;
+  const x2 = width - index.x * width;
+  const y2 = index.y * height;
+
+  // Calculer et retourner la distance entre le pouce et l'index
+  return dist(x1, y1, x2, y2);
+}
+
+function isHandInManipulationZone(hand) {
+  // Utiliser la paume (landmark 0) pour détecter la position de la main
+  const palm = hand[0];
+
+  // Convertir les coordonnées normalisées en pixels
+  const handX = width - palm.x * width;
+  const handY = palm.y * height;
+
+  // Définir la zone de manipulation (1/3 de la hauteur et largeur, centrée)
+  const zoneWidth = width / 3;
+  const zoneHeight = height / 3;
+  const zoneX = width / 2 - zoneWidth / 2;
+  const zoneY = height / 2 - zoneHeight / 2;
+
+  // Vérifier si la main est dans la zone
+  return (
+    handX > zoneX &&
+    handX < zoneX + zoneWidth &&
+    handY > zoneY &&
+    handY < zoneY + zoneHeight
+  );
+}
+
+function drawManipulationZone() {
+  // Dessiner la zone de manipulation en 2D
+  const zoneWidth = width / 3;
+  const zoneHeight = height / 3;
+
+  push();
+  noFill();
+  stroke(100, 200, 255, 150);
+  strokeWeight(3);
+  rectMode(CENTER);
+  rect(width / 2, height / 2, zoneWidth, zoneHeight);
+
+  // Ajouter des coins pour mieux visualiser
+  stroke(100, 200, 255, 200);
+  strokeWeight(5);
+  const cornerSize = 20;
+  const halfW = zoneWidth / 2;
+  const halfH = zoneHeight / 2;
+  const centerX = width / 2;
+  const centerY = height / 2;
+
+  // Coin haut gauche
+  line(
+    centerX - halfW,
+    centerY - halfH,
+    centerX - halfW + cornerSize,
+    centerY - halfH
+  );
+  line(
+    centerX - halfW,
+    centerY - halfH,
+    centerX - halfW,
+    centerY - halfH + cornerSize
+  );
+
+  // Coin haut droit
+  line(
+    centerX + halfW,
+    centerY - halfH,
+    centerX + halfW - cornerSize,
+    centerY - halfH
+  );
+  line(
+    centerX + halfW,
+    centerY - halfH,
+    centerX + halfW,
+    centerY - halfH + cornerSize
+  );
+
+  // Coin bas gauche
+  line(
+    centerX - halfW,
+    centerY + halfH,
+    centerX - halfW + cornerSize,
+    centerY + halfH
+  );
+  line(
+    centerX - halfW,
+    centerY + halfH,
+    centerX - halfW,
+    centerY + halfH - cornerSize
+  );
+
+  // Coin bas droit
+  line(
+    centerX + halfW,
+    centerY + halfH,
+    centerX + halfW - cornerSize,
+    centerY + halfH
+  );
+  line(
+    centerX + halfW,
+    centerY + halfH,
+    centerX + halfW,
+    centerY + halfH - cornerSize
+  );
+
+  pop();
+}
+
+function drawVideo(pixelSize = 1) {
+  const transform = getVideoTransform();
+  if (!transform) return;
+
+  if (pixelSize <= 1) {
+    image(
+      capture,
+      transform.offsetX,
+      transform.offsetY,
+      transform.drawWidth,
+      transform.drawHeight
+    );
+  } else {
+    capture.loadPixels();
+
+    const cols = Math.floor(capture.width / pixelSize);
+    const rows = Math.floor(capture.height / pixelSize);
+
+    noStroke();
+
+    for (let y = 0; y < rows; y++) {
+      for (let x = 0; x < cols; x++) {
+        const pixelX = x * pixelSize + Math.floor(pixelSize / 2);
+        const pixelY = y * pixelSize + Math.floor(pixelSize / 2);
+        const index = (pixelX + pixelY * capture.width) * 4;
+
+        const r = capture.pixels[index];
+        const g = capture.pixels[index + 1];
+        const b = capture.pixels[index + 2];
+
+        colorMode(RGB);
+        const c = color(r, g, b);
+        colorMode(HSL);
+
+        fill(c);
+
+        const screenX = transform.offsetX + x * pixelSize * transform.scaleX;
+        const screenY = transform.offsetY + y * pixelSize * transform.scaleY;
+        const rectWidth = pixelSize * transform.scaleX;
+        const rectHeight = pixelSize * transform.scaleY;
+
+        rect(screenX, screenY, rectWidth, rectHeight);
+      }
+    }
+  }
+}
+
+function getVideoTransform() {
+  if (!isVideoReady()) return null;
+
+  const videoRatio = capture.width / capture.height;
+  const canvasRatio = width / height;
+
+  let drawWidth,
+    drawHeight,
+    offsetX = 0,
+    offsetY = 0;
+
+  // cover: fill entire canvas (crop if necessary)
+  if (videoRatio > canvasRatio) {
+    drawHeight = height;
+    drawWidth = height * videoRatio;
+    offsetX = (width - drawWidth) / 2;
+  } else {
+    drawWidth = width;
+    drawHeight = width / videoRatio;
+    offsetY = (height - drawHeight) / 2;
+  }
+
+  return {
+    drawWidth,
+    drawHeight,
+    offsetX,
+    offsetY,
+    scaleX: drawWidth / capture.width,
+    scaleY: drawHeight / capture.height,
+  };
+}
+
+function isVideoReady() {
+  return capture && capture.loadedmetadata;
+}

@@ -187,7 +187,7 @@ function draw() {
   // Control white noise volume based on mouthPucker (only if audio started)
   if (audioStarted && noise) {
     if (canBlow) {
-      const maxNoiseVolume = 0.3;
+      const maxNoiseVolume = 0.2;
       let intensity = constrain(
         (mouthPucker - blowThreshold) / (1 - blowThreshold),
         0,

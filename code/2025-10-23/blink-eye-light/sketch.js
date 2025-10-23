@@ -11,7 +11,7 @@ let rightLightOn = true;
 let previousLeftBlink = 0.0;
 let previousRightBlink = 0.0;
 let blinkThreshold = 0.5; // Seuil de détection du clignotement
-let bothEyesClosedThreshold = 0.7; // Seuil pour détecter les deux yeux fermés
+let bothEyesClosedThreshold = 0.8; // Seuil pour détecter les deux yeux fermés
 
 let leftColorIndex = 0;
 let rightColorIndex = 0;
@@ -26,8 +26,15 @@ let colors = [
   [255, 255, 255], // Blanc
 ];
 
+let cameraRotationY;
+let cameraRotationX;
+
 function setup() {
   createCanvas(windowWidth, windowHeight, WEBGL);
+
+  // Initialiser les rotations de la caméra
+  cameraRotationY = QUARTER_PI;
+  cameraRotationX = -QUARTER_PI + atan(1 / sqrt(2));
 
   setupVideo();
   setupFace();
@@ -43,6 +50,22 @@ function draw() {
   leftEyeBlink = getBlendshapeScore("eyeBlinkLeft");
   rightEyeBlink = getBlendshapeScore("eyeBlinkRight");
   jawOpen = getBlendshapeScore("jawOpen");
+
+  // Récupérer la direction du regard
+  let eyeLookLeft = getBlendshapeScore("eyeLookInLeft");
+  let eyeLookRight = getBlendshapeScore("eyeLookOutLeft");
+  let eyeLookUp = getBlendshapeScore("eyeLookUpLeft");
+  let eyeLookDown = getBlendshapeScore("eyeLookDownLeft");
+
+  // Ajuster la rotation de la caméra en fonction du regard
+  // Rotation horizontale (gauche/droite)
+  let targetRotationY = QUARTER_PI + ((eyeLookRight - eyeLookLeft) * PI) / 3;
+  cameraRotationY = lerp(cameraRotationY, targetRotationY, 0.1);
+
+  // Rotation verticale (haut/bas)
+  let baseRotationX = -QUARTER_PI + atan(1 / sqrt(2));
+  let targetRotationX = baseRotationX + ((eyeLookDown - eyeLookUp) * PI) / 4;
+  cameraRotationX = lerp(cameraRotationX, targetRotationX, 0.1);
 
   // Détecter si les deux yeux sont fermés
   if (
@@ -84,10 +107,10 @@ function draw() {
 
   background(0, 0, 0);
 
-  // Vue isométrique
+  // Vue isométrique avec rotation contrôlée par le regard
   ortho(-width / 2, width / 2, -height / 2, height / 2, 0, 2000);
-  rotateX(-QUARTER_PI + atan(1 / sqrt(2)));
-  rotateY(QUARTER_PI);
+  rotateX(cameraRotationX);
+  rotateY(cameraRotationY);
 
   // Spotlight gauche
   if (leftLightOn) {
@@ -123,7 +146,6 @@ function draw() {
     );
   }
 
-  orbitControl();
   ambientMaterial(255, 255, 255);
   box(100);
 }

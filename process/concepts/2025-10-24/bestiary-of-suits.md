@@ -14,8 +14,6 @@ Bestiary of Suits is an interactive installation where a player repairs a mythol
 - Interaction: `Explore`
 - Feedback: `Repair`
 
----
-
 ## Gestures
 
 ### The Move
@@ -90,8 +88,6 @@ Each feature acts like a button.
 _Prototyped in [Body Interface](../../../code/2025-10-23/body-interface/) project._
 
 ![The Configurator](./images/7-le-configurateur.gif)
-
----
 
 ## Storyboard
 
@@ -242,8 +238,6 @@ Le jeu recommence.
 
 **Image finale :**
 Le mur des cartes brille. Une carte reste vide : celle du joueur ?
-
----
 
 ### Technique
 

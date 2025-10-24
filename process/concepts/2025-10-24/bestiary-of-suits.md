@@ -21,7 +21,7 @@ Bestiary of Suits is an interactive installation where a player repairs a mythol
 **Image**
 A dark room. Brief flashes of light reveal that something is hidden, waiting to be illuminated. Shards of broken cards float in the air like frozen fireflies. The cards are blank – they’ve lost their visual identity. Some symbols drift freely without cards – a heart, a spade, a diamond, a club.
 
-**Son**
+**Sound**
 A low hum, a discontinuous breath — the sound of chaos.
 
 **Interaction**
@@ -119,12 +119,6 @@ Le joueur découvre un **filtre solaire** qu’il utilise pour ...
 **Objectif**
 ...
 
-### Autres séquences possibles
-
-Église / interdiction : Feu, cendres, murmures (italie)
-Cartes à collectionner : Paquets de bonbons, baseball, Pokémon
-Futur des cartes : Écran tactile, IA, cartes qui “te regardent”
-
 ### La Révélation Du Joker [Séquence 5]
 
 **Idées**
@@ -163,6 +157,12 @@ Le jeu recommence.
 
 **Image finale :**
 Le mur des cartes brille. Une carte reste vide : celle du joueur ?
+
+### Autres séquences possibles
+
+Église / interdiction : Feu, cendres, murmures (italie)
+Cartes à collectionner : Paquets de bonbons, baseball, Pokémon
+Futur des cartes : Écran tactile, IA, cartes qui “te regardent”
 
 ## Gestures
 
@@ -239,22 +239,54 @@ _Prototyped in [Body Interface](../../../code/2025-10-23/body-interface/) projec
 
 ![The Configurator](./images/7-le-configurateur.gif)
 
-## Technique
+## Technical Approach
 
-- 1 ou 3 écrans (devant gauche, droite)
-- Environnement 3D
-- Zones au sol éclairées
-- Son 5.1 (minimum)
-- Représentation physique des cartes (figures ont disparues), mur ?
+The installation combines gesture recognition, 3D environments, and spatial sound.
+It can be displayed on one or three screens (front, left, right), with reactive ground lighting marking the player’s position.
+
+Developed in Three.js, the world evolves through light and atmosphere across different eras.
+Gestures are tracked with MediaPipe, each linked to a symbolic action — lighting, filtering, blowing, recoloring.
+
+A physical wall of cards acts as a visible Cardodex (Bestiary of Suits), showing the player’s progress and allowing spectators to perceive the myth’s reconstruction.
+Sound will be spatialized (5.1) to reinforce immersion and guide the player through space and time.
 
 ## Research
 
-...
+My research began with the materiality of playing cards — their texture, manufacturing processes, and physical properties. This led me to study the objects and gestures of cheating, as a way to understand how material and manipulation intertwine.
+
+From there, I explored the mirror (“shiner”) as an interface — a poetic object that reveals what is usually invisible. The mirror later gave way to the story of Bianco’s 19th-century scam, where cards became tools of deception and illusion.
+
+When this narrative became too narrow, it coincided with the moment we formed groups and began merging ideas. The project quickly evolved into a collection of disparate mini-games, closer to WarioWare than to a cohesive narrative experience. This lack of depth led me to step back and rebuild the conceptual framework.
+
+Drawing on Nicolas Nova’s writings (La persistance du merveilleux, Bestiary of the Anthropocene), I reframed the project around myth as a possible common denominator — both as a way of telling stories and as a lens through which to view playing cards themselves. This shift led to the notion of a mythological breakdown, where the player explores the world through gesture-based exploration, restoring misplaced cultural and temporal fragments to their rightful eras.
 
 ### Insights
 
-...
+5 insights that inspired the current form of the concept.
 
-### Sources
+1. From Mini-Games to Myth
+   Moving away from WarioWare-style entertainment opened space for a slower, poetic, and symbolic experience.
+   The project shifted from playing stories to unfolding myths.
 
-...
+2. Collection as Narrative Engine
+   Inspired by Pokémon and the Pokédex, the project embraces collection as a way to tell stories through discovery, classification, and repair.
+   This mechanic has been a central interest since the beginning of the workshops.
+
+3. The Card as Cultural Mirror
+   Each card reflects a society and a moment in time — a fragment of human culture that can be misplaced, reinvented, or rediscovered.
+   This led to the idea of treating the history of cards as a mythological breakdown.
+
+4. Exploration during the creative coding workshop
+   The creative coding workshop was a turning point to test gestures as storytelling tools, transforming interaction into a poetic language.
+
+5. Inventory as Storytelling
+   The diversity of anecdotes, symbols, and aesthetics across eras inspired the idea of creating an inventory-based narrative: a form of storytelling through fragments, where each discovery contributes to repairing the myth.
+
+### References
+
+- 📘 [Persistance du merveilleux](https://www.premierparallele.fr/livre/persistance-du-merveilleux) – (2020)
+- 📘 [Bestiaire de l'Anthropocène](https://artfiction.ch/produit/bestiaire-de-lanthropocene/) - (2021)
+- 📰 [Trading Playing Cards and the Birth of Collecting](https://www.nationalgeographic.com/history/article/trading-playing-cards) - (2023)
+- 📰 [Are the Face Cards (Kings, Queens, Jacks) Real People?](https://history.howstuffworks.com/history-vs-myth/kings-queens-and-jacks-playing-cards-real-people.htm) - (2024)
+- 📺 [The Untold Secrets of Pokémon’s Monster Mythology](https://www.pbs.org/video/the-untold-secrets-of-pokemons-monster-mythology-ha2xkp/) - (2023)
+- 📺 [Florence (Gameplay Only)](https://www.youtube.com/watch?v=4Dxw4dj_AY8) - (2024)

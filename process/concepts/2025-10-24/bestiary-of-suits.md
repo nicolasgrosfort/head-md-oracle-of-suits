@@ -14,81 +14,6 @@ Bestiary of Suits is an interactive installation where a player repairs a mythol
 - Interaction: `Explore`
 - Feedback: `Repair`
 
-## Gestures
-
-### The Move
-
-Body position in space. Move forward, backward, left, or right.
-The player can walk within a defined area.
-
-_Not prototyped yet._
-
-![The Move](./images/0-le-deplacement.gif)
-
-### The Chronoscope
-
-Left arm extended, fingers pointing forward.
-Rotating the elbow and shoulder adjusts the position of the time cursor.
-
-_Not prototyped yet._
-
-![The Chronoscope](./images/1-le-chronoscope.gif)
-
-### The Flashlight
-
-Right arm extended, fingers pointing forward.
-The distance between the fingers controls the width of the light beam.
-
-_Prototyped in [Chronoscope Lamp](../../../code/2025-10-24/chronoscope-lamp/) project._
-
-![The Flashlight](./images/2-la-lampe-torche.gif)
-
-### The Candle
-
-Right arm extended, thumb raised.
-The candle can be moved freely in three-dimensional space.
-Quick movements dim the flame.
-
-_Not prototyped yet._
-
-![The Candle](./images/3-la-bougie.gif)
-
-### The Bellows
-
-Body slightly leaning forward, lips tightened.
-The player blows air in a chosen direction.
-
-_Prototyped in [Look And Blow](../../../code/2025-10-23/look-and-blow/) project._
-
-![The Bellows](./images/4-le-soufflet.gif)
-
-### The Palette
-
-Index finger and thumb pinched together – the player moves an invisible “brush” in three-dimensional space.
-They can change color by touching the fingers of the left hand with the pinched gesture.
-
-_Prototyped in [Icon Painter](../../../code/2025-10-22/icon-painter/) project._
-
-![The Palette](./images/5-la-palette.gif)
-
-### The Filter
-
-Both index fingers meet, then separate, revealing a translucent filter between the hands.
-The player can move this filter through space.
-
-_Prototyped in [Camera Reframe](../../../code/2025-10-21/camera-reframe/) project._
-
-![The Filter](./images/6-le-filtre.gif)
-
-### The Configurator
-
-Using the right hand, the player selects parts of their face (eyes, mouth, nose) to modify them.
-Each feature acts like a button.
-
-_Prototyped in [Body Interface](../../../code/2025-10-23/body-interface/) project._
-
-![The Configurator](./images/7-le-configurateur.gif)
-
 ## Storyboard
 
 ### **The Mythological Breakdown [Prologue]**
@@ -239,7 +164,82 @@ Le jeu recommence.
 **Image finale :**
 Le mur des cartes brille. Une carte reste vide : celle du joueur ?
 
-### Technique
+## Gestures
+
+### The Move
+
+Body position in space. Move forward, backward, left, or right.
+The player can walk within a defined area.
+
+_Not prototyped yet._
+
+![The Move](./images/0-le-deplacement.gif)
+
+### The Chronoscope
+
+Left arm extended, fingers pointing forward.
+Rotating the elbow and shoulder adjusts the position of the time cursor.
+
+_Not prototyped yet._
+
+![The Chronoscope](./images/1-le-chronoscope.gif)
+
+### The Flashlight
+
+Right arm extended, fingers pointing forward.
+The distance between the fingers controls the width of the light beam.
+
+_Prototyped in [Chronoscope Lamp](../../../code/2025-10-24/chronoscope-lamp/) project._
+
+![The Flashlight](./images/2-la-lampe-torche.gif)
+
+### The Candle
+
+Right arm extended, thumb raised.
+The candle can be moved freely in three-dimensional space.
+Quick movements dim the flame.
+
+_Not prototyped yet._
+
+![The Candle](./images/3-la-bougie.gif)
+
+### The Bellows
+
+Body slightly leaning forward, lips tightened.
+The player blows air in a chosen direction.
+
+_Prototyped in [Look And Blow](../../../code/2025-10-23/look-and-blow/) project._
+
+![The Bellows](./images/4-le-soufflet.gif)
+
+### The Palette
+
+Index finger and thumb pinched together – the player moves an invisible “brush” in three-dimensional space.
+They can change color by touching the fingers of the left hand with the pinched gesture.
+
+_Prototyped in [Icon Painter](../../../code/2025-10-22/icon-painter/) project._
+
+![The Palette](./images/5-la-palette.gif)
+
+### The Filter
+
+Both index fingers meet, then separate, revealing a translucent filter between the hands.
+The player can move this filter through space.
+
+_Prototyped in [Camera Reframe](../../../code/2025-10-21/camera-reframe/) project._
+
+![The Filter](./images/6-le-filtre.gif)
+
+### The Configurator
+
+Using the right hand, the player selects parts of their face (eyes, mouth, nose) to modify them.
+Each feature acts like a button.
+
+_Prototyped in [Body Interface](../../../code/2025-10-23/body-interface/) project._
+
+![The Configurator](./images/7-le-configurateur.gif)
+
+## Technique
 
 - 1 ou 3 écrans (devant gauche, droite)
 - Environnement 3D

@@ -13,7 +13,7 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "process/README.md",
+                "file": "process/concepts/2025-10-24/bestiary-of-suits.md",
                 "mode": "source",
                 "source": false,
                 "backlinks": true,
@@ -28,7 +28,7 @@
                 }
               },
               "icon": "lucide-file",
-              "title": "README"
+              "title": "bestiary-of-suits"
             }
           }
         ]
@@ -88,7 +88,7 @@
       }
     ],
     "direction": "horizontal",
-    "width": 251.5
+    "width": 285.5
   },
   "right": {
     "id": "427a7548afb67a34",
@@ -178,23 +178,44 @@
   },
   "active": "7ba679f29c07597f",
   "lastOpenFiles": [
-    "process/journal/journal.base",
+    "code/2025-10-23/look-and-blow/README.md",
+    "code/2025-10-23/body-interface/README.md",
+    "process/concepts/2025-10-24/images/7-le-configurateur.gif",
+    "process/concepts/2025-10-24/images/6-le-filtre.gif",
+    "process/concepts/2025-10-24/images/5-la-palette.gif",
+    "process/concepts/2025-10-24/images/4-le-soufflet.gif",
+    "process/concepts/2025-10-24/images/3-la-bougie.gif",
+    "process/concepts/2025-10-24/images/2-la-lampe-torche.gif",
+    "process/concepts/2025-10-24/images/1-le-chronoscope.gif",
+    "process/concepts/2025-10-24/images/0-le-deplacement.gif",
+    "process/concepts/2025-10-24/images",
+    "process/concepts/2025-10-24/bestiary-of-suits.md",
+    "process/concepts/2025-10-24/bestaire-des-enseignes.md",
+    "process/concepts/2025-10-24",
+    "code/2025-10-22/icon-painter/docs/hand-palette.gif",
+    "code/2025-10-24/chronoscope-lamp/docs/chronoscope-lamp.gif",
+    "code/2025-10-24/README.md",
+    "code/2025-10-24/chronoscope-lamp/README.md",
+    "code/2025-10-24/chronoscope-lamp/src/sketch.js",
+    "code/2025-10-24/chronoscope-lamp/src/style.css",
+    "code/2025-10-24/chronoscope-lamp/src/jsconfig.json",
+    "code/2025-10-24/chronoscope-lamp/src/index.html",
+    "code/2025-10-24/chronoscope-lamp/src/libraries/p5.sound.min.js",
+    "code/2025-10-24/chronoscope-lamp/src/libraries/p5.min.js",
+    "code/2025-10-24/chronoscope-lamp/src/libraries/mediapipe.hands.js",
+    "code/2025-10-24/chronoscope-lamp/src/libraries",
+    "code/2025-10-21/camera-reframe/README.md",
+    "code/2025-10-21/3d-parallax/README.md",
+    "code/2025-10-20/rock-paper-scissors/README.md",
+    "code/2025-10-20/cube-gesture-control/README.md",
+    "code/README.md",
+    "process/README.md",
     "process/journal/2025-09-22.md",
     "process/journal/2025-09-23.md",
     "process/concepts/2025-10-02-shiner.md",
     "process/concepts/2025-10-05-entropy-of-trust.md",
     "process/concepts/2025-10-08-cartidge.md",
-    "process/references/references.base",
-    "code/2025-10-20/map/sketch.js",
-    "code/2025-10-20/map",
-    "code/2025-10-20/fps-control/libraries/p5.sound.min.js",
-    "code/2025-10-20/fps-control/libraries/p5.min.js",
-    "code/2025-10-20/fps-control/style.css",
-    "code/2025-10-20/fps-control/sketch.js",
-    "code/2025-10-20/fps-control/libraries",
-    "code/2025-10-20/fps-control/jsconfig.json",
     "process/references/sleeve.md",
-    "process/README.md",
     "process/references/hanafuda.md",
     "process/observations/2025-09-22-hanafuda-koi-koi.md",
     "process/observations/2025-09-22-hanafuda.md",
@@ -202,26 +223,6 @@
     "process/observations/2025-09-22-bought-two-new-decks.md",
     "README.md",
     "process/observations/2025-09-27-jonction-toy-library.md",
-    "process/references/booster-pack.md",
-    "process/references/factory-sealed.md",
-    "process/references/deck-building.md",
-    "Untitled.md",
-    "process/observations/images/toy-library-activate-card-1.png",
-    "process/observations/images/toy-library-activate-card-2.png",
-    "process/observations/images/toy-library-activate-card-3.png",
-    "Pasted image 20251010214142.png",
-    "process/observations/images/toy-library-map-space.png",
-    "process/observations/images/toy-library-sketch-sitting.png",
-    "Capture d’écran 2025-10-10 à 20.50.11.png",
-    "process/observations/2025-09-23-the-history-of-nintendo.md",
-    "process/observations/2025-09-22-throwing-cards-and-they-are-sharp-af.md",
-    "process/observations/2025-09-22-les-jeux-de-cartes-hanafuda-de-nintendo-ont-un-atout-dans-leur-manche.md",
-    "process/observations/2025-09-22-free-tarot-reading.md",
-    "observations/09-22-2025/hanafuda.md",
-    "process/observations/images/the-history-of-nintendo-1.png",
-    "process/observations/images/free-tarot-reading-1.png",
-    "press-kit/README.md",
-    "code/README.md",
-    "process/concepts/images/entropy-of-trust-sketch.png"
+    "process/references/booster-pack.md"
   ]
 }

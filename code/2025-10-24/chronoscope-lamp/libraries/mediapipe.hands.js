@@ -10,126 +10,125 @@ let isHandTrackingReady = false;
  * @returns {Object} Instance du tracker de mains
  */
 function createHandTracker(options = {}) {
-	const config = {
-		maxHands: options.maxHands || 2,
-		modelComplexity: options.modelComplexity || 1,
-		minDetectionConfidence: options.minDetectionConfidence || 0.5,
-		minTrackingConfidence: options.minTrackingConfidence || 0.5,
-		selfieMode:
-			options.selfieMode !== undefined ? options.selfieMode : true,
-	};
+  const config = {
+    maxHands: options.maxHands || 2,
+    modelComplexity: options.modelComplexity || 1,
+    minDetectionConfidence: options.minDetectionConfidence || 0.7,
+    minTrackingConfidence: options.minTrackingConfidence || 0.5,
+    selfieMode: options.selfieMode !== undefined ? options.selfieMode : true,
+  };
 
-	// Créer la capture vidéo
-	handVideo = createCapture(VIDEO);
-	handVideo.size(640, 480);
-	handVideo.hide();
+  // Créer la capture vidéo
+  handVideo = createCapture(VIDEO);
+  handVideo.size(640, 480);
+  handVideo.hide();
 
-	// Initialiser MediaPipe Hands
-	const hands_instance = new Hands({
-		locateFile: (file) => {
-			return `https://cdn.jsdelivr.net/npm/@mediapipe/hands/${file}`;
-		},
-	});
+  // Initialiser MediaPipe Hands
+  const hands_instance = new Hands({
+    locateFile: (file) => {
+      return `https://cdn.jsdelivr.net/npm/@mediapipe/hands/${file}`;
+    },
+  });
 
-	hands_instance.setOptions({
-		maxNumHands: config.maxHands,
-		modelComplexity: 1,
-		minDetectionConfidence: config.minDetectionConfidence,
-		minTrackingConfidence: config.minTrackingConfidence,
-		selfieMode: true,
-	});
+  hands_instance.setOptions({
+    maxNumHands: config.maxHands,
+    modelComplexity: 1,
+    minDetectionConfidence: config.minDetectionConfidence,
+    minTrackingConfidence: config.minTrackingConfidence,
+    selfieMode: true,
+  });
 
-	hands_instance.onResults(onHandsResults);
+  hands_instance.onResults(onHandsResults);
 
-	handTracker = {
-		hands: hands_instance,
-		config: config,
-		isReady: false,
-	};
+  handTracker = {
+    hands: hands_instance,
+    config: config,
+    isReady: false,
+  };
 
-	// Attendre que la vidéo soit prête avant de démarrer la détection
-	handVideo.elt.addEventListener("loadeddata", () => {
-		console.log("Vidéo prête, démarrage du tracking...");
-		// Démarrer la détection une fois que la vidéo est prête
-		setTimeout(() => {
-			detectHands();
-		}, 500); // Petit délai pour s'assurer que tout est prêt
-	});
+  // Attendre que la vidéo soit prête avant de démarrer la détection
+  handVideo.elt.addEventListener("loadeddata", () => {
+    console.log("Vidéo prête, démarrage du tracking...");
+    // Démarrer la détection une fois que la vidéo est prête
+    setTimeout(() => {
+      detectHands();
+    }, 500); // Petit délai pour s'assurer que tout est prêt
+  });
 
-	return handTracker;
+  return handTracker;
 }
 
 /**
  * Fonction de callback appelée quand des mains sont détectées
  */
 function onHandsResults(results) {
-	hands = [];
-	isHandTrackingReady = true;
-	handTracker.isReady = true;
+  hands = [];
+  isHandTrackingReady = true;
+  handTracker.isReady = true;
 
-	if (results.multiHandLandmarks && results.multiHandedness) {
-		for (let i = 0; i < results.multiHandLandmarks.length; i++) {
-			const landmarks = results.multiHandLandmarks[i];
-			const handedness = results.multiHandedness[i];
+  if (results.multiHandLandmarks && results.multiHandedness) {
+    for (let i = 0; i < results.multiHandLandmarks.length; i++) {
+      const landmarks = results.multiHandLandmarks[i];
+      const handedness = results.multiHandedness[i];
 
-			// Inverser gauche/droite si flipHorizontal est activé (effet miroir)
-			let handLabel = handedness.label;
-			if (handTracker.config.flipHorizontal) {
-				handLabel = handLabel === "Left" ? "Right" : "Left";
-			}
+      // Inverser gauche/droite si flipHorizontal est activé (effet miroir)
+      let handLabel = handedness.label;
+      if (handTracker.config.flipHorizontal) {
+        handLabel = handLabel === "Left" ? "Right" : "Left";
+      }
 
-			const handData = {
-				landmarks: landmarks,
-				handedness: handLabel, // "Left" ou "Right" (corrigé pour l'effet miroir)
-				score: handedness.score,
-				index: i,
-			};
+      const handData = {
+        landmarks: landmarks,
+        handedness: handLabel, // "Left" ou "Right" (corrigé pour l'effet miroir)
+        score: handedness.score,
+        index: i,
+      };
 
-			// Ajouter des fonctions helper pour accéder facilement aux landmarks
-			handData.thumb = getLandmarksByFinger(landmarks, "thumb");
-			handData.indexFinger = getLandmarksByFinger(landmarks, "index");
-			handData.middleFinger = getLandmarksByFinger(landmarks, "middle");
-			handData.ringFinger = getLandmarksByFinger(landmarks, "ring");
-			handData.pinky = getLandmarksByFinger(landmarks, "pinky");
-			handData.wrist = landmarks[0];
-			handData.palm = landmarks[0];
+      // Ajouter des fonctions helper pour accéder facilement aux landmarks
+      handData.thumb = getLandmarksByFinger(landmarks, "thumb");
+      handData.indexFinger = getLandmarksByFinger(landmarks, "index");
+      handData.middleFinger = getLandmarksByFinger(landmarks, "middle");
+      handData.ringFinger = getLandmarksByFinger(landmarks, "ring");
+      handData.pinky = getLandmarksByFinger(landmarks, "pinky");
+      handData.wrist = landmarks[0];
+      handData.palm = landmarks[0];
 
-			hands.push(handData);
-		}
-	}
+      hands.push(handData);
+    }
+  }
 }
 
 /**
  * Récupère les landmarks d'un doigt spécifique
  */
 function getLandmarksByFinger(landmarks, finger) {
-	const fingerIndices = {
-		thumb: [1, 2, 3, 4],
-		index: [5, 6, 7, 8],
-		middle: [9, 10, 11, 12],
-		ring: [13, 14, 15, 16],
-		pinky: [17, 18, 19, 20],
-	};
+  const fingerIndices = {
+    thumb: [1, 2, 3, 4],
+    index: [5, 6, 7, 8],
+    middle: [9, 10, 11, 12],
+    ring: [13, 14, 15, 16],
+    pinky: [17, 18, 19, 20],
+  };
 
-	const indices = fingerIndices[finger];
-	return indices.map((i) => landmarks[i]);
+  const indices = fingerIndices[finger];
+  return indices.map((i) => landmarks[i]);
 }
 
 /**
  * Détecte les mains en continu
  */
 async function detectHands() {
-	if (handVideo?.elt && handTracker) {
-		// Vérifier que la vidéo a des données valides
-		if (handVideo.elt.readyState >= 2 && handVideo.elt.videoWidth > 0) {
-			try {
-				await handTracker.hands.send({ image: handVideo.elt });
-			} catch (error) {
-				console.error("Erreur lors de la détection:", error);
-			}
-		}
-		requestAnimationFrame(detectHands);
-	}
+  if (handVideo?.elt && handTracker) {
+    // Vérifier que la vidéo a des données valides
+    if (handVideo.elt.readyState >= 2 && handVideo.elt.videoWidth > 0) {
+      try {
+        await handTracker.hands.send({ image: handVideo.elt });
+      } catch (error) {
+        console.error("Erreur lors de la détection:", error);
+      }
+    }
+    requestAnimationFrame(detectHands);
+  }
 }
 
 /**
@@ -138,7 +137,7 @@ async function detectHands() {
  * @returns {Array} Tableau des mains détectées
  */
 function getHands() {
-	return hands;
+  return hands;
 }
 
 /**
@@ -146,7 +145,7 @@ function getHands() {
  * @returns {boolean}
  */
 function handsDetected() {
-	return hands.length > 0;
+  return hands.length > 0;
 }
 
 /**
@@ -154,7 +153,7 @@ function handsDetected() {
  * @returns {number}
  */
 function getHandCount() {
-	return hands.length;
+  return hands.length;
 }
 
 /**
@@ -164,19 +163,19 @@ function getHandCount() {
  * @param {string|Array} color - Couleur des points (défaut: rouge)
  */
 function drawHand(hand, size = 5, color = [255, 0, 0]) {
-	if (!hand || !hand.landmarks) return;
+  if (!hand || !hand.landmarks) return;
 
-	push();
-	fill(color);
-	noStroke();
+  push();
+  fill(color);
+  noStroke();
 
-	// Dessiner tous les landmarks
-	for (const landmark of hand.landmarks) {
-		const pos = landmarkToCanvas(landmark);
-		circle(pos.x, pos.y, size);
-	}
+  // Dessiner tous les landmarks
+  for (const landmark of hand.landmarks) {
+    const pos = landmarkToCanvas(landmark);
+    circle(pos.x, pos.y, size);
+  }
 
-	pop();
+  pop();
 }
 
 /**
@@ -186,56 +185,56 @@ function drawHand(hand, size = 5, color = [255, 0, 0]) {
  * @param {string|Array} color - Couleur des lignes (défaut: blanc)
  */
 function drawHandConnections(hand, thickness = 2, color = [255, 255, 255]) {
-	if (!hand || !hand.landmarks) return;
+  if (!hand || !hand.landmarks) return;
 
-	const connections = [
-		// Pouce
-		[0, 1],
-		[1, 2],
-		[2, 3],
-		[3, 4],
-		// Index
-		[0, 5],
-		[5, 6],
-		[6, 7],
-		[7, 8],
-		// Majeur
-		[0, 9],
-		[9, 10],
-		[10, 11],
-		[11, 12],
-		// Annulaire
-		[0, 13],
-		[13, 14],
-		[14, 15],
-		[15, 16],
-		// Auriculaire
-		[0, 17],
-		[17, 18],
-		[18, 19],
-		[19, 20],
-		// Paume
-		[5, 9],
-		[9, 13],
-		[13, 17],
-	];
+  const connections = [
+    // Pouce
+    [0, 1],
+    [1, 2],
+    [2, 3],
+    [3, 4],
+    // Index
+    [0, 5],
+    [5, 6],
+    [6, 7],
+    [7, 8],
+    // Majeur
+    [0, 9],
+    [9, 10],
+    [10, 11],
+    [11, 12],
+    // Annulaire
+    [0, 13],
+    [13, 14],
+    [14, 15],
+    [15, 16],
+    // Auriculaire
+    [0, 17],
+    [17, 18],
+    [18, 19],
+    [19, 20],
+    // Paume
+    [5, 9],
+    [9, 13],
+    [13, 17],
+  ];
 
-	push();
-	stroke(color);
-	strokeWeight(thickness);
-	noFill();
+  push();
+  stroke(color);
+  strokeWeight(thickness);
+  noFill();
 
-	for (const [start, end] of connections) {
-		const startLandmark = hand.landmarks[start];
-		const endLandmark = hand.landmarks[end];
+  for (const [start, end] of connections) {
+    const startLandmark = hand.landmarks[start];
+    const endLandmark = hand.landmarks[end];
 
-		const p1 = landmarkToCanvas(startLandmark);
-		const p2 = landmarkToCanvas(endLandmark);
+    const p1 = landmarkToCanvas(startLandmark);
+    const p2 = landmarkToCanvas(endLandmark);
 
-		line(p1.x, p1.y, p2.x, p2.y);
-	}
+    line(p1.x, p1.y, p2.x, p2.y);
+  }
 
-	pop();
+  pop();
 }
 
 /**
@@ -244,21 +243,21 @@ function drawHandConnections(hand, thickness = 2, color = [255, 255, 255]) {
  * @param {Object} options - Options de dessin
  */
 function drawHandSkeleton(hand, options = {}) {
-	const config = {
-		pointSize: options.pointSize || 5,
-		pointColor: options.pointColor || [255, 0, 0],
-		lineThickness: options.lineThickness || 2,
-		lineColor: options.lineColor || [255, 255, 255],
-		showConnections: options.showConnections !== false,
-		showPoints: options.showPoints !== false,
-	};
+  const config = {
+    pointSize: options.pointSize || 5,
+    pointColor: options.pointColor || [255, 0, 0],
+    lineThickness: options.lineThickness || 2,
+    lineColor: options.lineColor || [255, 255, 255],
+    showConnections: options.showConnections !== false,
+    showPoints: options.showPoints !== false,
+  };
 
-	if (config.showConnections) {
-		drawHandConnections(hand, config.lineThickness, config.lineColor);
-	}
-	if (config.showPoints) {
-		drawHand(hand, config.pointSize, config.pointColor);
-	}
+  if (config.showConnections) {
+    drawHandConnections(hand, config.lineThickness, config.lineColor);
+  }
+  if (config.showPoints) {
+    drawHand(hand, config.pointSize, config.pointColor);
+  }
 }
 
 /**
@@ -267,19 +266,19 @@ function drawHandSkeleton(hand, options = {}) {
  * @returns {Object} {x, y, z}
  */
 function landmarkToCanvas(landmark) {
-	let x = landmark.x * width;
-	const y = landmark.y * height;
+  let x = landmark.x * width;
+  const y = landmark.y * height;
 
-	// Si flipHorizontal est activé, inverser la coordonnée X
-	if (handTracker?.config.flipHorizontal) {
-		x = width - x;
-	}
+  // Si flipHorizontal est activé, inverser la coordonnée X
+  if (handTracker?.config.flipHorizontal) {
+    x = width - x;
+  }
 
-	return {
-		x: x,
-		y: y,
-		z: landmark.z,
-	};
+  return {
+    x: x,
+    y: y,
+    z: landmark.z,
+  };
 }
 
 /**
@@ -289,9 +288,9 @@ function landmarkToCanvas(landmark) {
  * @returns {number} Distance en pixels
  */
 function landmarkDistance(landmark1, landmark2) {
-	const p1 = landmarkToCanvas(landmark1);
-	const p2 = landmarkToCanvas(landmark2);
-	return dist(p1.x, p1.y, p2.x, p2.y);
+  const p1 = landmarkToCanvas(landmark1);
+  const p2 = landmarkToCanvas(landmark2);
+  return dist(p1.x, p1.y, p2.x, p2.y);
 }
 
 /**
@@ -301,13 +300,13 @@ function landmarkDistance(landmark1, landmark2) {
  * @returns {boolean}
  */
 function isPinching(hand, threshold = 30) {
-	if (!hand || !hand.thumb || !hand.indexFinger) return false;
+  if (!hand || !hand.thumb || !hand.indexFinger) return false;
 
-	const thumbTip = hand.thumb[3]; // Bout du pouce
-	const indexTip = hand.indexFinger[3]; // Bout de l'index
+  const thumbTip = hand.thumb[3]; // Bout du pouce
+  const indexTip = hand.indexFinger[3]; // Bout de l'index
 
-	const distance = landmarkDistance(thumbTip, indexTip);
-	return distance < threshold;
+  const distance = landmarkDistance(thumbTip, indexTip);
+  return distance < threshold;
 }
 
 /**
@@ -317,26 +316,26 @@ function isPinching(hand, threshold = 30) {
  * @returns {boolean}
  */
 function isFingerUp(hand, fingerName) {
-	if (!hand) return false;
+  if (!hand) return false;
 
-	const finger = hand[`${fingerName}Finger`] || hand[fingerName];
-	if (!finger) return false;
+  const finger = hand[`${fingerName}Finger`] || hand[fingerName];
+  if (!finger) return false;
 
-	const tip = finger[3];
-	const pip = finger[2];
+  const tip = finger[3];
+  const pip = finger[2];
 
-	// Pour le pouce, vérifier la position horizontale
-	if (fingerName === "thumb") {
-		const mcp = finger[1];
-		if (hand.handedness === "Right") {
-			return tip.x < mcp.x;
-		} else {
-			return tip.x > mcp.x;
-		}
-	}
+  // Pour le pouce, vérifier la position horizontale
+  if (fingerName === "thumb") {
+    const mcp = finger[1];
+    if (hand.handedness === "Right") {
+      return tip.x < mcp.x;
+    } else {
+      return tip.x > mcp.x;
+    }
+  }
 
-	// Pour les autres doigts, vérifier la position verticale
-	return tip.y < pip.y;
+  // Pour les autres doigts, vérifier la position verticale
+  return tip.y < pip.y;
 }
 
 /**
@@ -345,18 +344,18 @@ function isFingerUp(hand, fingerName) {
  * @returns {number}
  */
 function countFingersUp(hand) {
-	if (!hand) return 0;
+  if (!hand) return 0;
 
-	let count = 0;
-	const fingers = ["thumb", "index", "middle", "ring", "pinky"];
+  let count = 0;
+  const fingers = ["thumb", "index", "middle", "ring", "pinky"];
 
-	for (const finger of fingers) {
-		if (isFingerUp(hand, finger)) {
-			count++;
-		}
-	}
+  for (const finger of fingers) {
+    if (isFingerUp(hand, finger)) {
+      count++;
+    }
+  }
 
-	return count;
+  return count;
 }
 
 /**
@@ -368,34 +367,34 @@ function countFingersUp(hand) {
  * @param {boolean} selfieMode - Mode selfie (défaut: true)
  */
 function showHandVideo(x = 0, y = 0, w = null, h = null, selfieMode = true) {
-	if (!handVideo) return;
+  if (!handVideo) return;
 
-	// Vérifier si la vidéo est prête
-	if (!handVideo.elt || handVideo.elt.readyState < 2) {
-		return; // La vidéo n'est pas encore prête
-	}
+  // Vérifier si la vidéo est prête
+  if (!handVideo.elt || handVideo.elt.readyState < 2) {
+    return; // La vidéo n'est pas encore prête
+  }
 
-	const videoWidth = w || width;
-	const videoHeight = h || height;
+  const videoWidth = w || width;
+  const videoHeight = h || height;
 
-	push();
-	if (selfieMode || handTracker?.config.selfieMode) {
-		translate(x + videoWidth, y);
-		scale(-1, 1);
-		image(handVideo, 0, 0, videoWidth, videoHeight);
-	} else {
-		image(handVideo, x, y, videoWidth, videoHeight);
-	}
-	pop();
+  push();
+  if (selfieMode || handTracker?.config.selfieMode) {
+    translate(x + videoWidth, y);
+    scale(-1, 1);
+    image(handVideo, 0, 0, videoWidth, videoHeight);
+  } else {
+    image(handVideo, x, y, videoWidth, videoHeight);
+  }
+  pop();
 }
 
 /**
  * Cache la vidéo de la caméra
  */
 function hideHandVideo() {
-	if (handVideo) {
-		handVideo.hide();
-	}
+  if (handVideo) {
+    handVideo.hide();
+  }
 }
 
 /**
@@ -403,7 +402,7 @@ function hideHandVideo() {
  * @returns {boolean}
  */
 function isHandTrackerReady() {
-	return isHandTrackingReady;
+  return isHandTrackingReady;
 }
 
 /**
@@ -412,7 +411,7 @@ function isHandTrackerReady() {
  * @returns {Object|null}
  */
 function getHand(index = 0) {
-	return hands[index] || null;
+  return hands[index] || null;
 }
 
 /**
@@ -420,7 +419,7 @@ function getHand(index = 0) {
  * @returns {Object|null}
  */
 function getLeftHand() {
-	return hands.find((h) => h.handedness === "Left") || null;
+  return hands.find((h) => h.handedness === "Left") || null;
 }
 
 /**
@@ -428,7 +427,7 @@ function getLeftHand() {
  * @returns {Object|null}
  */
 function getRightHand() {
-	return hands.find((h) => h.handedness === "Right") || null;
+  return hands.find((h) => h.handedness === "Right") || null;
 }
 
 /**
@@ -438,31 +437,31 @@ function getRightHand() {
  * @returns {number} Angle en radians
  */
 function angleBetweenPoints(p1, p2) {
-	const angle = Math.atan2(p2.y - p1.y, p2.x - p1.x);
-	return angle; // en radians
+  const angle = Math.atan2(p2.y - p1.y, p2.x - p1.x);
+  return angle; // en radians
 }
 
 // Constantes pour les indices des landmarks
 const HAND_LANDMARKS = {
-	WRIST: 0,
-	THUMB_CMC: 1,
-	THUMB_MCP: 2,
-	THUMB_IP: 3,
-	THUMB_TIP: 4,
-	INDEX_FINGER_MCP: 5,
-	INDEX_FINGER_PIP: 6,
-	INDEX_FINGER_DIP: 7,
-	INDEX_FINGER_TIP: 8,
-	MIDDLE_FINGER_MCP: 9,
-	MIDDLE_FINGER_PIP: 10,
-	MIDDLE_FINGER_DIP: 11,
-	MIDDLE_FINGER_TIP: 12,
-	RING_FINGER_MCP: 13,
-	RING_FINGER_PIP: 14,
-	RING_FINGER_DIP: 15,
-	RING_FINGER_TIP: 16,
-	PINKY_MCP: 17,
-	PINKY_PIP: 18,
-	PINKY_DIP: 19,
-	PINKY_TIP: 20,
+  WRIST: 0,
+  THUMB_CMC: 1,
+  THUMB_MCP: 2,
+  THUMB_IP: 3,
+  THUMB_TIP: 4,
+  INDEX_FINGER_MCP: 5,
+  INDEX_FINGER_PIP: 6,
+  INDEX_FINGER_DIP: 7,
+  INDEX_FINGER_TIP: 8,
+  MIDDLE_FINGER_MCP: 9,
+  MIDDLE_FINGER_PIP: 10,
+  MIDDLE_FINGER_DIP: 11,
+  MIDDLE_FINGER_TIP: 12,
+  RING_FINGER_MCP: 13,
+  RING_FINGER_PIP: 14,
+  RING_FINGER_DIP: 15,
+  RING_FINGER_TIP: 16,
+  PINKY_MCP: 17,
+  PINKY_PIP: 18,
+  PINKY_DIP: 19,
+  PINKY_TIP: 20,
 };

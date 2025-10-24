@@ -1,4 +1,5 @@
 let overlay;
+let landscape = [];
 
 function setup() {
   textFont("Monospace");
@@ -10,9 +11,19 @@ function setup() {
   overlay.noStroke();
 
   createHandTracker({
-    maxHands: 2,
+    maxHands: 1,
     selfieMode: true,
   });
+
+  for (let i = 0; i < 50; i++) {
+    fill(255, 255, 100);
+    landscape.push({
+      x: random(width),
+      y: random(height),
+      color: color(random(255), random(255), random(255)),
+      size: random(10, 100),
+    });
+  }
 }
 
 function windowResized() {
@@ -41,15 +52,16 @@ function draw() {
       const rawPalmX = hand.palm.x;
       const rawPalmY = hand.palm.y;
 
-      angle = lerp(angle, rawAngle, 0.95);
-      const palmX = lerp(hand.palm.x, rawPalmX, 0.95);
-      const palmY = lerp(hand.palm.y, rawPalmY, 0.95);
+      angle = lerp(angle, rawAngle, 0.5);
+      const palmX = lerp(hand.palm.x, rawPalmX, 0.5);
+      const palmY = lerp(hand.palm.y, rawPalmY, 0.5);
 
       const size = map(angle, 0, PI / 2, 10, 500);
 
       overlay.erase();
       overlay.circle(palmX * width, palmY * height, size);
       overlay.noErase();
+
       overlay.stroke(255);
       overlay.noFill();
       overlay.circle(palmX * width, palmY * height, size);
@@ -83,4 +95,11 @@ function drawScene() {
 
   fill(160, 255, 140);
   triangle(80, height - 80, 200, height - 180, 320, height - 60);
+
+  fill(255, 255, 100);
+  for (let i = 0; i < landscape.length; i++) {
+    const star = landscape[i];
+    fill(star.color);
+    circle(star.x, star.y, star.size);
+  }
 }

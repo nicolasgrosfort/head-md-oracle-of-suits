@@ -2,7 +2,7 @@
 
 ## Pitch
 
-Bestiary of Suits is an interactive installation where a player repairs a mythological breakdown by exploring different eras to recover misplaced fragments. Using temporal instruments mastered through gesture, the player restores the scattered patterns and colors of playing cards – until discovering that the chaos was caused by the Joker, caught in an identity crisis and trying to resemble the others.
+Bestiary of Suits is an interactive installation where a player repairs a mythological rupture by exploring different eras to recover misplaced symbols. Through gesture-controlled instruments, the player restores balance to the world of playing cards—until discovering that the chaos was caused by the Joker, caught in an identity crisis.
 
 ### Keyword
 

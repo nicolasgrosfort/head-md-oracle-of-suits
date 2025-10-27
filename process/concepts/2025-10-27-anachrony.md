@@ -2,7 +2,7 @@
 
 ## Pitch
 
-`Anachrony` is an interactive installation where a player repairs a `mythological break` by exploring different eras to recover misplaced playing cards symbols. Through [gesture-controlled](../gestures/README.md) instruments, the player restores harmony to the world of playing cards, until discovering that the chaos was caused by the `Joker`, caught in an identity crisis.
+`Anachrony` is a [gesture-based](../gestures/README.md) interactive game where players travel through different historical worlds to recover playing cards scattered across time. By using light, breath, and movement, they restore balance to a broken myth — until meeting the Joker, whose identity crisis caused the cards' dispersion.
 
 ### Keyword
 
@@ -11,7 +11,7 @@
 ### Novel combinaison
 
 - Entry point: `Anachrony`
-- Interaction: `Explore`
+- Interaction: `Reveal`
 - Feedback: `Repair`
 
 ## Storyboard

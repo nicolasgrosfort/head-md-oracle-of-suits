@@ -20,9 +20,29 @@
 
 ### Initial State
 
+![Initial State](./images/anachrony-initial-state.png)
+
 _Initial state, installation in standby mode, waiting for a player._
 
+#### Images
+
+A black screen.
+The project title appears in white capital letters: "ANACHRONY".
+The title looks [fragmented](https://www.instagram.com/p/DH1AjFzi3c6/?hl=fr&img_index=1) — broken into several floating pieces, yet still readable.
+The fragments move slowly, as if drifting through space.
+
+#### Sound
+
 TO BE DEFINED
+
+#### Interactions
+
+As the player approaches the screen, a sensor detects their presence and triggers the introduction sequence (Prologue).
+The title fades out, the image zooms in, and the scene transitions smoothly to the next sequence.
+
+#### Exit
+
+The player approaches the screen, starting the experience.
 
 ### The Mythological Breakdown [Prologue]
 
@@ -247,8 +267,8 @@ Drawing on Nicolas Nova's writings (La persistance du merveilleux, Bestiary of t
 
 - ~~Write a first draft of the storyboard~~
 - ~~Define the tech-stack~~
+- ~~Define an "Initial State"~~
 - Get feedback from Douglas about the current concept
-- Define an "Initial State"
 - Update "Research" section to reflect actual project
 - Prototype "The Chronoscope" gesture
 - Prototype "The Candle" gesture
@@ -257,3 +277,4 @@ Drawing on Nicolas Nova's writings (La persistance du merveilleux, Bestiary of t
 - Define a visual identity
 - Define sound design approach
 - Create a prototype of "The Mythological Breakdown" sequence
+- Test the prototype with real people

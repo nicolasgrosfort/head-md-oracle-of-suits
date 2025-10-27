@@ -102,6 +102,8 @@ The player has revealed four foreign symbols.
 
 ### Medieval Europe [Sequence 2]
 
+![Medieval Europe](./images/anachrony-medieval-europe.png)
+
 _Non-linear navigation_
 
 #### Images

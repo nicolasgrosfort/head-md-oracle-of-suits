@@ -281,7 +281,7 @@ Drawing on Nicolas Nova's writings (La persistance du merveilleux, Bestiary of t
 - ~~Write a first draft of the storyboard~~
 - ~~Define the tech-stack~~
 - ~~Define an "Initial State"~~
-- Draw a sketch for each sequence
+- ~~Draw a sketch for each sequence~~
 - Get feedback from Douglas about the current concept
 - Define how information reaches the player
 - Define how to show gestures to the user

@@ -80,7 +80,11 @@ _Non-linear navigation_
 
 #### Images
 
-Un espace de cendre et de poussière, silencieux.
+The player finds themselves in a candle-lit room, the flame flickering softly above a round stone table.
+A thick layer of dust covers the surface.
+When the player blows on it, the dust slowly drifts away, revealing card symbols carved into the stone.
+Some of these symbols don’t belong to the medieval deck — foreign marks from other eras.
+If the player blows too hard, the cards on the table shift and scatter in the draft.
 
 #### Sound
 
@@ -88,13 +92,11 @@ TO BE DEFINED
 
 #### Interactions
 
-Le joueur souffle avec sa bouche.
-Les cendres se dispersent, révélant les figures brûlées.
-[the bellows](../gestures/the-bellows.md)
+Using [the bellows](../gestures/the-bellows.md), the player blows onto the screen to remove the dust and uncover the cards lying on the table.
 
 #### Exit
 
-...
+The player has uncovered 4 foreign symbols.
 
 ### Japan [Sequence 3]
 

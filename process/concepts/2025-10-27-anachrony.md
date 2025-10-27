@@ -46,6 +46,8 @@ The player approaches the screen, starting the experience.
 
 ### The Mythological Breakdown [Prologue]
 
+![Prologue](./images/anachrony-prologue.png)
+
 _Triggers when the player is facing the screen._
 
 ####

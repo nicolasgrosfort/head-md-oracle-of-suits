@@ -128,6 +128,8 @@ The player has uncovered 4 foreign symbols.
 
 ### Edo Japan [Sequence 3]
 
+![Edo Japan](./images/anachrony-edo-japan.png)
+
 _Non-linear navigation_
 
 #### Images
@@ -177,7 +179,7 @@ The player found 5 foreign cards.
 
 ### The Joker Revealed [Final Sequence]
 
-![Joker Revealed](./images/anachrony-joker-revealed.png)
+![Joker Revealed](./images/anachrony-jocker-revealed.png)
 
 _Sequence unlocked once all others have been completed._
 

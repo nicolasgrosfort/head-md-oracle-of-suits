@@ -177,6 +177,8 @@ The player found 5 foreign cards.
 
 ### The Joker Revealed [Final Sequence]
 
+![Joker Revealed](./images/anachrony-joker-revealed.png)
+
 _Sequence unlocked once all others have been completed._
 
 #### Images

@@ -18,11 +18,15 @@
 
 ### Initial State
 
-Initial state, installation in standby mode, waiting for a player.
+_Initial state, installation in standby mode, waiting for a player._
 
 TO BE DEFINED
 
 ### The Mythological Breakdown [Prologue]
+
+_Triggers when the player is facing the screen._
+
+####
 
 #### Images
 
@@ -45,6 +49,8 @@ The player can freely move from one era to another. Navigation is non-linear.
 Find five colored fragments by illuminating them, and learn how to travel between eras.
 
 ### Ancient China [Sequence 1]
+
+_Non-linear navigation_
 
 #### Ideas
 
@@ -70,7 +76,9 @@ Le joueur fouille la pièce...
 
 ...
 
-### Europe médiévale [Séquence 2]
+### Medieval Europe [Sequence 2]
+
+_Non-linear navigation_
 
 #### Images
 
@@ -95,6 +103,8 @@ Les cendres se dispersent, révélant les figures brûlées.
 
 ### Japan [Sequence 3]
 
+_Non-linear navigation_
+
 #### Images
 
 A wooden table in a ryokan (traditional Japanese accommodation). The cards are laid out on the table (isometric view).
@@ -114,6 +124,8 @@ By painting the cards, the player learns that [some hanafuda cards were hand-pai
 Cleared 3 foreign symbols and recolored 3 cards.
 
 ### Mamluk World [Sequence 4]
+
+_Non-linear navigation_
 
 #### Images
 

@@ -3,9 +3,10 @@
 ## Structure
 
 1. `Concepts`: design ideas, prototypes, iterations.
-2. `Journal`: introspective notes, thoughts, feelings.
-3. `Observations`: raw notes, ideas, readings, videos, exploration, etc.
-4. `References`: more structured notes, concepts, ideas, vocabulary.
+2. `Gestures`: gesture library, detailed descriptions.
+3. `Journal`: introspective notes, thoughts, feelings.
+4. `Observations`: raw notes, ideas, readings, videos, exploration, etc.
+5. `References`: more structured notes, concepts, ideas, vocabulary.
 
 ## Conventions
 

@@ -76,6 +76,8 @@ Find five colored fragments by illuminating them, and learn how to travel betwee
 
 ### Ancient China [Sequence 1]
 
+![Ancient China](./images/anachrony-ancient-china.png)
+
 _Non-linear navigation_
 
 #### Images

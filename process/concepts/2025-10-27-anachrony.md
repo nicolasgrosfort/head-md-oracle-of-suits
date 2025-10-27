@@ -42,6 +42,8 @@ By moving [the flashlight](../gestures/the-flashlight.md), with right hand, the 
 
 Once all different fragments are found, the player notices a [map within a card](../observations/2025-10-13-map-within-card.md). This card reveals how to use [the chronoscope](../gestures/the-chronoscope.md). The player learns a new gesture that allows them to travel across eras. By rotating the left hand, the scenery subtly shifts - time itself moves, following the rotation of the player's wrist.
 
+Each time the player finds a "foreign" symbol, he learns where this symbol comes from, and in which era it will be replaced.
+
 The player can freely move from one era to another. Navigation is non-linear.
 
 #### Exit
@@ -52,29 +54,25 @@ Find five colored fragments by illuminating them, and learn how to travel betwee
 
 _Non-linear navigation_
 
-#### Ideas
-
-Chine - Bougie - Ombre chinoise - utiliser sa main pour faire ombre chinoise ?
-
 #### Images
 
-Un espace d'encre et de papier.
-Des traits flottent, incomplets, comme suspendus dans un brouillard.
-
-Symbole au mauvais endroit ? Quel symbole ? Pourquoi ?
+The player is in a dark room, with pieces of paper hanging from the ceiling.
+These pieces of paper are stencils used to draw the symbols on playing cards.
+Some of these stencils seem foreign to Chinese culture.
+By holding the candle close to the stencils, the player reveals the symbols through a play of (Chinese) shadows projected onto the wall.
 
 #### Sound
 
-...
+TO BE DEFINED
 
 #### Interactions
 
-Le joueur fouille la pièce...
-[the candle](../gestures/the-candle.md)
+The player uses [the candle](../gestures/the-candle.md) to reveal the hidden symbols behind the stencils.
+As the flame approaches, shadows form on the wall, uncovering the foreign symbols.
 
 #### Exit
 
-...
+The player has revealed four foreign symbols.
 
 ### Medieval Europe [Sequence 2]
 
@@ -83,9 +81,6 @@ _Non-linear navigation_
 #### Images
 
 Un espace de cendre et de poussière, silencieux.
-Des silhouettes de rois et de reines effacées.
-
-Les visages reviennent, mais certains éléments semblent faux : une **moustache étrangère** sur un roi.
 
 #### Sound
 
@@ -93,7 +88,7 @@ TO BE DEFINED
 
 #### Interactions
 
-Le joueur souffle (mouvement de main avant/arrière).
+Le joueur souffle avec sa bouche.
 Les cendres se dispersent, révélant les figures brûlées.
 [the bellows](../gestures/the-bellows.md)
 
@@ -129,23 +124,23 @@ _Non-linear navigation_
 
 #### Images
 
-Un désert doré, saturé de soleil.
-Les cartes sont devenues invisibles, brûlées par la lumière.
-
-Un symbole (un grelot, peut-être) apparaît au mauvais endroit
+A golden desert, saturated with sunlight.
+Cards are planted in the sand like swords.
+Some of them do not belong to the Mamluk deck.
+The sun shines so intensely that it's difficult to distinguish the patterns on the cards.
 
 #### Sounds
 
-...
+TO BE DEFINED
 
 #### Interactions
 
-Le joueur découvre un **filtre solaire** qu'il utilise pour ...
-[the filter](../gestures/the-filter.md)
+The player uses a solar [filter](../gestures/the-filter.md) to reduce the desert’s blinding light.
+By doing so, they explore the scene and uncover the foreign cards planted in the sand.
 
 #### Exit
 
-...
+Le joueur à trouvé 5 cartes étrangères.
 
 ### The Joker Revealed [Final Sequence]
 

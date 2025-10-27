@@ -150,6 +150,8 @@ Cleared 3 foreign symbols and recolored 3 cards.
 
 ### Mamluk World [Sequence 4]
 
+![Mamluk World](./images/anachrony-mamluk-world.png)
+
 _Non-linear navigation_
 
 #### Images
@@ -157,7 +159,7 @@ _Non-linear navigation_
 A golden desert, saturated with sunlight.
 Cards are planted in the sand like swords.
 Some of them do not belong to the Mamluk deck.
-The sun shines so intensely that it's difficult to distinguish the patterns on the cards.
+The sun burns so brightly that it’s almost impossible to see the details on the cards.
 
 #### Sounds
 
@@ -165,12 +167,13 @@ TO BE DEFINED
 
 #### Interactions
 
-The player uses a solar [filter](../gestures/the-filter.md) to reduce the desert’s blinding light.
-By doing so, they explore the scene and uncover the foreign cards planted in the sand.
+The player uses the [spyglass](../gestures/the-spyglass.md) to look across the desert.
+By slowly moving their hand, they scan the landscape through the spyglass revealing the foreign cards hidden in the sand.
+Each discovery sharpens the image of the world, as if the act of seeing restored order.
 
 #### Exit
 
-Le joueur à trouvé 5 cartes étrangères.
+The player found 5 foreign cards.
 
 ### The Joker Revealed [Final Sequence]
 
@@ -274,7 +277,10 @@ Drawing on Nicolas Nova's writings (La persistance du merveilleux, Bestiary of t
 - ~~Write a first draft of the storyboard~~
 - ~~Define the tech-stack~~
 - ~~Define an "Initial State"~~
+- Draw a sketch for each sequence
 - Get feedback from Douglas about the current concept
+- Define how information reaches the player
+- Define how to show gestures to the user
 - Update "Research" section to reflect actual project
 - Prototype "The Chronoscope" gesture
 - Prototype "The Candle" gesture
@@ -284,3 +290,4 @@ Drawing on Nicolas Nova's writings (La persistance du merveilleux, Bestiary of t
 - Define sound design approach
 - Create a prototype of "The Mythological Breakdown" sequence
 - Test the prototype with real people
+-

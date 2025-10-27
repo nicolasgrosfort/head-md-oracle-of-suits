@@ -16,6 +16,8 @@
 
 ## Storyboard
 
+![User Journey](./images/anachrony-user-journey.png)
+
 ### Initial State
 
 _Initial state, installation in standby mode, waiting for a player._
@@ -98,7 +100,7 @@ Using [the bellows](../gestures/the-bellows.md), the player blows onto the scree
 
 The player has uncovered 4 foreign symbols.
 
-### Japan [Sequence 3]
+### Edo Japan [Sequence 3]
 
 _Non-linear navigation_
 
@@ -183,16 +185,22 @@ The player finds themselves back in the initial room, with the floating fragment
 - Collectible Cards: Candy packs, baseball, Pokémon
 - Future of Cards: Touchscreens, AI, cards that "watch you"
 
-## Technical Approach
+## Technical
 
-The installation combines gesture recognition, 3D environments, and spatial sound.
-It can be displayed on one or three screens (front, left, right), with reactive ground lighting marking the player's position.
+### Tech-stack
 
-Developed in Three.js, the world evolves through light and atmosphere across different eras.
-Gestures are tracked with MediaPipe, each linked to a symbolic action — lighting, filtering, blowing, recoloring.
+#### Software
 
-A physical wall of cards acts as a visible Cardodex (Bestiary of Suits), showing the player's progress and allowing spectators to perceive the myth's reconstruction.
-Sound will be spatialized (5.1) to reinforce immersion and guide the player through space and time.
+- 3D Environment: Three.js || React Three Fiber || P5.js (WebGL)
+- Gesture Recognition: MediaPipe [Hands](https://ai.google.dev/edge/mediapipe/solutions/vision/hand_landmarker?hl=fr) && [Pose](https://ai.google.dev/edge/mediapipe/solutions/vision/pose_landmarker?hl=fr) && [Face](https://ai.google.dev/edge/mediapipe/solutions/vision/face_landmarker?hl=fr)
+- Sound Design: TO BE DEFINED
+
+#### Hardware
+
+- Sound : TO BE DEFINED (5.1)
+- Screen: TO BE DEFINED (1 or 3 screens)
+- Camera: TO BE DEFINED (1 or 2 cameras)
+- Lighting: TO BE DEFINED (ambient + spotlights)
 
 ## Research
 
@@ -234,3 +242,18 @@ Drawing on Nicolas Nova's writings (La persistance du merveilleux, Bestiary of t
 - 📰 [Are the Face Cards (Kings, Queens, Jacks) Real People?](https://history.howstuffworks.com/history-vs-myth/kings-queens-and-jacks-playing-cards-real-people.htm) - (2024)
 - 📺 [The Untold Secrets of Pokémon's Monster Mythology](https://www.pbs.org/video/the-untold-secrets-of-pokemons-monster-mythology-ha2xkp/) - (2023)
 - 📺 [Florence (Gameplay Only)](https://www.youtube.com/watch?v=4Dxw4dj_AY8) - (2024)
+
+## Roadmap
+
+- ~~Write a first draft of the storyboard~~
+- ~~Define the tech-stack~~
+- Get feedback from Douglas about the current concept
+- Define an "Initial State"
+- Update "Research" section to reflect actual project
+- Prototype "The Chronoscope" gesture
+- Prototype "The Candle" gesture
+- Prototype "The Palette" gesture (v2)
+- Prototype the head movement tracking for the final sequence
+- Define a visual identity
+- Define sound design approach
+- Create a prototype of "The Mythological Breakdown" sequence

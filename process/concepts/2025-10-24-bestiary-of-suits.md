@@ -25,9 +25,9 @@ A dark room. Brief flashes of light reveal that something is hidden, waiting to 
 A low hum, a discontinuous breath — the sound of chaos.
 
 **Interaction**
-By moving the [flashlight](./bestiary-of-suits.md#the-flashlight), with right hand, the player discovers they can reveal hidden fragments scattered around the room. The player shines light across the space, trying to understand what has happened. Some fragments are not quite like the others.
+By moving [the flashlight](../gestures/the-flashlight.md), with right hand, the player discovers they can reveal hidden fragments scattered around the room. The player shines light across the space, trying to understand what has happened. Some fragments are not quite like the others.
 
-Once all different fragments are found, the player notices a [map within a card](../../observations/2025-10-13-map-within-card.md). This card reveals how to use the [Chronoscope](./bestiary-of-suits.md#le-chronoscope). The player learns a new gesture that allows them to travel across eras. By rotating the left hand, the scenery subtly shifts - time itself moves, following the rotation of the player’s wrist.
+Once all different fragments are found, the player notices a [map within a card](../observations/2025-10-13-map-within-card.md). This card reveals how to use [the chronoscope](../gestures/the-chronoscope.md). The player learns a new gesture that allows them to travel across eras. By rotating the left hand, the scenery subtly shifts - time itself moves, following the rotation of the player’s wrist.
 
 **Objective**
 **Find five colored fragments** by illuminating them, and learn how to travel between eras.
@@ -48,7 +48,7 @@ Symbole au mauvais endroit ? Quel symbole ? Pourquoi ?
 
 **Interactions**
 Le joueur fouille la pièce...
-[Bougie](./bestiary-of-suits.md#the-candle)
+[the candle](../gestures/the-candle.md)
 
 **Objectif**
 ...
@@ -70,7 +70,7 @@ Les visages reviennent, mais certains éléments semblent faux : une **moustache
 **Interactions**
 Le joueur souffle (mouvement de main avant/arrière).
 Les cendres se dispersent, révélant les figures brûlées.
-[Soufflet](./bestiary-of-suits.md#the-bellows)
+[the bellows](../gestures/the-bellows.md)
 
 **Objectif**
 ...
@@ -93,7 +93,7 @@ Symbole au mauvais endroit ? Quel symbole ? Pourquoi ?
 **Interactions**
 Le joueur utilise une **palette gestuelle** (mouvement de main pour repeindre).
 En recolorant, il découvre un **rouge anormal**, venu d’ailleurs — preuve du vol du Joker.
-[Palette](./bestiary-of-suits.md#the-palette)
+[the palette](../gestures/the-palette.md)
 
 **Objectif**
 ...
@@ -114,7 +114,7 @@ Un symbole (un grelot, peut-être) apparaît au mauvais endroit
 
 **Interactions**
 Le joueur découvre un **filtre solaire** qu’il utilise pour ...
-[Filter](./bestiary-of-suits.md#the-filter)
+[the filter](../gestures/the-filter.md)
 
 **Objectif**
 ...
@@ -137,7 +137,7 @@ Le joueur comprend que c’est lui, **le voleur des fragments**.
 
 **Interactions**
 Le joueur redonne au jocker son apparence normale, bien que multiple, en retirant les restes de fragments symboles sur son visage.
-[Configurateur](./bestiary-of-suits.md#the-configurator)
+[the configurator](../gestures/the-configurator.md)
 
 **Objectif**
 Réparer le mythe — ou le laisser ouvert.
@@ -163,81 +163,6 @@ Le mur des cartes brille. Une carte reste vide : celle du joueur ?
 Église / interdiction : Feu, cendres, murmures (italie)
 Cartes à collectionner : Paquets de bonbons, baseball, Pokémon
 Futur des cartes : Écran tactile, IA, cartes qui “te regardent”
-
-## Gestures
-
-### The Move
-
-Body position in space. Move forward, backward, left, or right.
-The player can walk within a defined area.
-
-_Not prototyped yet._
-
-![The Move](./images/0-le-deplacement.gif)
-
-### The Chronoscope
-
-Left arm extended, fingers pointing forward.
-Rotating the elbow and shoulder adjusts the position of the time cursor.
-
-_Not prototyped yet._
-
-![The Chronoscope](./images/1-le-chronoscope.gif)
-
-### The Flashlight
-
-Right arm extended, fingers pointing forward.
-The distance between the fingers controls the width of the light beam.
-
-_Prototyped in [Chronoscope Lamp](../../../code/2025-10-24/chronoscope-lamp/) project._
-
-![The Flashlight](./images/2-la-lampe-torche.gif)
-
-### The Candle
-
-Right arm extended, thumb raised.
-The candle can be moved freely in three-dimensional space.
-Quick movements dim the flame.
-
-_Not prototyped yet._
-
-![The Candle](./images/3-la-bougie.gif)
-
-### The Bellows
-
-Body slightly leaning forward, lips tightened.
-The player blows air in a chosen direction.
-
-_Prototyped in [Look And Blow](../../../code/2025-10-23/look-and-blow/) project._
-
-![The Bellows](./images/4-le-soufflet.gif)
-
-### The Palette
-
-Index finger and thumb pinched together – the player moves an invisible “brush” in three-dimensional space.
-They can change color by touching the fingers of the left hand with the pinched gesture.
-
-_Prototyped in [Icon Painter](../../../code/2025-10-22/icon-painter/) project._
-
-![The Palette](./images/5-la-palette.gif)
-
-### The Filter
-
-Both index fingers meet, then separate, revealing a translucent filter between the hands.
-The player can move this filter through space.
-
-_Prototyped in [Camera Reframe](../../../code/2025-10-21/camera-reframe/) project._
-
-![The Filter](./images/6-le-filtre.gif)
-
-### The Configurator
-
-Using the right hand, the player selects parts of their face (eyes, mouth, nose) to modify them.
-Each feature acts like a button.
-
-_Prototyped in [Body Interface](../../../code/2025-10-23/body-interface/) project._
-
-![The Configurator](./images/7-le-configurateur.gif)
 
 ## Technical Approach
 

@@ -2,6 +2,20 @@
 
 `Anachrony` is a [gesture-based](../gestures/README.md) interactive game where players travel through different historical worlds to recover playing cards scattered across time. By simulating light, breath, painting, and a spyglass with body movements, they return the cards to their rightful eras. At the end, they confront the Joker, whose identity crisis has caused the cards to be lost in the wrong timelines.
 
+## Core interaction
+
+The player uses various gestures to interact with the environment.
+
+| **Title**                                           | **Goal**                            | **Gesture**                                     |
+| --------------------------------------------------- | ----------------------------------- | ----------------------------------------------- |
+| [The Chronoscope](../gestures/the-chronoscope.md)   | Navigating between eras             | Turn the left hand in line with the arm         |
+| [The Flashlight ](../gestures/the-flashlight.md)    | Reveal card fragments               | Move the right hand in line with the arm        |
+| [The Candle](../gestures/the-candle.md)             | Reveal the silhouettes of the suits | Thumbs up, move your hand in space              |
+| [The Bellow](../gestures/the-bellows.md)            | Removing dust from cards            | Blow gently, as if to clear dust                |
+| [The Palette](../gestures/the-palette.md)           | Reveal the colors of the suits      | Move your hands in a painting motion            |
+| [The Spyglass](../gestures/the-spyglass.md)         | See further in the scene            | Use both index fingers to zoom                  |
+| [The Configurator](../gestures/the-configurator.md) | Change the appearance of the joker  | Touching your eyes, nose and mouth like buttons |
+
 ## Keyword
 
 `Anachrony`

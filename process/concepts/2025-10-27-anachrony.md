@@ -1,14 +1,12 @@
 # Anachrony
 
-## Pitch
+`Anachrony` is a [gesture-based](../gestures/README.md) interactive game where players travel through different historical worlds to recover playing cards scattered across time. By simulating light, breath, painting, and a spyglass with body movements, they return the cards to their rightful eras. At the end, they confront the Joker, whose identity crisis has caused the cards to be lost in the wrong timelines.
 
-`Anachrony` is a [gesture-based](../gestures/README.md) interactive game where players travel through different historical worlds to recover playing cards scattered across time. By using light, breath, and movement, they restore balance to a broken myth — until meeting the Joker, whose identity crisis caused the cards' dispersion.
-
-### Keyword
+## Keyword
 
 `Anachrony`
 
-### Novel combinaison
+## Novel combinaison
 
 - Entry point: `Anachrony`
 - Interaction: `Reveal`

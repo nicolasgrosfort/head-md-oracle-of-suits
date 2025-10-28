@@ -2,6 +2,9 @@ let pg; // Buffer pour la scène principale
 let zoomPg; // Buffer pour la vue zoomée
 let cam; // Caméra pour la scène principale
 
+let unlockProgression = 0;
+let prevAngle;
+
 let zoomFactor = 8; // Facteur de zoom
 let zoomSize = 200;
 
@@ -196,6 +199,31 @@ function draw() {
 
   updateHandData();
 
+  if (unlockProgression < 1) {
+    if (!isAnyHand) {
+      unlockProgression = 0;
+    }
+    // Dessine un cercle principal au centre
+    push();
+    fill(0);
+    noStroke();
+    circle(0, 0, 100);
+
+    // Dessine la progression de déverrouillage
+    stroke(0);
+    strokeWeight(4);
+    noFill();
+    arc(0, 0, 120, 120, -HALF_PI, -HALF_PI + TWO_PI * unlockProgression);
+
+    // Texte d'instruction
+    noStroke();
+    fill(0);
+    textSize(16);
+    text("Imagine you have a spyglass...", 0, 100);
+
+    return;
+  }
+
   // Dessiner la scène principale
   push();
   orbitControl();
@@ -239,16 +267,6 @@ function draw() {
     cam.upZ
   );
 
-  // Calculer la distance de la caméra au centre
-  let camDistance = dist(
-    cam.eyeX,
-    cam.eyeY,
-    cam.eyeZ,
-    cam.centerX,
-    cam.centerY,
-    cam.centerZ
-  );
-
   // Translater vers la zone survolée
   const zoomX = -(handX - width * 0.5) * zoomFactor;
   const zoomY = -(handY - height * 0.5) * zoomFactor;
@@ -286,11 +304,7 @@ function draw() {
   pop();
 
   // Décommenté pour afficher la vidéo
-  // push();
-  // tint(255, 40);
-  // translate(-width * 0.5, -height * 0.5, Z_MAX);
-  // showHandVideo();
-  // pop();
+  // drawVideo();
 }
 
 function windowResized() {
@@ -330,9 +344,18 @@ function updateHandData() {
       // Sauvegarder les valeurs pour la prochaine frame
       prevHandX = handX;
       prevHandY = handY;
+
+      if (prevAngle && prevAngle !== angle) {
+        unlockProgression += abs(angle - prevAngle) * 0.5;
+      }
+
+      prevAngle = angle;
+
+      console.log(unlockProgression);
     }
   } else {
     isAnyHand = false;
+    prevAngle = null;
   }
 }
 
@@ -642,4 +665,12 @@ function drawScene(renderer) {
   renderer.pop();
 
   renderer.pop();
+}
+
+function drawVideo() {
+  push();
+  tint(255, 40);
+  translate(-width * 0.5, -height * 0.5, Z_MAX);
+  showHandVideo();
+  pop();
 }

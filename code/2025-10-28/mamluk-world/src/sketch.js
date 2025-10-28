@@ -210,16 +210,16 @@ function draw() {
 
   // Afficher le nombre d'éléments détectés
   push();
-  translate(-width * 0.5 + 60, -height * 0.5 + 50, Z_MAX);
+  translate(-width * 0.5 + 70, -height * 0.5 + 60, Z_MAX);
   fill(0);
   textSize(16);
   textAlign(LEFT, CENTER);
-  text(`Éléments détectés: ${detectedElements.length}`, 0, 0);
+  text(`Detected text(s): ${detectedElements.length}`, 0, 0);
 
   // Afficher le premier élément
   if (detectedElements.length > 0) {
     textAlign(LEFT, CENTER);
-    text(`Plus proche: ${detectedElements[0].text}`, 0, 25);
+    text(`Closer: ${detectedElements[0].text}`, 0, 25);
   }
   pop();
 

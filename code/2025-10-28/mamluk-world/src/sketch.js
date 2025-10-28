@@ -2,16 +2,157 @@ let pg; // Buffer pour la scène principale
 let zoomPg; // Buffer pour la vue zoomée
 let cam; // Caméra pour la scène principale
 
+let zoomFactor = 8; // Facteur de zoom
+let zoomSize = 240;
+
 let handX, handY;
 let prevHandX = 0,
   prevHandY = 0;
 let smoothingFactor = 0.2;
 
+let words = [];
+
+let isAnyHand = false;
+
 const Z_MAX = 50;
+
+const cardGameWords = [
+  "Ace",
+  "Deck",
+  "Shuffle",
+  "Joker",
+  "Deal",
+  "Hand",
+  "Trick",
+  "Trump",
+  "Spade",
+  "Heart",
+  "Diamond",
+  "Club",
+  "Card",
+  "Table",
+  "Game",
+  "Player",
+  "Bet",
+  "Ante",
+  "Raise",
+  "Fold",
+  "Call",
+  "Bluff",
+  "Draw",
+  "Discard",
+  "Wild",
+  "Stack",
+  "Point",
+  "Score",
+  "Turn",
+  "Round",
+  "Suit",
+  "Rank",
+  "Face",
+  "Cardboard",
+  "Tableau",
+  "Pinochle",
+  "Bridge",
+  "Poker",
+  "Rummy",
+  "Solitaire",
+  "Tarot",
+  "Canasta",
+  "Whist",
+  "Euchre",
+  "Cribbage",
+  "Go Fish",
+  "Old Maid",
+  "War",
+  "Snap",
+  "Baccarat",
+  "Blackjack",
+  "Texas Hold'em",
+  "Omaha",
+  "Seven Card Stud",
+  "Cut",
+  "Split",
+  "High",
+  "Low",
+  "Pot",
+  "Chips",
+  "Casino",
+  "Gamble",
+  "Wager",
+  "Odds",
+  "Strategy",
+  "Tactics",
+  "Skill",
+  "Luck",
+  "Game Theory",
+  "Session",
+  "Tournament",
+  "Cash Game",
+  "Blind",
+  "Straddle",
+  "Check",
+  "All-in",
+  "Showdown",
+  "Community Cards",
+  "Flop",
+  "Turn",
+  "River",
+  "Betting Round",
+  "Action",
+  "Table Stakes",
+  "Pit Boss",
+  "Dealer",
+  "Croupier",
+  "House",
+  "Payout",
+  "Rake",
+  "Split Pot",
+  "Side Pot",
+  "Muck",
+  "Burn",
+  "Drawing Dead",
+  "Outs",
+  "Equity",
+  "Range",
+  "Nuts",
+  "Value Bet",
+  "Bluff Catcher",
+  "Hero Call",
+  "Fish",
+  "Shark",
+  "Tilt",
+  "Variance",
+  "Session",
+  "Bankroll",
+  "Chip Lead",
+  "Bubble",
+];
+
+function preload() {
+  // Charger une police pour WEBGL
+  myFont = loadFont(
+    "https://cdnjs.cloudflare.com/ajax/libs/topcoat/0.8.0/font/SourceCodePro-Regular.otf"
+  );
+}
 
 function setup() {
   createCanvas(windowWidth, windowHeight, WEBGL);
   zoomPg = createGraphics(300, 300, WEBGL); // Taille du cercle de zoom
+
+  textFont(myFont);
+  textAlign(CENTER, CENTER);
+
+  zoomPg.textFont(myFont);
+  zoomPg.textAlign(CENTER, CENTER);
+
+  for (let i = 0; i < 100; i++) {
+    const x = random(-width * 0.5, width * 0.5);
+    const y = random(-height * 0.5, height * 0.5);
+    const z = random(-10, 10);
+    const size = random(4, 8);
+    words.push({ x, y, z, text: random(cardGameWords), size });
+  }
 
   cam = createCamera();
   setCamera(cam);
@@ -33,9 +174,9 @@ function draw() {
   drawScene(this);
   pop();
 
-  // Paramètres du zoom
-  let zoomFactor = 8;
-  let zoomSize = 200;
+  if (!isAnyHand) {
+    return;
+  }
 
   // Créer la vue zoomée
   zoomPg.push();
@@ -76,6 +217,8 @@ function draw() {
 
   // Créer le masque circulaire
   let maskGraphics = createGraphics(zoomSize, zoomSize);
+  maskGraphics.textFont(myFont);
+  maskGraphics.textAlign(CENTER, CENTER);
   maskGraphics.fill(255);
   maskGraphics.circle(zoomSize / 2, zoomSize / 2, zoomSize);
 
@@ -101,6 +244,17 @@ function draw() {
 function drawScene(renderer) {
   renderer.push();
   renderer.background(255);
+
+  // add 100 random text insite the scene
+  for (let i = 0; i < words.length; i++) {
+    const { x, y, z, text, size } = words[i];
+    renderer.push();
+    renderer.translate(x, y, z);
+    renderer.fill(0);
+    renderer.textSize(size);
+    renderer.text(text, 0, 0);
+    renderer.pop();
+  }
 
   // Utiliser une échelle basée sur la taille de la fenêtre
   let scaleX = width * 0.15;
@@ -258,6 +412,8 @@ function updateHandData() {
     for (let i = 0; i < hands.length; i++) {
       const hand = hands[i];
 
+      isAnyHand = true;
+
       let angle = angleBetweenPoints(hand.indexFinger[0], hand.thumb[0]) - 0.5;
       angle = constrain(angle, 0, 2);
 
@@ -278,9 +434,14 @@ function updateHandData() {
         handY = lerp(prevHandY, targetY, smoothingFactor);
       }
 
+      zoomFactor = map(angle, 0, PI / 2, 1, 16);
+      zoomSize = map(angle, 0, PI / 2, 240, 480);
+
       // Sauvegarder les valeurs pour la prochaine frame
       prevHandX = handX;
       prevHandY = handY;
     }
+  } else {
+    isAnyHand = false;
   }
 }

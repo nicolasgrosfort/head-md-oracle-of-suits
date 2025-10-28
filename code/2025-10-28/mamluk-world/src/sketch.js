@@ -1,11 +1,9 @@
 let pg; // Buffer pour la scène principale
 let zoomPg; // Buffer pour la vue zoomée
 let cam; // Caméra pour la scène principale
-let zoomCam; // Caméra pour la vue zoomée
 
 function setup() {
   createCanvas(windowWidth, windowHeight, WEBGL);
-  pg = createGraphics(windowWidth, windowHeight, WEBGL);
   zoomPg = createGraphics(300, 300, WEBGL); // Taille du cercle de zoom
 
   cam = createCamera();
@@ -21,11 +19,15 @@ function draw() {
   drawScene(this);
   pop();
 
-  // Calculer la position 3D correspondant à la souris
+  // Paramètres du zoom
   let zoomFactor = 2;
-  let zoomSize = 300;
+  let zoomSize = 200;
 
-  // Créer la vue zoomée centrée sur la zone sous la souris
+  // Convertir la position de la souris en coordonnées normalisées (-1 à 1)
+  let mouseXNorm = map(mouseX, 0, width, 1, -1);
+  let mouseYNorm = map(mouseY, 0, height, 1, -1);
+
+  // Créer la vue zoomée
   zoomPg.push();
 
   // Copier les paramètres de la caméra principale
@@ -41,11 +43,25 @@ function draw() {
     cam.upZ
   );
 
-  // Calculer l'offset de translation basé sur la position de la souris
-  let offsetX = map(mouseX, 0, width, -width / 4, width / 4) / zoomFactor;
-  let offsetY = map(mouseY, 0, height, -height / 4, height / 4) / zoomFactor;
+  // Calculer la distance de la caméra au centre
+  let camDistance = dist(
+    cam.eyeX,
+    cam.eyeY,
+    cam.eyeZ,
+    cam.centerX,
+    cam.centerY,
+    cam.centerZ
+  );
 
+  // Calculer l'offset basé sur la position de la souris
+  // Plus sensible car directement lié à la position écran et à la distance de la caméra
+  let offsetX = mouseXNorm * camDistance * 2;
+  let offsetY = mouseYNorm * camDistance * 2;
+
+  // Translater vers la zone survolée
   zoomPg.translate(offsetX, offsetY, 0);
+
+  // Appliquer le zoom
   zoomPg.scale(zoomFactor);
 
   drawScene(zoomPg);
@@ -88,5 +104,4 @@ function drawScene(renderer) {
 
 function windowResized() {
   resizeCanvas(windowWidth, windowHeight);
-  pg = createGraphics(windowWidth, windowHeight, WEBGL);
 }

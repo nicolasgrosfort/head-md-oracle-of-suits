@@ -437,7 +437,7 @@ function getRightHand() {
  * @returns {number} Angle en radians
  */
 function angleBetweenPoints(p1, p2) {
-  const angle = Math.atan2(p2.y - p1.y, p2.x - p1.x);
+  const angle = Math.abs(Math.atan2(p2.y - p1.y, p2.x - p1.x));
   return angle; // en radians
 }
 

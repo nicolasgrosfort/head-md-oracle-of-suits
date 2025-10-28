@@ -129,6 +129,34 @@ const cardGameWords = [
   "Bubble",
 ];
 
+let detectedElements = [];
+
+function detectElementsInMagnifier() {
+  let detected = [];
+
+  // Calculer la zone de la loupe en coordonnées de la scène
+  let centerX = handX - width * 0.5;
+  let centerY = handY - height * 0.5;
+  let radius = zoomSize / 2 / zoomFactor;
+
+  // Vérifier les mots
+  for (let i = 0; i < words.length; i++) {
+    const { x, y, z, text } = words[i];
+
+    // Distance 2D (ignorer Z pour simplifier)
+    let d = dist(x, y, centerX, centerY);
+
+    if (d < radius) {
+      detected.push({ type: "text", text: text, index: i, distance: d });
+    }
+  }
+
+  // Trier par distance (le plus proche en premier)
+  detected.sort((a, b) => a.distance - b.distance);
+
+  return detected;
+}
+
 function preload() {
   // Charger une police pour WEBGL
   myFont = loadFont(
@@ -177,6 +205,23 @@ function draw() {
   if (!isAnyHand) {
     return;
   }
+
+  detectedElements = detectElementsInMagnifier();
+
+  // Afficher le nombre d'éléments détectés
+  push();
+  translate(-width * 0.5 + 60, -height * 0.5 + 50, Z_MAX);
+  fill(0);
+  textSize(16);
+  textAlign(LEFT, CENTER);
+  text(`Éléments détectés: ${detectedElements.length}`, 0, 0);
+
+  // Afficher le premier élément
+  if (detectedElements.length > 0) {
+    textAlign(LEFT, CENTER);
+    text(`Plus proche: ${detectedElements[0].text}`, 0, 25);
+  }
+  pop();
 
   // Créer la vue zoomée
   zoomPg.push();

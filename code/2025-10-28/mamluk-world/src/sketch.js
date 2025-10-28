@@ -2,6 +2,11 @@ let pg; // Buffer pour la scène principale
 let zoomPg; // Buffer pour la vue zoomée
 let cam; // Caméra pour la scène principale
 
+let handX, handY;
+let prevHandX = 0,
+  prevHandY = 0;
+let smoothingFactor = 0.2;
+
 const Z_MAX = 50;
 
 function setup() {
@@ -10,10 +15,17 @@ function setup() {
 
   cam = createCamera();
   setCamera(cam);
+
+  createHandTracker({
+    maxHands: 1,
+    selfieMode: true,
+  });
 }
 
 function draw() {
   background(255);
+
+  updateHandData();
 
   // Dessiner la scène principale
   push();
@@ -24,10 +36,6 @@ function draw() {
   // Paramètres du zoom
   let zoomFactor = 8;
   let zoomSize = 200;
-
-  // Convertir la position de la souris en coordonnées normalisées (-1 à 1)
-  let mouseXNorm = map(mouseX, 0, width, 1, -1);
-  let mouseYNorm = map(mouseY, 0, height, 1, -1);
 
   // Créer la vue zoomée
   zoomPg.push();
@@ -55,14 +63,9 @@ function draw() {
     cam.centerZ
   );
 
-  // Calculer l'offset basé sur la position de la souris
-  // Plus sensible car directement lié à la position écran et à la distance de la caméra
-  let offsetX = mouseXNorm * camDistance * zoomFactor;
-  let offsetY = mouseYNorm * camDistance * zoomFactor;
-
   // Translater vers la zone survolée
-  const zoomX = -(mouseX - width * 0.5) * zoomFactor;
-  const zoomY = -(mouseY - height * 0.5) * zoomFactor;
+  const zoomX = -(handX - width * 0.5) * zoomFactor;
+  const zoomY = -(handY - height * 0.5) * zoomFactor;
   zoomPg.translate(zoomX, zoomY, Z_MAX);
 
   // Appliquer le zoom
@@ -82,7 +85,7 @@ function draw() {
 
   // Afficher le cercle à la position de la souris
   push();
-  translate(-width * 0.5 + mouseX, -height * 0.5 + mouseY, Z_MAX);
+  translate(-width * 0.5 + handX, -height * 0.5 + handY, Z_MAX);
   texture(masked);
   noStroke();
   circle(0, 0, zoomSize);
@@ -248,4 +251,36 @@ function drawScene(renderer) {
 
 function windowResized() {
   resizeCanvas(windowWidth, windowHeight);
+}
+
+function updateHandData() {
+  if (hands.length > 0) {
+    for (let i = 0; i < hands.length; i++) {
+      const hand = hands[i];
+
+      let angle = angleBetweenPoints(hand.indexFinger[0], hand.thumb[0]) - 0.5;
+      angle = constrain(angle, 0, 2);
+
+      const rawPalmX = hand.palm.x;
+      const rawPalmY = hand.palm.y;
+
+      // Appliquer un lissage progressif
+      const targetX = rawPalmX * width;
+      const targetY = rawPalmY * height;
+
+      // Si c'est la première frame, initialiser les valeurs
+      if (prevHandX === 0 && prevHandY === 0) {
+        handX = targetX;
+        handY = targetY;
+      } else {
+        // Appliquer le lissage exponentiel
+        handX = lerp(prevHandX, targetX, smoothingFactor);
+        handY = lerp(prevHandY, targetY, smoothingFactor);
+      }
+
+      // Sauvegarder les valeurs pour la prochaine frame
+      prevHandX = handX;
+      prevHandY = handY;
+    }
+  }
 }

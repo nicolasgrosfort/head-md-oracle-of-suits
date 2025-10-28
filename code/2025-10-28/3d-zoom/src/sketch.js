@@ -285,11 +285,12 @@ function draw() {
   circle(0, 0, zoomSize);
   pop();
 
-  push();
-  tint(255, 40);
-  translate(-width * 0.5, -height * 0.5, Z_MAX);
-  showHandVideo();
-  pop();
+  // Décommenté pour afficher la vidéo
+  // push();
+  // tint(255, 40);
+  // translate(-width * 0.5, -height * 0.5, Z_MAX);
+  // showHandVideo();
+  // pop();
 }
 
 function windowResized() {

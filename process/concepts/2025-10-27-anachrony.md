@@ -9,12 +9,12 @@ The player uses various gestures to interact with the environment.
 | **Title**                                           | **Goal**                            | **Gesture**                                     | **Feedback**  |
 | --------------------------------------------------- | ----------------------------------- | ----------------------------------------------- | ------------- |
 | [The Chronoscope](../gestures/the-chronoscope.md)   | Navigating between eras             | Turn the left hand in line with the arm         | Light + Sound |
-| [The Flashlight ](../gestures/the-flashlight.md)    | Reveal card fragments               | Move the right hand in line with the arm        | Light         |
-| [The Candle](../gestures/the-candle.md)             | Reveal the silhouettes of the suits | Thumbs up, move your hand in space              | Light         |
-| [The Bellow](../gestures/the-bellows.md)            | Removing dust from cards            | Blow gently, as if to clear dust                | Wind          |
-| [The Palette](../gestures/the-palette.md)           | Reveal the colors of the suits      | Move your hands in a painting motion            | Sound         |
-| [The Spyglass](../gestures/the-spyglass.md)         | See further in the scene            | Use both index fingers to zoom                  | Wind          |
-| [The Configurator](../gestures/the-configurator.md) | Change the appearance of the joker  | Touching your eyes, nose and mouth like buttons | Sound         |
+| [The Flashlight ](../gestures/the-flashlight.md)    | Reveal card fragments               | Move the right hand in line with the arm        | Light + Sound |
+| [The Candle](../gestures/the-candle.md)             | Reveal the silhouettes of the suits | Thumbs up, move your hand in space              | Light + Sound |
+| [The Bellow](../gestures/the-bellows.md)            | Removing dust from cards            | Blow gently, as if to clear dust                | Light + Sound |
+| [The Palette](../gestures/the-palette.md)           | Reveal the colors of the suits      | Move your hands in a painting motion            | Light + Sound |
+| [The Spyglass](../gestures/the-spyglass.md)         | See further in the scene            | Use both index fingers to zoom                  | Light + Sound |
+| [The Configurator](../gestures/the-configurator.md) | Change the appearance of the joker  | Touching your eyes, nose and mouth like buttons | Light + Sound |
 
 ## Keyword
 

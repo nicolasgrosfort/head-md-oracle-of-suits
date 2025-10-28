@@ -203,11 +203,15 @@ function draw() {
 
   updateHandData();
 
-  unlockProgression = lerp(
-    unlockProgression,
-    targetUnlockProgression,
-    unlockSmoothingFactor
-  );
+  if (isAnyHand) {
+    unlockProgression = lerp(
+      unlockProgression,
+      targetUnlockProgression,
+      unlockSmoothingFactor
+    );
+  } else {
+    unlockProgression = 0;
+  }
 
   if (unlockProgression < 1 && !isUnlocked) {
     if (!isAnyHand) {
@@ -215,8 +219,10 @@ function draw() {
     }
     // Dessine un cercle principal au centre
     push();
-    fill(0);
+    const green = color(0, 200, 0);
+    fill(isAnyHand ? green : 0);
     noStroke();
+    scale(1 + 1 * unlockProgression * 0.5);
     circle(0, 0, 100);
 
     // Dessine la progression de déverrouillage
@@ -326,7 +332,12 @@ function windowResized() {
 function updateHandData() {
   if (hands.length > 0) {
     for (let i = 0; i < hands.length; i++) {
+      // Right hand only
       const hand = hands[i];
+
+      if (hand.handedness !== "Right") {
+        continue;
+      }
 
       isAnyHand = true;
 
@@ -361,8 +372,9 @@ function updateHandData() {
         let angleDiff = abs(angle - prevAngle);
 
         if (angleDiff > 0.01) {
-          targetUnlockProgression += (angle - prevAngle) * 0.8; // Modifier targetUnlockProgression au lieu de unlockProgression
+          targetUnlockProgression += (angle - prevAngle) * 0.6; // Modifier targetUnlockProgression au lieu de unlockProgression
         }
+
         if (targetUnlockProgression <= 0) targetUnlockProgression = 0;
       }
 

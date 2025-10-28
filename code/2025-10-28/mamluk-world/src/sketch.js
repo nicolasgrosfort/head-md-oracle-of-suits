@@ -2,6 +2,8 @@ let pg; // Buffer pour la scène principale
 let zoomPg; // Buffer pour la vue zoomée
 let cam; // Caméra pour la scène principale
 
+const Z_MAX = 50;
+
 function setup() {
   createCanvas(windowWidth, windowHeight, WEBGL);
   zoomPg = createGraphics(300, 300, WEBGL); // Taille du cercle de zoom
@@ -59,7 +61,9 @@ function draw() {
   let offsetY = mouseYNorm * camDistance * zoomFactor;
 
   // Translater vers la zone survolée
-  zoomPg.translate(offsetX, offsetY, 0);
+  const zoomX = -(mouseX - width * 0.5) * zoomFactor;
+  const zoomY = -(mouseY - height * 0.5) * zoomFactor;
+  zoomPg.translate(zoomX, zoomY, Z_MAX);
 
   // Appliquer le zoom
   zoomPg.scale(zoomFactor);
@@ -78,7 +82,7 @@ function draw() {
 
   // Afficher le cercle à la position de la souris
   push();
-  translate(-width / 2 + mouseX, -height / 2 + mouseY, 100);
+  translate(-width * 0.5 + mouseX, -height * 0.5 + mouseY, Z_MAX);
   texture(masked);
   noStroke();
   circle(0, 0, zoomSize);

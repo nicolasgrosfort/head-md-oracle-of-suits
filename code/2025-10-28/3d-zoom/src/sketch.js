@@ -3,6 +3,8 @@ let zoomPg; // Buffer pour la vue zoomée
 let cam; // Caméra pour la scène principale
 
 let unlockProgression = 0;
+let targetUnlockProgression = 0; // Ajouter cette variable
+let unlockSmoothingFactor = 0.3; // Facteur de lissage pour le unlock
 let prevAngle;
 
 let zoomFactor = 8; // Facteur de zoom
@@ -12,6 +14,8 @@ let handX, handY;
 let prevHandX = 0,
   prevHandY = 0;
 let smoothingFactor = 0.2;
+
+let isUnlocked = false;
 
 let words = [];
 
@@ -199,9 +203,15 @@ function draw() {
 
   updateHandData();
 
-  if (unlockProgression < 1) {
+  unlockProgression = lerp(
+    unlockProgression,
+    targetUnlockProgression,
+    unlockSmoothingFactor
+  );
+
+  if (unlockProgression < 1 && !isUnlocked) {
     if (!isAnyHand) {
-      unlockProgression = 0;
+      targetUnlockProgression = 0; // Modifier ici
     }
     // Dessine un cercle principal au centre
     push();
@@ -223,6 +233,8 @@ function draw() {
 
     return;
   }
+
+  isUnlocked = true;
 
   // Dessiner la scène principale
   push();
@@ -346,7 +358,12 @@ function updateHandData() {
       prevHandY = handY;
 
       if (prevAngle && prevAngle !== angle) {
-        unlockProgression += abs(angle - prevAngle) * 0.5;
+        let angleDiff = abs(angle - prevAngle);
+
+        if (angleDiff > 0.01) {
+          targetUnlockProgression += (angle - prevAngle) * 0.8; // Modifier targetUnlockProgression au lieu de unlockProgression
+        }
+        if (targetUnlockProgression <= 0) targetUnlockProgression = 0;
       }
 
       prevAngle = angle;

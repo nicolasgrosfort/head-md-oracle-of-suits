@@ -3,7 +3,7 @@ let zoomPg; // Buffer pour la vue zoomée
 let cam; // Caméra pour la scène principale
 
 let zoomFactor = 8; // Facteur de zoom
-let zoomSize = 240;
+let zoomSize = 200;
 
 let handX, handY;
 let prevHandX = 0,
@@ -239,6 +239,12 @@ function draw() {
   strokeWeight(2);
   circle(0, 0, zoomSize);
   pop();
+
+  push();
+  tint(255, 40);
+  translate(-width * 0.5, -height * 0.5, Z_MAX);
+  showHandVideo();
+  pop();
 }
 
 function windowResized() {
@@ -252,7 +258,7 @@ function updateHandData() {
 
       isAnyHand = true;
 
-      let angle = angleBetweenPoints(hand.indexFinger[0], hand.thumb[0]) - 0.5;
+      let angle = angleBetweenPoints(hand.indexFinger[0], hand.thumb[0]) - 0.75;
       angle = constrain(angle, 0, 2);
 
       const rawPalmX = hand.palm.x;
@@ -272,8 +278,8 @@ function updateHandData() {
         handY = lerp(prevHandY, targetY, smoothingFactor);
       }
 
-      zoomFactor = map(angle, 0, PI / 2, 1, 16);
-      zoomSize = map(angle, 0, PI / 2, 240, 480);
+      zoomFactor = map(angle, 0, PI / 2, 1, 8);
+      zoomSize = map(angle, 0, PI / 2, 200, 600);
 
       // Sauvegarder les valeurs pour la prochaine frame
       prevHandX = handX;

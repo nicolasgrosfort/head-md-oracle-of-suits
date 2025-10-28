@@ -8,3 +8,4 @@ Adjust the zoom level based on the wrist angle.
 ## Result
 
 ![3D Zoom](./docs/3d-zoom.gif)
+![3D Zoom Onboarding](./docs/3d-zoom-onboarding.gif)

@@ -294,16 +294,17 @@ Drawing on Nicolas Nova's writings (La persistance du merveilleux, Bestiary of t
 - ~~Define the tech-stack~~
 - ~~Define an "Initial State"~~
 - ~~Draw a sketch for each sequence~~
-- Get feedback from Douglas about the current concept
-- Define how information reaches the player
+- Reduce the number of gestures
+- Decide whether to use a template object
 - Define how to show gestures to the user
-- Update "Research" section to reflect actual project
+- Define how information reaches the player
+- Prototype the "Mamluk World" sequence
+- Test the prototype with real people
+- Define a visual identity
+- Define sound design approach
 - Prototype "The Chronoscope" gesture
 - Prototype "The Candle" gesture
 - Prototype "The Palette" gesture (v2)
 - Prototype the head movement tracking for the final sequence
-- Define a visual identity
-- Define sound design approach
 - Create a prototype of "The Mythological Breakdown" sequence
-- Test the prototype with real people
--
+- Update "Research" section to reflect actual project

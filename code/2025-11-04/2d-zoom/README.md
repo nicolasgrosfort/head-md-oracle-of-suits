@@ -7,3 +7,4 @@ Evaluate the feasibility of using a 2D scene, whether it works with my zoom idea
 ## Result
 
 ![2D Zoom](./docs/2d-zoom.gif)
+![2D Zoom Card](./docs/2d-zoom-card.gif)

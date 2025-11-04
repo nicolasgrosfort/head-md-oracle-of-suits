@@ -1,10 +1,27 @@
 let mainGraphics;
+let loupeGraphics;
 let loupeSize = 250;
-let zoomFactor = 6;
+let zoomFactor = 4;
 let pxd = 8;
-let blur = 4;
+let blr = 4;
 
 let cards = [];
+
+let cardImages = []; // Tableau pour stocker les images
+
+function preload() {
+  const imageUrls = [
+    "https://picsum.photos/200/300?random=1",
+    "https://picsum.photos/200/300?random=2",
+    "https://picsum.photos/200/300?random=3",
+    "https://picsum.photos/200/300?random=4",
+    "https://picsum.photos/200/300?random=5",
+  ];
+
+  for (let url of imageUrls) {
+    cardImages.push(loadImage(url));
+  }
+}
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
@@ -24,18 +41,24 @@ function setup() {
       speedX: random(-0.1, 0.1),
       speedY: random(-0.1, 0.1),
       label: `Carte ${i + 1}`,
+      imageIndex: floor(random(cardImages.length)),
     });
   }
 
   mainGraphics = createGraphics(windowWidth, windowHeight);
-  mainGraphics.pixelDensity(pxd);
+  mainGraphics.pixelDensity(1);
+
+  loupeGraphics = createGraphics(windowWidth, windowHeight);
+  loupeGraphics.pixelDensity(pxd);
 }
 
 function draw() {
-  drawScene(mainGraphics);
+  drawScene(mainGraphics, false); // Version normale
+  drawScene(loupeGraphics, true); // Version pour la loupe
+
   image(mainGraphics, 0, 0);
 
-  filter(BLUR, blur);
+  filter(BLUR, blr);
 
   let hoveredCard = getHoveredCard();
 
@@ -95,48 +118,91 @@ function getHoveredCard() {
   return null;
 }
 
-function drawScene(pg) {
+function drawScene(pg, isLoupeVersion) {
   pg.background(0);
 
   for (let card of cards) {
-    // Mise à jour position
-    card.x += card.speedX;
-    card.y += card.speedY;
+    // Mise à jour position (seulement pour la version principale)
+    if (!isLoupeVersion) {
+      card.x += card.speedX;
+      card.y += card.speedY;
 
-    if (card.x < 0 || card.x > pg.width) {
-      card.speedX *= -1;
-    }
-    if (card.y < 0 || card.y > pg.height) {
-      card.speedY *= -1;
-    }
+      if (card.x < 0 || card.x > pg.width) {
+        card.speedX *= -1;
+      }
+      if (card.y < 0 || card.y > pg.height) {
+        card.speedY *= -1;
+      }
 
-    // Mise à jour rotation et flottement
-    card.rotationY += card.rotationSpeed;
-    card.floatOffset += card.floatSpeed;
+      card.rotationY += card.rotationSpeed;
+      card.floatOffset += card.floatSpeed;
+    }
 
     // Dessiner la carte
-    drawCard(pg, card);
+    drawCard(pg, card, isLoupeVersion);
   }
 }
 
-function drawCard(pg, card) {
+function drawCard(pg, card, isLoupeVersion) {
   pg.push();
 
-  // Position avec flottement
   let floatY = card.y + sin(card.floatOffset) * card.floatAmplitude;
   pg.translate(card.x, floatY);
 
-  // Calculer la largeur apparente avec la rotation (perspective simple)
   let apparentWidth = cos(card.rotationY) * card.width;
 
-  // Couleur de la carte (recto/verso)
-  let cardColor = abs(cos(card.rotationY)) > 0.5 ? 255 : 255;
+  // Afficher l'image seulement si la carte est de face
+  if (cos(card.rotationY) > 0 && cardImages[card.imageIndex]) {
+    // Créer un masque avec les coins arrondis
+    pg.push();
+    pg.drawingContext.save();
 
-  // Carte - utiliser abs() pour éviter les dimensions négatives
-  pg.fill(cardColor);
-  pg.stroke(0);
+    // Créer le chemin arrondi
+    let w = abs(apparentWidth);
+    let h = card.height;
+    let r = 5; // Rayon des coins
+
+    pg.drawingContext.beginPath();
+    pg.drawingContext.moveTo(-w / 2 + r, -h / 2);
+    pg.drawingContext.lineTo(w / 2 - r, -h / 2);
+    pg.drawingContext.quadraticCurveTo(w / 2, -h / 2, w / 2, -h / 2 + r);
+    pg.drawingContext.lineTo(w / 2, h / 2 - r);
+    pg.drawingContext.quadraticCurveTo(w / 2, h / 2, w / 2 - r, h / 2);
+    pg.drawingContext.lineTo(-w / 2 + r, h / 2);
+    pg.drawingContext.quadraticCurveTo(-w / 2, h / 2, -w / 2, h / 2 - r);
+    pg.drawingContext.lineTo(-w / 2, -h / 2 + r);
+    pg.drawingContext.quadraticCurveTo(-w / 2, -h / 2, -w / 2 + r, -h / 2);
+    pg.drawingContext.closePath();
+    pg.drawingContext.clip();
+
+    pg.imageMode(CENTER);
+
+    // Appliquer un tint différent selon la version
+    if (isLoupeVersion) {
+      pg.tint(255, 200, 200);
+    } else {
+      pg.tint(255);
+    }
+
+    // Dessiner l'image
+    pg.image(cardImages[card.imageIndex], 0, 0, w, h);
+
+    pg.noTint();
+    pg.drawingContext.restore();
+    pg.pop();
+  } else {
+    // Verso de la carte (gris)
+    pg.fill(230);
+    pg.noStroke();
+    pg.rectMode(CENTER);
+    pg.rect(0, 0, abs(apparentWidth), card.height, 5);
+  }
+
+  // Bordure de la carte (par-dessus l'image)
+  pg.noFill();
+  pg.stroke(255);
   pg.strokeWeight(2);
-  pg.rectMode(CENTER); // Utiliser le mode CENTER pour éviter les problèmes
+  pg.rectMode(CENTER);
   pg.rect(0, 0, abs(apparentWidth), card.height, 5);
 
   pg.pop();
@@ -148,7 +214,8 @@ function drawMagnifier() {
   let sy = mouseY - copySize / 2;
 
   push();
-  let zoomedRegion = mainGraphics.get(sx, sy, copySize, copySize);
+  // Utiliser loupeGraphics au lieu de mainGraphics
+  let zoomedRegion = loupeGraphics.get(sx, sy, copySize, copySize);
 
   drawingContext.save();
   drawingContext.beginPath();

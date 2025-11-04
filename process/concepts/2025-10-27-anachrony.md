@@ -294,14 +294,19 @@ Drawing on Nicolas Nova's writings (La persistance du merveilleux, Bestiary of t
 - ~~Define the tech-stack~~
 - ~~Define an "Initial State"~~
 - ~~Draw a sketch for each sequence~~
-- Reduce the number of gestures
-- Decide whether to use a template object
+- ~~Reduce the number of gestures~~
+- ~~Decide whether to use a template object~~
+- ~~Define how information reaches the player~~
+- Install the wooden panels
+- Slicing screens with p5.js
+- Animating an input element on the screens
+- Map gesture with possible actions
+- Typographic research (1 / scene)
 - Define how to show gestures to the user
-- Define how information reaches the player
-- Prototype the "Mamluk World" sequence
-- Test the prototype with real people
 - Define a visual identity
 - Define sound design approach
+- Prototype the "Mamluk World" sequence
+- Test the prototype with real people
 - Prototype "The Chronoscope" gesture
 - Prototype "The Candle" gesture
 - Prototype "The Palette" gesture (v2)

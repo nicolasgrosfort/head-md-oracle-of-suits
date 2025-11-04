@@ -9,6 +9,12 @@ let cards = [];
 
 let cardImages = []; // Tableau pour stocker les images
 
+let handX, handY;
+let prevHandX = 0,
+  prevHandY = 0;
+let smoothingFactor = 0.2;
+let isAnyHand = false;
+
 function preload() {
   const imageUrls = [
     "https://picsum.photos/200/300?random=1",
@@ -50,9 +56,22 @@ function setup() {
 
   loupeGraphics = createGraphics(windowWidth, windowHeight);
   loupeGraphics.pixelDensity(pxd);
+
+  // Initialiser le hand tracking
+  createHandTracker({
+    maxHands: 1,
+    selfieMode: true,
+  });
+
+  // Initialiser la position de la main au centre
+  handX = width / 2;
+  handY = height / 2;
 }
 
 function draw() {
+  // Mettre à jour les données de la main
+  updateHandData();
+
   drawScene(mainGraphics, false); // Version normale
   drawScene(loupeGraphics, true); // Version pour la loupe
 
@@ -67,13 +86,71 @@ function draw() {
   if (hoveredCard) {
     displayLabel(hoveredCard);
   }
+
+  // Afficher un indicateur si la main est détectée
+  if (isAnyHand) {
+    push();
+    fill(0, 255, 0);
+    noStroke();
+    textSize(16);
+    textAlign(LEFT, TOP);
+    text("Hand detected", 10, 10);
+    pop();
+  }
+}
+
+function updateHandData() {
+  if (hands.length > 0) {
+    for (let i = 0; i < hands.length; i++) {
+      const hand = hands[i];
+
+      // Utiliser la main droite uniquement (ou les deux)
+      if (hand.handedness !== "Right") {
+        continue;
+      }
+
+      isAnyHand = true;
+
+      const rawPalmX = hand.palm.x;
+      const rawPalmY = hand.palm.y;
+
+      // Convertir en coordonnées de canvas
+      const targetX = rawPalmX * width;
+      const targetY = rawPalmY * height;
+
+      // Si c'est la première frame, initialiser les valeurs
+      if (prevHandX === 0 && prevHandY === 0) {
+        handX = targetX;
+        handY = targetY;
+      } else {
+        // Appliquer le lissage exponentiel
+        handX = lerp(prevHandX, targetX, smoothingFactor);
+        handY = lerp(prevHandY, targetY, smoothingFactor);
+      }
+
+      // Sauvegarder les valeurs pour la prochaine frame
+      prevHandX = handX;
+      prevHandY = handY;
+
+      // Optionnel: ajuster le zoom en fonction de l'angle des doigts
+      let angle = angleBetweenPoints(hand.indexFinger[0], hand.thumb[0]);
+      angle = constrain(angle, 0, PI / 2);
+      zoomFactor = map(angle, 0, PI / 2, 2, 8);
+      loupeSize = map(angle, 0, PI / 2, 150, 400);
+    }
+  } else {
+    isAnyHand = false;
+  }
 }
 
 function displayLabel(card) {
   push();
 
-  let labelX = mouseX;
-  let labelY = mouseY - loupeSize / 2 - 30;
+  // Utiliser handX/handY au lieu de mouseX/mouseY
+  let labelX = isAnyHand ? handX : mouseX;
+  let labelY = isAnyHand
+    ? handY - loupeSize / 2 - 30
+    : mouseY - loupeSize / 2 - 30;
 
   fill(0, 0, 0, 200);
   noStroke();
@@ -96,21 +173,30 @@ function displayLabel(card) {
 
   stroke(255);
   strokeWeight(2);
-  line(labelX, labelY + labelHeight / 2, mouseX, mouseY - loupeSize / 2);
+  line(
+    labelX,
+    labelY + labelHeight / 2,
+    labelX,
+    labelY + labelHeight / 2 + loupeSize / 2 - 30
+  );
 
   pop();
 }
 
 function getHoveredCard() {
+  // Utiliser handX/handY au lieu de mouseX/mouseY
+  let checkX = isAnyHand ? handX : mouseX;
+  let checkY = isAnyHand ? handY : mouseY;
+
   for (let card of cards) {
     let apparentWidth = abs(cos(card.rotationY)) * card.width;
     let floatY = card.y + sin(card.floatOffset) * card.floatAmplitude;
 
     if (
-      mouseX > card.x - apparentWidth / 2 &&
-      mouseX < card.x + apparentWidth / 2 &&
-      mouseY > floatY - card.height / 2 &&
-      mouseY < floatY + card.height / 2
+      checkX > card.x - apparentWidth / 2 &&
+      checkX < card.x + apparentWidth / 2 &&
+      checkY > floatY - card.height / 2 &&
+      checkY < floatY + card.height / 2
     ) {
       return card;
     }
@@ -209,23 +295,26 @@ function drawCard(pg, card, isLoupeVersion) {
 }
 
 function drawMagnifier() {
+  // Utiliser handX/handY au lieu de mouseX/mouseY
+  let centerX = isAnyHand ? handX : mouseX;
+  let centerY = isAnyHand ? handY : mouseY;
+
   let copySize = loupeSize / zoomFactor;
-  let sx = mouseX - copySize / 2;
-  let sy = mouseY - copySize / 2;
+  let sx = centerX - copySize / 2;
+  let sy = centerY - copySize / 2;
 
   push();
-  // Utiliser loupeGraphics au lieu de mainGraphics
   let zoomedRegion = loupeGraphics.get(sx, sy, copySize, copySize);
 
   drawingContext.save();
   drawingContext.beginPath();
-  drawingContext.arc(mouseX, mouseY, loupeSize / 2, 0, TWO_PI);
+  drawingContext.arc(centerX, centerY, loupeSize / 2, 0, TWO_PI);
   drawingContext.clip();
 
   image(
     zoomedRegion,
-    mouseX - loupeSize / 2,
-    mouseY - loupeSize / 2,
+    centerX - loupeSize / 2,
+    centerY - loupeSize / 2,
     loupeSize,
     loupeSize
   );
@@ -235,6 +324,11 @@ function drawMagnifier() {
   noFill();
   stroke(50);
   strokeWeight(4);
-  circle(mouseX, mouseY, loupeSize);
+  circle(centerX, centerY, loupeSize);
   pop();
+}
+
+// Fonction helper pour calculer l'angle entre deux points
+function angleBetweenPoints(p1, p2) {
+  return atan2(p2.y - p1.y, p2.x - p1.x);
 }

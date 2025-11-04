@@ -1,14 +1,14 @@
 let mainGraphics;
 let loupeSize = 250;
 let zoomFactor = 6;
-
-const pxd = 8;
+let pxd = 8;
+let blur = 4;
 
 let cards = [];
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
-  pixelDensity(pxd);
+  pixelDensity(1);
 
   for (let i = 0; i < 100; i++) {
     cards.push({
@@ -34,6 +34,8 @@ function setup() {
 function draw() {
   drawScene(mainGraphics);
   image(mainGraphics, 0, 0);
+
+  filter(BLUR, blur);
 
   let hoveredCard = getHoveredCard();
 

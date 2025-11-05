@@ -1,32 +1,34 @@
 import p5 from "p5";
 
 import * as mediaPipe from "./libs/media-pipe";
+import * as config from "./utils/config";
 import * as utils from "./utils/utils";
 
 new p5((p: p5) => {
   p.setup = async () => {
-    p.createCanvas(p.windowWidth, p.windowHeight);
+    p.createCanvas(config.sketch.width, config.sketch.height);
     await mediaPipe.initialize(p);
   };
 
   p.draw = () => {
-    p.background(220);
+    p.background(255);
     mediaPipe.detect();
 
     const video = mediaPipe.getVideo();
     utils.drawVideo(p, video, { hide: true });
 
     const handResults = mediaPipe.getGestureResults();
-    utils.drawHands(p, handResults, { hide: true });
+    utils.drawHands(p, handResults);
 
     const faceResults = mediaPipe.getFaceResults();
-    utils.drawFace(p, faceResults, { hide: true });
+    utils.drawFace(p, faceResults);
 
     const poseResults = mediaPipe.getPoseResults();
-    utils.drawBody(p, poseResults, { hide: true });
-  };
+    utils.drawBody(p, poseResults);
 
-  p.windowResized = () => {
-    p.resizeCanvas(p.windowWidth, p.windowHeight);
+    const canvasContent = p.get();
+
+    p.background(0);
+    utils.drawScreens(p, config.screens, canvasContent);
   };
 });

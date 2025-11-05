@@ -4,6 +4,9 @@ import type {
   PoseLandmarkerResult,
 } from "@mediapipe/tasks-vision";
 import type p5 from "p5";
+import type { Screens } from "./types";
+
+const LANDMARK_RADIUS = 8;
 
 export const drawVideo = (
   p: p5,
@@ -44,7 +47,7 @@ export const drawHands = (
       for (const landmark of landmarks) {
         const x = p.width - landmark.x * p.width;
         const y = landmark.y * p.height;
-        p.circle(x, y, 5);
+        p.circle(x, y, LANDMARK_RADIUS);
       }
 
       if (options.drawGestures && handResults.gestures?.[i]?.[0]) {
@@ -102,7 +105,7 @@ export const drawFace = (
         const landmark = faceLandmarks[idx];
         const x = p.width - landmark.x * p.width;
         const y = landmark.y * p.height;
-        p.circle(x, y, 5);
+        p.circle(x, y, LANDMARK_RADIUS);
       }
     }
 
@@ -114,7 +117,7 @@ export const drawFace = (
         const landmark = faceLandmarks[idx];
         const x = p.width - landmark.x * p.width;
         const y = landmark.y * p.height;
-        p.circle(x, y, 5);
+        p.circle(x, y, LANDMARK_RADIUS);
       }
     }
 
@@ -125,7 +128,7 @@ export const drawFace = (
         const landmark = faceLandmarks[idx];
         const x = p.width - landmark.x * p.width;
         const y = landmark.y * p.height;
-        p.circle(x, y, 5);
+        p.circle(x, y, LANDMARK_RADIUS);
       }
     }
 
@@ -139,7 +142,7 @@ export const drawFace = (
         const landmark = faceLandmarks[idx];
         const x = p.width - landmark.x * p.width;
         const y = landmark.y * p.height;
-        p.circle(x, y, 5);
+        p.circle(x, y, LANDMARK_RADIUS);
       }
     }
   }
@@ -173,13 +176,13 @@ export const drawBody = (
         const landmark = poseLandmarks[i];
         const x = p.width - landmark.x * p.width;
         const y = landmark.y * p.height;
-        p.circle(x, y, 5);
+        p.circle(x, y, LANDMARK_RADIUS);
       }
     }
 
     if (options.drawConnections !== false) {
       p.stroke(255, 0, 255);
-      p.strokeWeight(2);
+      p.strokeWeight(LANDMARK_RADIUS * 0.5);
       const connections = [
         [11, 12],
         [11, 13],
@@ -204,5 +207,28 @@ export const drawBody = (
         p.line(x1, y1, x2, y2);
       }
     }
+  }
+};
+
+export const drawScreens = (p: p5, screens: Screens, content?: p5.Image) => {
+  if (!content) return;
+
+  for (const screen of Object.values(screens)) {
+    p.push();
+
+    p.drawingContext.save();
+    p.drawingContext.beginPath();
+    p.drawingContext.rect(screen.x, screen.y, screen.width, screen.height);
+    p.drawingContext.clip();
+
+    p.image(content as any, 0, 0, p.width, p.height);
+
+    p.drawingContext.restore();
+    p.pop();
+
+    p.noFill();
+    p.stroke(0);
+    p.strokeWeight(2);
+    p.rect(screen.x, screen.y, screen.width, screen.height);
   }
 };

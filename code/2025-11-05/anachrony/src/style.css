@@ -3,8 +3,21 @@
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+
+  --padding: 20px;
 }
 
 body {
   margin: 0;
+  background-color: black;
+  padding: var(--padding);
+}
+
+canvas {
+  display: block;
+  max-width: calc(100vw - var(--padding) * 2);
+  max-height: calc(100vh - var(--padding) * 2);
+  width: auto;
+  height: auto;
+  object-fit: contain;
 }

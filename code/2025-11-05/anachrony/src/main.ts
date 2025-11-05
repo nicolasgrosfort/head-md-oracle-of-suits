@@ -17,13 +17,13 @@ new p5((p: p5) => {
     utils.drawVideo(p, video, { hide: true });
 
     const handResults = mediaPipe.getGestureResults();
-    utils.drawHands(p, handResults);
+    utils.drawHands(p, handResults, { hide: true });
 
     const faceResults = mediaPipe.getFaceResults();
-    utils.drawFace(p, faceResults);
+    utils.drawFace(p, faceResults, { hide: true });
 
     const poseResults = mediaPipe.getPoseResults();
-    utils.drawBody(p, poseResults);
+    utils.drawBody(p, poseResults, { hide: true });
   };
 
   p.windowResized = () => {

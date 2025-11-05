@@ -10,7 +10,8 @@ export const drawVideo = (
   video: p5.Element | null,
   options: { hide: boolean }
 ) => {
-  if (!options.hide && video) {
+  if (options.hide) return;
+  if (video) {
     p.push();
     p.translate(p.width, 0);
     p.scale(-1, 1);
@@ -22,11 +23,18 @@ export const drawVideo = (
 export const drawHands = (
   p: p5,
   handResults: GestureRecognizerResult | null,
-  options: { drawLandmarks: boolean; drawGestures: boolean } = {
+  options: {
+    hide?: boolean;
+    drawLandmarks?: boolean;
+    drawGestures?: boolean;
+  } = {
+    hide: false,
     drawLandmarks: true,
     drawGestures: false,
   }
 ) => {
+  if (options.hide) return;
+
   if (options.drawLandmarks && handResults?.landmarks) {
     for (let i = 0; i < handResults.landmarks.length; i++) {
       const landmarks = handResults.landmarks[i];
@@ -64,17 +72,21 @@ export const drawFace = (
   p: p5,
   faceResults: FaceLandmarkerResult | null,
   options: {
+    hide?: boolean;
     drawOutline?: boolean;
     drawEyes?: boolean;
     drawNose?: boolean;
     drawMouth?: boolean;
   } = {
+    hide: false,
     drawOutline: true,
     drawEyes: true,
     drawNose: true,
     drawMouth: true,
   }
 ) => {
+  if (options.hide) return;
+
   if (faceResults?.faceLandmarks?.[0]) {
     const faceLandmarks = faceResults.faceLandmarks[0];
 
@@ -137,10 +149,17 @@ export const drawBody = (
   p: p5,
   poseResults: PoseLandmarkerResult | null,
   options: {
+    hide?: boolean;
     drawLandmarks?: boolean;
     drawConnections?: boolean;
-  } = {}
+  } = {
+    hide: false,
+    drawLandmarks: true,
+    drawConnections: true,
+  }
 ) => {
+  if (options.hide) return;
+
   if (poseResults?.landmarks?.[0]) {
     const poseLandmarks = poseResults.landmarks[0];
 

@@ -20,6 +20,50 @@ import ramolosUrl from "./assets/images/pokemon-ramolos-skew.png";
 import pokemonUrl from "./assets/images/pokemon-skew.png";
 import tarotUrl from "./assets/images/tarot-skew.png";
 
+const cardPrompts = {
+  Hanafuda: {
+    title: "HANAFUDA",
+    description: `Careful! These flower cards were once used for secret gambling in Japan.
+    
+    Nintendo actually started as a Hanafuda company long before making consoles...`,
+  },
+
+  Italian: {
+    title: "ITALIAN",
+    description: `Ah, the Latin ancestors of modern suits! 
+
+    Swords, Cups, Coins, and Clubs—perfect tools for both fortune-telling and bar fights in Renaissance taverns.`,
+  },
+
+  Mamluk: {
+    title: "MAMLUK",
+    description: `Legend says these golden cards traveled from Egypt to Europe by caravan.
+    
+    It carrying the DNA of all modern decks—minus the queens, who appeared later.`,
+  },
+
+  Ramolos: {
+    title: "RAMOLOS",
+    description: `Oh! Looks like a Slowpoke has wandered in. It doesn't belong here.
+    
+    Plus, it's a shiny, a very rare version of this card...`,
+  },
+
+  Pokemon: {
+    title: "POKEMON",
+    description: `These creatures turned playgrounds into stock exchanges.
+    
+    Somewhere, a Charizard is still worth more than your rent.`,
+  },
+
+  Tarot: {
+    title: "TAROT",
+    description: `Originally a noble card game before becoming mystical, it’s now both art and prophecy.
+    
+    Be careful—The Fool might just predict your next design sprint.`,
+  },
+};
+
 new p5((p: p5) => {
   let cloudLeft: p5.Image;
   let cloudCenter: p5.Image;
@@ -61,6 +105,8 @@ new p5((p: p5) => {
     speed: number;
     card?: "Hanafuda" | "Pokemon" | "Tarot" | "Italian" | "Ramolos";
   }> = [];
+
+  let prompt = { title: "", description: "" };
 
   const cardsArea: Array<{ x: number; y: number }> = [
     { x: 0, y: 750 },
@@ -222,6 +268,8 @@ new p5((p: p5) => {
     p.createCanvas(config.sketch.width, config.sketch.height);
     p.pixelDensity(1);
 
+    p.textFont("Monospace");
+
     zoomCanvas = p.createGraphics(config.sketch.width, config.sketch.height);
     zoomCanvas.pixelDensity(zoomFactor);
 
@@ -339,23 +387,25 @@ new p5((p: p5) => {
         cards[i].y = pos.y;
       }
 
-      // Collision
+      // Collision avec la position lissée (handX, handY)
       if (isAnyHand) {
-        let hasCollision = false;
-        for (const finger of indexFingers) {
-          if (
-            finger.x > cards[i].x &&
-            finger.x < cards[i].x + cardImage.width &&
-            finger.y > cards[i].y &&
-            finger.y < cards[i].y + cardImage.height
-          ) {
-            hasCollision = true;
-            break;
-          }
-        }
+        const ratio =
+          cards[i].size === "L" ? 1 : cards[i].size === "M" ? 0.9 : 0.8;
 
-        if (hasCollision) {
-          console.log("Card detected:", cards[i]);
+        // Utiliser handX et handY au lieu de indexFingers
+        if (
+          handX > cards[i].x &&
+          handX < cards[i].x + cardImage.width * 0.25 * ratio &&
+          handY > cards[i].y &&
+          handY < cards[i].y + cardImage.height * 0.25 * ratio
+        ) {
+          const cardType = cards[i].card || "Mamluk";
+          prompt.title = cardPrompts[cardType]?.title || cardType;
+          prompt.description =
+            cardPrompts[cardType]?.description ||
+            `You have selected the ${cardType} card. Describe its significance and symbolism in detail.`;
+
+          console.log("Collision détectée:", prompt.title); // Debug
         }
       }
     }
@@ -367,6 +417,42 @@ new p5((p: p5) => {
 
     if (isAnyHand) {
       drawMagnifier();
+    }
+
+    if (prompt.title) {
+      p.push();
+      p.fill(255, 255, 255, 200);
+      p.noStroke();
+      p.rect(
+        config.screens.right.x,
+        config.screens.right.y,
+        config.screens.right.width,
+        config.screens.right.height,
+        20
+      );
+      p.pop();
+
+      p.push();
+      p.textSize(40);
+      p.fill(0);
+      p.noStroke();
+      p.textAlign(p.LEFT, p.TOP);
+      p.textStyle(p.BOLD);
+      p.text(
+        prompt.title,
+        config.screens.right.x + 30,
+        config.screens.right.y + 40
+      );
+      p.textSize(30);
+      p.textStyle(p.NORMAL);
+      p.text(
+        prompt.description,
+        config.screens.right.x + 30,
+        config.screens.right.y + 110,
+        config.screens.right.width - 40,
+        config.screens.right.height - 100
+      );
+      p.pop();
     }
 
     const video = mediaPipe.getVideo();

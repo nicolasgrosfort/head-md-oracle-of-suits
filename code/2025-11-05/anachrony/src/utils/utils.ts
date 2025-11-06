@@ -39,9 +39,17 @@ export const drawScreens = (p: p5, screens: Screens, content?: p5.Image) => {
   }
 };
 
-export const loadImage = (p: p5, url: string): Promise<p5.Image> => {
+export const loadImage = (
+  p: p5,
+  url: string,
+  ratio: number = 4
+): Promise<p5.Image> => {
+  const scale = 1 / ratio;
   return new Promise<p5.Image>((resolve) => {
-    p.loadImage(url, resolve);
+    p.loadImage(url, (img) => {
+      img.resize(img.width * scale, img.height * scale);
+      resolve(img);
+    });
   });
 };
 

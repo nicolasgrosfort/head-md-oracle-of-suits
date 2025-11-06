@@ -4,6 +4,9 @@ import * as mediaPipe from "./libs/media-pipe";
 import * as config from "./utils/config";
 import * as utils from "./utils/utils";
 
+import cardLUrl from "./assets/images/card-skew-x-y-l.png";
+import cardMUrl from "./assets/images/card-skew-x-y-m.png";
+import cardSUrl from "./assets/images/card-skew-x-y-s.png";
 import cloundCenterUrl from "./assets/images/cloud-center.png";
 import cloudLeftUrl from "./assets/images/cloud-left.png";
 import cloudRightUrl from "./assets/images/cloud-right.png";
@@ -16,6 +19,9 @@ new p5((p: p5) => {
   let cloudRight: p5.Image;
   let sun: p5.Image;
   let sand: p5.Image;
+  let cardL: p5.Image;
+  let cardM: p5.Image;
+  let cardS: p5.Image;
 
   let cloudLeftX = 0;
   let cloudCenterX = 0;
@@ -24,6 +30,24 @@ new p5((p: p5) => {
   let cloudLeftDirection = 1;
   let cloudCenterDirection = -1;
   let cloudRightDirection = -1;
+
+  let cards: Array<{ x: number; y: number; size: "S" | "M" | "L" }> = [];
+
+  const cardsArea: Array<{ x: number; y: number }> = [
+    { x: 0, y: 750 },
+    { x: 1600, y: 0 },
+    { x: 2251, y: 0 },
+    { x: 2251, y: 340 },
+    { x: 0, y: 1200 },
+  ];
+
+  const createCards = (p: p5, amount: number = 25) => {
+    for (let i = 0; i < amount; i++) {
+      const pos = utils.randomPositionInPolygon(p, cardsArea);
+      const size = p.random() < 0.3 ? "S" : p.random() < 0.6 ? "M" : "L";
+      cards.push({ x: pos.x, y: pos.y, size });
+    }
+  };
 
   p.setup = async () => {
     p.createCanvas(config.sketch.width, config.sketch.height);
@@ -40,6 +64,11 @@ new p5((p: p5) => {
 
     sand = await utils.loadImage(p, sandUrl);
     sun = await utils.loadImage(p, sunUrl);
+    cardL = await utils.loadImage(p, cardLUrl);
+    cardM = await utils.loadImage(p, cardMUrl);
+    cardS = await utils.loadImage(p, cardSUrl);
+
+    createCards(p, 50);
   };
 
   p.draw = () => {
@@ -77,11 +106,34 @@ new p5((p: p5) => {
     cloudRightDirection = rightResult.direction;
 
     p.image(sun, config.screens.center.x - sun.width * 0.5, 40);
+    p.image(sand, 0, config.screens.center.height - sand.height);
+
+    for (let i = 0; i < cards.length; i++) {
+      let cardImage: p5.Image;
+      switch (cards[i].size) {
+        case "L":
+          cardImage = cardL;
+          break;
+        case "M":
+          cardImage = cardM;
+          break;
+        case "S":
+          cardImage = cardS;
+          break;
+      }
+
+      p.image(
+        cardImage,
+        cards[i].x,
+        cards[i].y,
+        cardImage.width,
+        cardImage.height
+      );
+    }
+
     p.image(cloudRight, cloudRightX, 400);
     p.image(cloudCenter, cloudCenterX, 140);
     p.image(cloudLeft, cloudLeftX, 320);
-
-    p.image(sand, 0, config.screens.center.height - sand.height);
 
     const video = mediaPipe.getVideo();
     utils.drawVideo(p, video, { hide: true });

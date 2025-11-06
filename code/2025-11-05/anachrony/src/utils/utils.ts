@@ -75,3 +75,49 @@ export const animateX = (
 
   return { x: newX, direction: newDirection };
 };
+
+export const randomPositionInPolygon = (
+  p: p5,
+  vertices: Array<{ x: number; y: number }>
+): { x: number; y: number } => {
+  const minX = Math.min(...vertices.map((v) => v.x));
+  const maxX = Math.max(...vertices.map((v) => v.x));
+  const minY = Math.min(...vertices.map((v) => v.y));
+  const maxY = Math.max(...vertices.map((v) => v.y));
+
+  let point: { x: number; y: number };
+  let attempts = 0;
+  const maxAttempts = 1000;
+
+  do {
+    point = {
+      x: p.random(minX, maxX),
+      y: p.random(minY, maxY),
+    };
+    attempts++;
+  } while (!isPointInPolygon(point, vertices) && attempts < maxAttempts);
+
+  return point;
+};
+
+const isPointInPolygon = (
+  point: { x: number; y: number },
+  vertices: Array<{ x: number; y: number }>
+): boolean => {
+  let inside = false;
+
+  for (let i = 0, j = vertices.length - 1; i < vertices.length; j = i++) {
+    const xi = vertices[i].x;
+    const yi = vertices[i].y;
+    const xj = vertices[j].x;
+    const yj = vertices[j].y;
+
+    const intersect =
+      yi > point.y !== yj > point.y &&
+      point.x < ((xj - xi) * (point.y - yi)) / (yj - yi) + xi;
+
+    if (intersect) inside = !inside;
+  }
+
+  return inside;
+};

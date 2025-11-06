@@ -20,6 +20,13 @@ import ramolosUrl from "./assets/images/pokemon-ramolos-skew.png";
 import pokemonUrl from "./assets/images/pokemon-skew.png";
 import tarotUrl from "./assets/images/tarot-skew.png";
 
+import hanafudaFullUrl from "./assets/images/hanafuda.png";
+import italianFullUrl from "./assets/images/italian.png";
+import mamlukFullUrl from "./assets/images/mamluk.png";
+import pokemonFullUrl from "./assets/images/pokemon.png";
+import ramolosFullUrl from "./assets/images/ramolos.png";
+import tarotFullUrl from "./assets/images/tarot.png";
+
 const cardPrompts = {
   Hanafuda: {
     title: "HANAFUDA",
@@ -79,6 +86,12 @@ new p5((p: p5) => {
   let italian: p5.Image;
   let mamluk: p5.Image;
   let ramolos: p5.Image;
+  let pokemonFull: p5.Image;
+  let tarotFull: p5.Image;
+  let italianFull: p5.Image;
+  let hanafudaFull: p5.Image;
+  let mamlukFull: p5.Image;
+  let ramolosFull: p5.Image;
 
   let cloudLeftX = 0;
   let cloudCenterX = 0;
@@ -97,6 +110,8 @@ new p5((p: p5) => {
   let lerpFactor = 0.15;
   let zoomSize = 250;
   let zoomFactor = 4;
+
+  let lastFrameTime = 0;
 
   let cards: Array<{
     x: number;
@@ -289,12 +304,20 @@ new p5((p: p5) => {
     cardL = await utils.loadImage(p, cardLUrl, 1);
     cardM = await utils.loadImage(p, cardMUrl, 1);
     cardS = await utils.loadImage(p, cardSUrl, 1);
+
     hanafuda = await utils.loadImage(p, hanafudaUrl, 1);
     pokemon = await utils.loadImage(p, pokemonUrl, 1);
     tarot = await utils.loadImage(p, tarotUrl, 1);
     italian = await utils.loadImage(p, italianUrl, 1);
     mamluk = await utils.loadImage(p, mamlukUrl, 1);
     ramolos = await utils.loadImage(p, ramolosUrl, 1);
+
+    pokemonFull = await utils.loadImage(p, pokemonFullUrl, 1);
+    tarotFull = await utils.loadImage(p, tarotFullUrl, 1);
+    italianFull = await utils.loadImage(p, italianFullUrl, 1);
+    hanafudaFull = await utils.loadImage(p, hanafudaFullUrl, 1);
+    mamlukFull = await utils.loadImage(p, mamlukFullUrl, 1);
+    ramolosFull = await utils.loadImage(p, ramolosFullUrl, 1);
 
     p.noSmooth();
 
@@ -406,8 +429,16 @@ new p5((p: p5) => {
             `You have selected the ${cardType} card. Describe its significance and symbolism in detail.`;
 
           console.log("Collision détectée:", prompt.title); // Debug
+        } else {
+          lastFrameTime = p.millis();
         }
       }
+    }
+
+    if (lastFrameTime > 0 && p.millis() - lastFrameTime > 600) {
+      prompt.title = "";
+      prompt.description = "";
+      lastFrameTime = 0;
     }
 
     drawScene(p);
@@ -453,6 +484,67 @@ new p5((p: p5) => {
         config.screens.right.height - 100
       );
       p.pop();
+
+      // Display full card image on the screen left
+      let fullCardImage: p5.Image;
+      switch (prompt.title) {
+        case "HANAFUDA":
+          fullCardImage = hanafudaFull;
+          break;
+        case "POKEMON":
+          fullCardImage = pokemonFull;
+          break;
+        case "TAROT":
+          fullCardImage = tarotFull;
+          break;
+        case "ITALIAN":
+          fullCardImage = italianFull;
+          break;
+        case "RAMOLOS":
+          fullCardImage = ramolosFull;
+          break;
+        default:
+          fullCardImage = mamlukFull;
+      }
+
+      const maxWidth = config.screens.left.width - 60;
+      const maxHeight = config.screens.left.height - 60;
+      let displayWidth = fullCardImage.width;
+      let displayHeight = fullCardImage.height;
+
+      // Scale down if necessary
+      if (displayWidth > maxWidth) {
+        const scaleFactor = maxWidth / displayWidth;
+        displayWidth = maxWidth;
+        displayHeight *= scaleFactor;
+      }
+
+      if (displayHeight > maxHeight) {
+        const scaleFactor = maxHeight / displayHeight;
+        displayHeight = maxHeight;
+        displayWidth *= scaleFactor;
+      }
+
+      p.push();
+      p.fill(255, 255, 255, 200);
+      p.noStroke();
+      p.rect(
+        config.screens.left.x,
+        config.screens.left.y,
+        config.screens.left.width,
+        config.screens.left.height,
+        20
+      );
+      p.pop();
+
+      p.image(
+        fullCardImage,
+        config.screens.left.x + (config.screens.left.width - displayWidth) / 2,
+        config.screens.left.y +
+          (config.screens.left.height - displayHeight) / 2,
+        displayWidth,
+        displayHeight
+      );
     }
 
     const video = mediaPipe.getVideo();

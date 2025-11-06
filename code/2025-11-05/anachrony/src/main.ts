@@ -321,7 +321,7 @@ new p5((p: p5) => {
 
     p.noSmooth();
 
-    createCards(p, 50);
+    createCards(p, 36);
   };
 
   p.draw = () => {

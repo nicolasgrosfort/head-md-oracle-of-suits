@@ -31,7 +31,12 @@ new p5((p: p5) => {
   let cloudCenterDirection = -1;
   let cloudRightDirection = -1;
 
-  let cards: Array<{ x: number; y: number; size: "S" | "M" | "L" }> = [];
+  let cards: Array<{
+    x: number;
+    y: number;
+    size: "S" | "M" | "L";
+    speed: number;
+  }> = [];
 
   const cardsArea: Array<{ x: number; y: number }> = [
     { x: 0, y: 750 },
@@ -41,11 +46,19 @@ new p5((p: p5) => {
     { x: 0, y: 1200 },
   ];
 
+  const baseCardsArea: Array<{ x: number; y: number }> = [
+    { x: -540, y: 1000 },
+    { x: 0, y: 750 },
+    { x: 0, y: 1200 },
+    { x: -540, y: 1400 },
+  ];
+
   const createCards = (p: p5, amount: number = 25) => {
     for (let i = 0; i < amount; i++) {
       const pos = utils.randomPositionInPolygon(p, cardsArea);
       const size = p.random() < 0.3 ? "S" : p.random() < 0.6 ? "M" : "L";
-      cards.push({ x: pos.x, y: pos.y, size });
+      const speed = p.random(0.5, 2);
+      cards.push({ x: pos.x, y: pos.y, size, speed });
     }
   };
 
@@ -108,6 +121,8 @@ new p5((p: p5) => {
     p.image(sun, config.screens.center.x - sun.width * 0.5, 40);
     p.image(sand, 0, config.screens.center.height - sand.height);
 
+    p.image(cloudRight, cloudRightX, 400);
+
     for (let i = 0; i < cards.length; i++) {
       let cardImage: p5.Image;
       switch (cards[i].size) {
@@ -122,6 +137,15 @@ new p5((p: p5) => {
           break;
       }
 
+      cards[i].x += cards[i].speed;
+      cards[i].y -= cards[i].speed * 0.67;
+
+      if (cards[i].x > p.width || cards[i].y < -cardImage.height) {
+        const pos = utils.randomPositionInPolygon(p, baseCardsArea);
+        cards[i].x = pos.x;
+        cards[i].y = pos.y;
+      }
+
       p.image(
         cardImage,
         cards[i].x,
@@ -131,7 +155,6 @@ new p5((p: p5) => {
       );
     }
 
-    p.image(cloudRight, cloudRightX, 400);
     p.image(cloudCenter, cloudCenterX, 140);
     p.image(cloudLeft, cloudLeftX, 320);
 

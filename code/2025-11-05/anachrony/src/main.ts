@@ -13,6 +13,13 @@ import cloudRightUrl from "./assets/images/cloud-right.png";
 import sandUrl from "./assets/images/mmk/sand.png";
 import sunUrl from "./assets/images/sun.png";
 
+import hanafudaUrl from "./assets/images/hanafuda-skew.png";
+import italianUrl from "./assets/images/italian-skew.png";
+import mamlukUrl from "./assets/images/mamluk-skew.png";
+import ramolosUrl from "./assets/images/pokemon-ramolos-skew.png";
+import pokemonUrl from "./assets/images/pokemon-skew.png";
+import tarotUrl from "./assets/images/tarot-skew.png";
+
 new p5((p: p5) => {
   let cloudLeft: p5.Image;
   let cloudCenter: p5.Image;
@@ -22,6 +29,12 @@ new p5((p: p5) => {
   let cardL: p5.Image;
   let cardM: p5.Image;
   let cardS: p5.Image;
+  let hanafuda: p5.Image;
+  let pokemon: p5.Image;
+  let tarot: p5.Image;
+  let italian: p5.Image;
+  let mamluk: p5.Image;
+  let ramolos: p5.Image;
 
   let cloudLeftX = 0;
   let cloudCenterX = 0;
@@ -31,11 +44,22 @@ new p5((p: p5) => {
   let cloudCenterDirection = -1;
   let cloudRightDirection = -1;
 
+  let zoomCanvas: p5.Graphics;
+  let isAnyHand = false;
+  let handX = 0;
+  let handY = 0;
+  let targetHandX = 0;
+  let targetHandY = 0;
+  let lerpFactor = 0.15;
+  let zoomSize = 250;
+  let zoomFactor = 4;
+
   let cards: Array<{
     x: number;
     y: number;
     size: "S" | "M" | "L";
     speed: number;
+    card?: "Hanafuda" | "Pokemon" | "Tarot" | "Italian" | "Ramolos";
   }> = [];
 
   const cardsArea: Array<{ x: number; y: number }> = [
@@ -58,28 +82,173 @@ new p5((p: p5) => {
       const pos = utils.randomPositionInPolygon(p, cardsArea);
       const size = p.random() < 0.3 ? "S" : p.random() < 0.6 ? "M" : "L";
       const speed = p.random(0.5, 2);
-      cards.push({ x: pos.x, y: pos.y, size, speed });
+      const card =
+        p.random() < 0.1
+          ? "Hanafuda"
+          : p.random() < 0.2
+          ? "Pokemon"
+          : p.random() < 0.3
+          ? "Tarot"
+          : p.random() < 0.4
+          ? "Italian"
+          : p.random() < 0.5
+          ? "Ramolos"
+          : undefined;
+      cards.push({ x: pos.x, y: pos.y, size, speed, card });
     }
+  };
+
+  const drawScene = (pg: p5 | p5.Graphics, isMagnifier?: boolean) => {
+    pg.image(
+      sun,
+      config.screens.center.x - sun.width * 0.25 + 160,
+      40,
+      sun.width * 0.25,
+      sun.height * 0.25
+    );
+    pg.image(
+      sand,
+      0,
+      config.screens.center.height - sand.height * 0.25,
+      sand.width * 0.25,
+      sand.height * 0.25
+    );
+    pg.image(
+      cloudRight,
+      cloudRightX,
+      400,
+      cloudRight.width * 0.25,
+      cloudRight.height * 0.25
+    );
+
+    for (let card of cards) {
+      let cardImage: p5.Image = cardM;
+
+      if (isMagnifier) {
+        switch (card.card) {
+          case "Hanafuda":
+            cardImage = hanafuda;
+            break;
+          case "Pokemon":
+            cardImage = pokemon;
+            break;
+          case "Tarot":
+            cardImage = tarot;
+            break;
+          case "Italian":
+            cardImage = italian;
+            break;
+          case "Ramolos":
+            cardImage = ramolos;
+            break;
+          default:
+            cardImage = mamluk;
+        }
+      }
+      // else {
+      //   switch (card.size) {
+      //     case "L":
+      //       cardImage = cardL;
+      //       break;
+      //     case "M":
+      //       cardImage = cardM;
+      //       break;
+      //     case "S":
+      //       cardImage = cardS;
+      //       break;
+      //   }
+      // }
+
+      const ratio = card.size === "L" ? 1 : card.size === "M" ? 0.9 : 0.8;
+
+      pg.image(
+        cardImage,
+        card.x,
+        card.y,
+        cardImage.width * 0.25 * ratio,
+        cardImage.height * 0.25 * ratio
+      );
+    }
+
+    pg.image(
+      cloudCenter,
+      cloudCenterX,
+      140,
+      cloudCenter.width * 0.25,
+      cloudCenter.height * 0.25
+    );
+    pg.image(
+      cloudLeft,
+      cloudLeftX,
+      320,
+      cloudLeft.width * 0.25,
+      cloudLeft.height * 0.25
+    );
+  };
+
+  const drawMagnifier = () => {
+    const copySize = zoomSize / zoomFactor;
+    const sx = handX - copySize / 2;
+    const sy = handY - copySize / 2;
+
+    p.push();
+    const zoomedRegion = zoomCanvas.get(sx, sy, copySize, copySize);
+
+    // Activer le smooth pour la loupe uniquement
+    (zoomedRegion as any).loadPixels();
+
+    p.drawingContext.save();
+    p.drawingContext.beginPath();
+    p.drawingContext.arc(handX, handY, zoomSize / 2, 0, p.TWO_PI);
+    p.drawingContext.clip();
+
+    // Activer l'interpolation pour un zoom lisse
+    p.drawingContext.imageSmoothingEnabled = true;
+    p.drawingContext.imageSmoothingQuality = "high";
+
+    p.translate(handX - zoomSize / 2, handY - zoomSize / 2);
+    p.image(zoomedRegion, 0, 0, zoomSize, zoomSize);
+
+    p.drawingContext.restore();
+
+    p.noFill();
+    p.stroke(0);
+    p.strokeWeight(4);
+    p.circle(handX, handY, zoomSize);
+    p.pop();
   };
 
   p.setup = async () => {
     p.createCanvas(config.sketch.width, config.sketch.height);
+    p.pixelDensity(1);
+
+    zoomCanvas = p.createGraphics(config.sketch.width, config.sketch.height);
+    zoomCanvas.pixelDensity(zoomFactor);
+
     await mediaPipe.initialize(p);
 
-    cloudLeft = await utils.loadImage(p, cloudLeftUrl);
+    cloudLeft = await utils.loadImage(p, cloudLeftUrl, 1);
     cloudLeftX = 40;
 
-    cloudCenter = await utils.loadImage(p, cloundCenterUrl);
+    cloudCenter = await utils.loadImage(p, cloundCenterUrl, 1);
     cloudCenterX = p.width * 0.5;
 
-    cloudRight = await utils.loadImage(p, cloudRightUrl);
-    cloudRightX = p.width - cloudRight.width - 40;
+    cloudRight = await utils.loadImage(p, cloudRightUrl, 1);
+    cloudRightX = p.width - 40 - cloudRight.width * 0.25;
 
-    sand = await utils.loadImage(p, sandUrl);
-    sun = await utils.loadImage(p, sunUrl);
-    cardL = await utils.loadImage(p, cardLUrl);
-    cardM = await utils.loadImage(p, cardMUrl);
-    cardS = await utils.loadImage(p, cardSUrl);
+    sand = await utils.loadImage(p, sandUrl, 1);
+    sun = await utils.loadImage(p, sunUrl, 1);
+    cardL = await utils.loadImage(p, cardLUrl, 1);
+    cardM = await utils.loadImage(p, cardMUrl, 1);
+    cardS = await utils.loadImage(p, cardSUrl, 1);
+    hanafuda = await utils.loadImage(p, hanafudaUrl, 1);
+    pokemon = await utils.loadImage(p, pokemonUrl, 1);
+    tarot = await utils.loadImage(p, tarotUrl, 1);
+    italian = await utils.loadImage(p, italianUrl, 1);
+    mamluk = await utils.loadImage(p, mamlukUrl, 1);
+    ramolos = await utils.loadImage(p, ramolosUrl, 1);
+
+    p.noSmooth();
 
     createCards(p, 50);
   };
@@ -109,8 +278,8 @@ new p5((p: p5) => {
     cloudCenterDirection = centerResult.direction;
 
     const rightResult = utils.animateX(
-      p.width - cloudRight.width - 40 - 400,
-      p.width - cloudRight.width - 40,
+      p.width - cloudRight.width * 0.25 - 40 - 400,
+      p.width - cloudRight.width * 0.25 - 40,
       0.2,
       cloudRightX,
       cloudRightDirection
@@ -118,12 +287,36 @@ new p5((p: p5) => {
     cloudRightX = rightResult.x;
     cloudRightDirection = rightResult.direction;
 
-    p.image(sun, config.screens.center.x - sun.width * 0.5, 40);
-    p.image(sand, 0, config.screens.center.height - sand.height);
+    const handResults = mediaPipe.getGestureResults();
+    const indexFingers: Array<{ x: number; y: number }> = [];
+    isAnyHand = false;
 
-    p.image(cloudRight, cloudRightX, 400);
+    if (handResults && handResults.landmarks) {
+      for (const landmarks of handResults.landmarks) {
+        const indexTip = landmarks[8];
+        if (indexTip) {
+          const fingerX =
+            config.sketch.width - indexTip.x * config.sketch.width;
+          const fingerY = indexTip.y * config.sketch.height;
+          indexFingers.push({ x: fingerX, y: fingerY });
 
-    for (let i = 0; i < cards.length; i++) {
+          if (!isAnyHand) {
+            targetHandX = fingerX;
+            targetHandY = fingerY;
+            isAnyHand = true;
+          }
+        }
+      }
+    }
+
+    if (isAnyHand) {
+      handX = p.lerp(handX, targetHandX, lerpFactor);
+      handY = p.lerp(handY, targetHandY, lerpFactor);
+    }
+
+    // Mettre à jour les cartes et détecter les collisions
+    // TODO : cleanup, plus la même logique
+    for (let i = cards.length - 1; i >= 0; i--) {
       let cardImage: p5.Image;
       switch (cards[i].size) {
         case "L":
@@ -138,7 +331,7 @@ new p5((p: p5) => {
       }
 
       cards[i].x += cards[i].speed;
-      cards[i].y -= cards[i].speed * 0.67;
+      cards[i].y -= cards[i].speed * 0.6;
 
       if (cards[i].x > p.width || cards[i].y < -cardImage.height) {
         const pos = utils.randomPositionInPolygon(p, baseCardsArea);
@@ -146,29 +339,46 @@ new p5((p: p5) => {
         cards[i].y = pos.y;
       }
 
-      p.image(
-        cardImage,
-        cards[i].x,
-        cards[i].y,
-        cardImage.width,
-        cardImage.height
-      );
+      // Collision
+      if (isAnyHand) {
+        let hasCollision = false;
+        for (const finger of indexFingers) {
+          if (
+            finger.x > cards[i].x &&
+            finger.x < cards[i].x + cardImage.width &&
+            finger.y > cards[i].y &&
+            finger.y < cards[i].y + cardImage.height
+          ) {
+            hasCollision = true;
+            break;
+          }
+        }
+
+        if (hasCollision) {
+          console.log("Card detected:", cards[i]);
+        }
+      }
     }
 
-    p.image(cloudCenter, cloudCenterX, 140);
-    p.image(cloudLeft, cloudLeftX, 320);
+    drawScene(p);
+
+    zoomCanvas.background("#BDF7FF");
+    drawScene(zoomCanvas, true);
+
+    if (isAnyHand) {
+      drawMagnifier();
+    }
 
     const video = mediaPipe.getVideo();
     utils.drawVideo(p, video, { hide: true });
 
-    const handResults = mediaPipe.getGestureResults();
-    mediaPipe.drawHands(p, handResults);
+    mediaPipe.drawHands(p, handResults, { hide: true });
 
     const faceResults = mediaPipe.getFaceResults();
-    mediaPipe.drawFace(p, faceResults);
+    mediaPipe.drawFace(p, faceResults, { hide: true });
 
     const poseResults = mediaPipe.getPoseResults();
-    mediaPipe.drawBody(p, poseResults);
+    mediaPipe.drawBody(p, poseResults, { hide: true });
 
     const canvasContent = p.get();
 

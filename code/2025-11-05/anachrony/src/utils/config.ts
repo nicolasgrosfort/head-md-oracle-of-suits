@@ -15,3 +15,8 @@ export const landmark = {
   radius: 8,
   color: 0,
 };
+
+export const zoom = {
+  factor: 4,
+  size: 200,
+};

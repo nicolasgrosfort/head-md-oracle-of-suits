@@ -297,19 +297,29 @@ Drawing on Nicolas Nova's writings (La persistance du merveilleux, Bestiary of t
 - ~~Reduce the number of gestures~~
 - ~~Decide whether to use a template object~~
 - ~~Define how information reaches the player~~
-- Install the wooden panels
-- Slicing screens with p5.js
-- Animating an input element on the screens
-- Map gesture with possible actions
+- ~~Install the wooden panels~~
+- ~~Slicing screens with p5.js~~
+- ~~Animating an input element on the screens~~
+- ~~Prototype the "Mamluk World" sequence~~
+- ~~Test the prototype with real people~~
+- ~~Define a visual identity~~
 - Typographic research (1 / scene)
-- Define how to show gestures to the user
-- Define a visual identity
+- Display card information for a longer period
+- Implement the Cardodex (left screen)
+- Introduce the joker earlier in the story
+- Show the player that they must capture 4 cards per world
 - Define sound design approach
-- Prototype the "Mamluk World" sequence
-- Test the prototype with real people
+- Write the facts about cards
+- Map gesture with possible actions (for each sequence)
+- Define how to show gestures to the user (onboarding ?)
+- Write PDF documentation
+- Prepare presentation
+- Update "Research" section to reflect actual project
+
+### Nice to have
+
+- Create a prototype of "The Mythological Breakdown" sequence
+- Prototype the head movement tracking for the final sequence
 - Prototype "The Chronoscope" gesture
 - Prototype "The Candle" gesture
 - Prototype "The Palette" gesture (v2)
-- Prototype the head movement tracking for the final sequence
-- Create a prototype of "The Mythological Breakdown" sequence
-- Update "Research" section to reflect actual project

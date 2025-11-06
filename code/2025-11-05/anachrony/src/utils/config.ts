@@ -10,3 +10,8 @@ export const screens: Screens = {
   center: { x: 472, y: 0, width: 1080, height: 1600 },
   right: { x: 1592, y: 285, width: 640, height: 432 },
 };
+
+export const landmark = {
+  radius: 8,
+  color: 0,
+};

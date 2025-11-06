@@ -86,13 +86,13 @@ new p5((p: p5) => {
     utils.drawVideo(p, video, { hide: true });
 
     const handResults = mediaPipe.getGestureResults();
-    utils.drawHands(p, handResults);
+    mediaPipe.drawHands(p, handResults);
 
     const faceResults = mediaPipe.getFaceResults();
-    utils.drawFace(p, faceResults);
+    mediaPipe.drawFace(p, faceResults);
 
     const poseResults = mediaPipe.getPoseResults();
-    utils.drawBody(p, poseResults);
+    mediaPipe.drawBody(p, poseResults);
 
     const canvasContent = p.get();
 

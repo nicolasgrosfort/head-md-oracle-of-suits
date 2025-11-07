@@ -1,0 +1,567 @@
+import p5 from "p5";
+
+import * as mediaPipe from "../libs/media-pipe";
+import * as config from "../utils/config";
+import * as utils from "../utils/utils";
+
+import type { Scene } from "../libs/scene-manager";
+
+import cardLUrl from "../assets/images/card-skew-x-y-l.png";
+import cardMUrl from "../assets/images/card-skew-x-y-m.png";
+import cardSUrl from "../assets/images/card-skew-x-y-s.png";
+import cloundCenterUrl from "../assets/images/cloud-center.png";
+import cloudLeftUrl from "../assets/images/cloud-left.png";
+import cloudRightUrl from "../assets/images/cloud-right.png";
+import sandUrl from "../assets/images/mmk/sand.png";
+import sunUrl from "../assets/images/sun.png";
+
+import hanafudaUrl from "../assets/images/hanafuda-skew.png";
+import italianUrl from "../assets/images/italian-skew.png";
+import mamlukUrl from "../assets/images/mamluk-skew.png";
+import ramolosUrl from "../assets/images/pokemon-ramolos-skew.png";
+import pokemonUrl from "../assets/images/pokemon-skew.png";
+import tarotUrl from "../assets/images/tarot-skew.png";
+
+import hanafudaFullUrl from "../assets/images/hanafuda.png";
+import italianFullUrl from "../assets/images/italian.png";
+import mamlukFullUrl from "../assets/images/mamluk.png";
+import pokemonFullUrl from "../assets/images/pokemon.png";
+import ramolosFullUrl from "../assets/images/ramolos.png";
+import tarotFullUrl from "../assets/images/tarot.png";
+
+const cardPrompts = {
+  Hanafuda: {
+    title: "HANAFUDA",
+    description: `Careful! These flower cards were once used for secret gambling in Japan.
+    
+    Nintendo actually started as a Hanafuda company long before making consoles...`,
+  },
+
+  Italian: {
+    title: "ITALIAN",
+    description: `Ah, the Latin ancestors of modern suits! 
+
+    Swords, Cups, Coins, and Clubs—perfect tools for both fortune-telling and bar fights in Renaissance taverns.`,
+  },
+
+  Mamluk: {
+    title: "MAMLUK",
+    description: `Legend says these golden cards traveled from Egypt to Europe by caravan.
+    
+    It carrying the DNA of all modern decks—minus the queens, who appeared later.`,
+  },
+
+  Ramolos: {
+    title: "RAMOLOS",
+    description: `Oh! Looks like a Slowpoke has wandered in. It doesn't belong here.
+    
+    Plus, it's a shiny, a very rare version of this card...`,
+  },
+
+  Pokemon: {
+    title: "POKEMON",
+    description: `These creatures turned playgrounds into stock exchanges.
+    
+    Somewhere, a Charizard is still worth more than your rent.`,
+  },
+
+  Tarot: {
+    title: "TAROT",
+    description: `Originally a noble card game before becoming mystical, it’s now both art and prophecy.
+    
+    Be careful—The Fool might just predict your next design sprint.`,
+  },
+};
+
+export const createMmkScene = (p: p5): Scene => {
+  let zoomFactor = 4;
+  let zoomSize = 300;
+  let magnifier: p5.Graphics;
+
+  let cloudLeft: p5.Image;
+  let cloudCenter: p5.Image;
+  let cloudRight: p5.Image;
+  let sun: p5.Image;
+  let sand: p5.Image;
+  let cardL: p5.Image;
+  let cardM: p5.Image;
+  let cardS: p5.Image;
+  let hanafuda: p5.Image;
+  let pokemon: p5.Image;
+  let tarot: p5.Image;
+  let italian: p5.Image;
+  let mamluk: p5.Image;
+  let ramolos: p5.Image;
+  let pokemonFull: p5.Image;
+  let tarotFull: p5.Image;
+  let italianFull: p5.Image;
+  let hanafudaFull: p5.Image;
+  let mamlukFull: p5.Image;
+  let ramolosFull: p5.Image;
+
+  let cloudLeftX = 0;
+  let cloudCenterX = 0;
+  let cloudRightX = 0;
+
+  let cloudLeftDirection = 1;
+  let cloudCenterDirection = -1;
+  let cloudRightDirection = -1;
+
+  let isAnyHand = false;
+  let handX = 0;
+  let handY = 0;
+  let targetHandX = 0;
+  let targetHandY = 0;
+  let lerpFactor = 0.15;
+
+  let lastFrameTime = 0;
+
+  let cards: Array<{
+    x: number;
+    y: number;
+    size: "S" | "M" | "L";
+    speed: number;
+    card?: "Hanafuda" | "Pokemon" | "Tarot" | "Italian" | "Ramolos";
+  }> = [];
+
+  let prompt = { title: "", description: "" };
+
+  const cardsArea: Array<{ x: number; y: number }> = [
+    { x: 0, y: 750 },
+    { x: 1600, y: 0 },
+    { x: 2251, y: 0 },
+    { x: 2251, y: 340 },
+    { x: 0, y: 1200 },
+  ];
+
+  const baseCardsArea: Array<{ x: number; y: number }> = [
+    { x: -540, y: 1000 },
+    { x: 0, y: 750 },
+    { x: 0, y: 1200 },
+    { x: -540, y: 1400 },
+  ];
+
+  const createCards = (p: p5, amount: number = 25) => {
+    for (let i = 0; i < amount; i++) {
+      const pos = utils.randomPositionInPolygon(p, cardsArea);
+      const size = p.random() < 0.3 ? "S" : p.random() < 0.6 ? "M" : "L";
+      const speed = p.random(0.5, 2);
+      const card =
+        p.random() < 0.1
+          ? "Hanafuda"
+          : p.random() < 0.2
+          ? "Pokemon"
+          : p.random() < 0.3
+          ? "Tarot"
+          : p.random() < 0.4
+          ? "Italian"
+          : p.random() < 0.5
+          ? "Ramolos"
+          : undefined;
+      cards.push({ x: pos.x, y: pos.y, size, speed, card });
+    }
+  };
+
+  const drawMagnifier = () => {
+    const copySize = zoomSize / zoomFactor;
+    const sx = handX - copySize / 2;
+    const sy = handY - copySize / 2;
+
+    p.push();
+    const zoomedRegion = magnifier.get(sx, sy, copySize, copySize);
+
+    // Activer le smooth pour la loupe uniquement
+    (zoomedRegion as any).loadPixels();
+
+    p.drawingContext.save();
+    p.drawingContext.beginPath();
+    p.drawingContext.arc(handX, handY, zoomSize / 2, 0, p.TWO_PI);
+    p.drawingContext.clip();
+
+    // Activer l'interpolation pour un zoom lisse
+    p.drawingContext.imageSmoothingEnabled = true;
+    p.drawingContext.imageSmoothingQuality = "high";
+
+    p.translate(handX - zoomSize / 2, handY - zoomSize / 2);
+    p.image(zoomedRegion, 0, 0, zoomSize, zoomSize);
+
+    p.drawingContext.restore();
+
+    p.noFill();
+    p.stroke(0);
+    p.strokeWeight(4);
+    p.circle(handX, handY, zoomSize);
+    p.pop();
+  };
+
+  const drawScene = (pg: p5 | p5.Graphics, isMagnifier?: boolean) => {
+    pg.image(
+      sun,
+      config.screens.center.x - sun.width * 0.25 + 160,
+      40,
+      sun.width * 0.25,
+      sun.height * 0.25
+    );
+    pg.image(
+      sand,
+      0,
+      config.screens.center.height - sand.height * 0.25,
+      sand.width * 0.25,
+      sand.height * 0.25
+    );
+    pg.image(
+      cloudRight,
+      cloudRightX,
+      400,
+      cloudRight.width * 0.25,
+      cloudRight.height * 0.25
+    );
+
+    for (let card of cards) {
+      let cardImage: p5.Image = cardM;
+
+      if (isMagnifier) {
+        switch (card.card) {
+          case "Hanafuda":
+            cardImage = hanafuda;
+            break;
+          case "Pokemon":
+            cardImage = pokemon;
+            break;
+          case "Tarot":
+            cardImage = tarot;
+            break;
+          case "Italian":
+            cardImage = italian;
+            break;
+          case "Ramolos":
+            cardImage = ramolos;
+            break;
+          default:
+            cardImage = mamluk;
+        }
+      }
+      // else {
+      //   switch (card.size) {
+      //     case "L":
+      //       cardImage = cardL;
+      //       break;
+      //     case "M":
+      //       cardImage = cardM;
+      //       break;
+      //     case "S":
+      //       cardImage = cardS;
+      //       break;
+      //   }
+      // }
+
+      const ratio = card.size === "L" ? 1 : card.size === "M" ? 0.9 : 0.8;
+
+      pg.image(
+        cardImage,
+        card.x,
+        card.y,
+        cardImage.width * 0.25 * ratio,
+        cardImage.height * 0.25 * ratio
+      );
+    }
+
+    pg.image(
+      cloudCenter,
+      cloudCenterX,
+      140,
+      cloudCenter.width * 0.25,
+      cloudCenter.height * 0.25
+    );
+    pg.image(
+      cloudLeft,
+      cloudLeftX,
+      320,
+      cloudLeft.width * 0.25,
+      cloudLeft.height * 0.25
+    );
+  };
+
+  return {
+    setup: async () => {
+      cloudLeft = await utils.loadImage(p, cloudLeftUrl, 1);
+      cloudLeftX = 40;
+
+      cloudCenter = await utils.loadImage(p, cloundCenterUrl, 1);
+      cloudCenterX = p.width * 0.5;
+
+      cloudRight = await utils.loadImage(p, cloudRightUrl, 1);
+      cloudRightX = p.width - 40 - cloudRight.width * 0.25;
+
+      sand = await utils.loadImage(p, sandUrl, 1);
+      sun = await utils.loadImage(p, sunUrl, 1);
+      cardL = await utils.loadImage(p, cardLUrl, 1);
+      cardM = await utils.loadImage(p, cardMUrl, 1);
+      cardS = await utils.loadImage(p, cardSUrl, 1);
+
+      hanafuda = await utils.loadImage(p, hanafudaUrl, 1);
+      pokemon = await utils.loadImage(p, pokemonUrl, 1);
+      tarot = await utils.loadImage(p, tarotUrl, 1);
+      italian = await utils.loadImage(p, italianUrl, 1);
+      mamluk = await utils.loadImage(p, mamlukUrl, 1);
+      ramolos = await utils.loadImage(p, ramolosUrl, 1);
+
+      pokemonFull = await utils.loadImage(p, pokemonFullUrl, 1);
+      tarotFull = await utils.loadImage(p, tarotFullUrl, 1);
+      italianFull = await utils.loadImage(p, italianFullUrl, 1);
+      hanafudaFull = await utils.loadImage(p, hanafudaFullUrl, 1);
+      mamlukFull = await utils.loadImage(p, mamlukFullUrl, 1);
+      ramolosFull = await utils.loadImage(p, ramolosFullUrl, 1);
+
+      magnifier = p.createGraphics(config.sketch.width, config.sketch.height);
+      magnifier.pixelDensity(zoomFactor);
+      magnifier.textFont("Monospace");
+
+      createCards(p, 36);
+    },
+
+    draw: () => {
+      p.background("#BDF7FF");
+
+      console.log("Drawing MMK scene");
+
+      const leftResult = utils.animateX(
+        40,
+        40 + 400,
+        0.2,
+        cloudLeftX,
+        cloudLeftDirection
+      );
+      cloudLeftX = leftResult.x;
+      cloudLeftDirection = leftResult.direction;
+
+      const centerResult = utils.animateX(
+        p.width * 0.5 - 100,
+        p.width * 0.5,
+        0.05,
+        cloudCenterX,
+        cloudCenterDirection
+      );
+      cloudCenterX = centerResult.x;
+      cloudCenterDirection = centerResult.direction;
+
+      const rightResult = utils.animateX(
+        p.width - cloudRight.width * 0.25 - 40 - 400,
+        p.width - cloudRight.width * 0.25 - 40,
+        0.2,
+        cloudRightX,
+        cloudRightDirection
+      );
+      cloudRightX = rightResult.x;
+      cloudRightDirection = rightResult.direction;
+
+      const handResults = mediaPipe.getGestureResults();
+      const indexFingers: Array<{ x: number; y: number }> = [];
+      isAnyHand = false;
+
+      if (handResults && handResults.landmarks) {
+        for (const landmarks of handResults.landmarks) {
+          const indexTip = landmarks[8];
+          if (indexTip) {
+            const fingerX =
+              config.sketch.width - indexTip.x * config.sketch.width;
+            const fingerY = indexTip.y * config.sketch.height;
+            indexFingers.push({ x: fingerX, y: fingerY });
+
+            if (!isAnyHand) {
+              targetHandX = fingerX;
+              targetHandY = fingerY;
+              isAnyHand = true;
+            }
+          }
+        }
+      }
+
+      if (isAnyHand) {
+        handX = p.lerp(handX, targetHandX, lerpFactor);
+        handY = p.lerp(handY, targetHandY, lerpFactor);
+      }
+
+      // Mettre à jour les cartes et détecter les collisions
+      // TODO : cleanup, plus la même logique
+      for (let i = cards.length - 1; i >= 0; i--) {
+        let cardImage: p5.Image;
+        switch (cards[i].size) {
+          case "L":
+            cardImage = cardL;
+            break;
+          case "M":
+            cardImage = cardM;
+            break;
+          case "S":
+            cardImage = cardS;
+            break;
+        }
+
+        cards[i].x += cards[i].speed;
+        cards[i].y -= cards[i].speed * 0.6;
+
+        if (cards[i].x > p.width || cards[i].y < -cardImage.height) {
+          const pos = utils.randomPositionInPolygon(p, baseCardsArea);
+          cards[i].x = pos.x;
+          cards[i].y = pos.y;
+        }
+
+        // Collision avec la position lissée (handX, handY)
+        if (isAnyHand) {
+          const ratio =
+            cards[i].size === "L" ? 1 : cards[i].size === "M" ? 0.9 : 0.8;
+
+          // Utiliser handX et handY au lieu de indexFingers
+          if (
+            handX > cards[i].x &&
+            handX < cards[i].x + cardImage.width * 0.25 * ratio &&
+            handY > cards[i].y &&
+            handY < cards[i].y + cardImage.height * 0.25 * ratio
+          ) {
+            const cardType = cards[i].card || "Mamluk";
+            prompt.title = cardPrompts[cardType]?.title || cardType;
+            prompt.description =
+              cardPrompts[cardType]?.description ||
+              `You have selected the ${cardType} card. Describe its significance and symbolism in detail.`;
+
+            console.log("Collision détectée:", prompt.title); // Debug
+          } else {
+            lastFrameTime = p.millis();
+          }
+        }
+      }
+
+      if (lastFrameTime > 0 && p.millis() - lastFrameTime > 4000) {
+        prompt.title = "";
+        prompt.description = "";
+        lastFrameTime = 0;
+      }
+
+      drawScene(p);
+
+      magnifier.background("#BDF7FF");
+      drawScene(magnifier, true);
+
+      if (isAnyHand) {
+        drawMagnifier();
+      }
+
+      if (prompt.title) {
+        p.push();
+        p.fill(255, 255, 255, 200);
+        p.noStroke();
+        p.rect(
+          config.screens.right.x,
+          config.screens.right.y,
+          config.screens.right.width,
+          config.screens.right.height,
+          20
+        );
+        p.pop();
+
+        p.push();
+        p.textSize(40);
+        p.fill(0);
+        p.noStroke();
+        p.textAlign(p.LEFT, p.TOP);
+        p.textStyle(p.BOLD);
+        p.text(
+          prompt.title,
+          config.screens.right.x + 30,
+          config.screens.right.y + 40
+        );
+        p.textSize(30);
+        p.textStyle(p.NORMAL);
+        p.text(
+          prompt.description,
+          config.screens.right.x + 30,
+          config.screens.right.y + 110,
+          config.screens.right.width - 40,
+          config.screens.right.height - 100
+        );
+        p.pop();
+
+        // Display full card image on the screen left
+        let fullCardImage: p5.Image;
+        switch (prompt.title) {
+          case "HANAFUDA":
+            fullCardImage = hanafudaFull;
+            break;
+          case "POKEMON":
+            fullCardImage = pokemonFull;
+            break;
+          case "TAROT":
+            fullCardImage = tarotFull;
+            break;
+          case "ITALIAN":
+            fullCardImage = italianFull;
+            break;
+          case "RAMOLOS":
+            fullCardImage = ramolosFull;
+            break;
+          default:
+            fullCardImage = mamlukFull;
+        }
+
+        const maxWidth = config.screens.left.width - 60;
+        const maxHeight = config.screens.left.height - 60;
+        let displayWidth = fullCardImage.width;
+        let displayHeight = fullCardImage.height;
+
+        // Scale down if necessary
+        if (displayWidth > maxWidth) {
+          const scaleFactor = maxWidth / displayWidth;
+          displayWidth = maxWidth;
+          displayHeight *= scaleFactor;
+        }
+
+        if (displayHeight > maxHeight) {
+          const scaleFactor = maxHeight / displayHeight;
+          displayHeight = maxHeight;
+          displayWidth *= scaleFactor;
+        }
+
+        p.push();
+        p.fill(255, 255, 255, 200);
+        p.noStroke();
+        p.rect(
+          config.screens.left.x,
+          config.screens.left.y,
+          config.screens.left.width,
+          config.screens.left.height,
+          20
+        );
+        p.pop();
+
+        p.image(
+          fullCardImage,
+          config.screens.left.x +
+            (config.screens.left.width - displayWidth) / 2,
+          config.screens.left.y +
+            (config.screens.left.height - displayHeight) / 2,
+          displayWidth,
+          displayHeight
+        );
+      }
+
+      const video = mediaPipe.getVideo();
+      utils.drawVideo(p, video, { hide: true });
+
+      mediaPipe.drawHands(p, handResults, { hide: true });
+
+      const faceResults = mediaPipe.getFaceResults();
+      mediaPipe.drawFace(p, faceResults, { hide: true });
+
+      const poseResults = mediaPipe.getPoseResults();
+      mediaPipe.drawBody(p, poseResults, { hide: true });
+
+      const canvasContent = p.get();
+
+      p.background(0);
+      utils.drawScreens(p, config.screens, canvasContent);
+    },
+
+    cleanup: () => {},
+  };
+};

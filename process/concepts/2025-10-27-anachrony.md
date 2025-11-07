@@ -26,6 +26,18 @@ The player uses various gestures to interact with the environment.
 - Interaction: `Reveal`
 - Feedback: `Repair`
 
+## Visual identity
+
+### Colors
+
+- Black : #252525
+- White: #f5f5f5
+
+### Typography
+
+- Title: [Disket Mono Bold](https://rostype.com/disket/)
+- Body: [Recursive Mono Medium](https://www.recursive.design)
+
 ## Storyboard
 
 ![User Journey](./images/anachrony-user-journey.png)
@@ -290,6 +302,33 @@ Drawing on Nicolas Nova's writings (La persistance du merveilleux, Bestiary of t
 
 ## Roadmap
 
+> _Backlog items sorted by priority_
+
+- Build a scene engine with P5
+- Refine global storyboard
+- Introduce the joker earlier in the story
+- Show the player that they must capture 4 cards per world
+- Implement the Cardodex (left screen)
+- Map gesture with possible actions (for each sequence)
+- Define how to show gestures to the user (onboarding ?)
+- Define sound design approach
+- Make the installation autonomous
+- Document installation process
+- Write the facts about cards
+- Write PDF documentation
+- Prepare presentation
+- Update "Research" section to reflect actual project
+
+### Nice to have
+
+- Create a prototype of "The Mythological Breakdown" sequence
+- Prototype the head movement tracking for the final sequence
+- Prototype "The Chronoscope" gesture
+- Prototype "The Candle" gesture
+- Prototype "The Palette" gesture (v2)
+
+### Done
+
 - ~~Write a first draft of the storyboard~~
 - ~~Define the tech-stack~~
 - ~~Define an "Initial State"~~
@@ -303,23 +342,5 @@ Drawing on Nicolas Nova's writings (La persistance du merveilleux, Bestiary of t
 - ~~Prototype the "Mamluk World" sequence~~
 - ~~Test the prototype with real people~~
 - ~~Define a visual identity~~
-- Typographic research (1 / scene)
-- Display card information for a longer period
-- Implement the Cardodex (left screen)
-- Introduce the joker earlier in the story
-- Show the player that they must capture 4 cards per world
-- Define sound design approach
-- Write the facts about cards
-- Map gesture with possible actions (for each sequence)
-- Define how to show gestures to the user (onboarding ?)
-- Write PDF documentation
-- Prepare presentation
-- Update "Research" section to reflect actual project
-
-### Nice to have
-
-- Create a prototype of "The Mythological Breakdown" sequence
-- Prototype the head movement tracking for the final sequence
-- Prototype "The Chronoscope" gesture
-- Prototype "The Candle" gesture
-- Prototype "The Palette" gesture (v2)
+- ~~Typographic research (1 / scene)~~
+- ~~Display card information for a longer period~~

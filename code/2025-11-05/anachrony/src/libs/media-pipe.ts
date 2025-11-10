@@ -448,7 +448,7 @@ export const onHandMove = (
   let hands: Hand[];
   let hand: Hand;
 
-  let body, bodyLandmarks, gesture, gestureLandmarks;
+  let body, bodyLandmarks;
 
   const centerX = 0.5;
   const centerY = 0.5;
@@ -456,12 +456,10 @@ export const onHandMove = (
   detect();
 
   body = getPoseResults();
-  gesture = getGestureResults();
-  if (!gesture || !body) return;
+  if (!body) return;
 
   bodyLandmarks = body.landmarks;
-  gestureLandmarks = gesture.landmarks;
-  if (!gestureLandmarks) return;
+  if (!bodyLandmarks) return;
 
   let [left, right] = [
     bodyLandmarks?.[0][index.left],

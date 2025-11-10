@@ -122,7 +122,7 @@ export const createMmkScene = (p: p5): Scene => {
     y: number;
     size: "S" | "M" | "L";
     speed: number;
-    card?: "Hanafuda" | "Pokemon" | "Tarot" | "Italian" | "Ramolos";
+    card?: "Hanafuda" | "Pokemon" | "Tarot" | "Italian" | "Ramolos" | "Mamluk";
   }> = [];
 
   let prompt = { title: "", description: "" };
@@ -143,26 +143,35 @@ export const createMmkScene = (p: p5): Scene => {
   ];
 
   const createCards = (p: p5, amount: number = 25) => {
+    const specialCards: Array<
+      "Hanafuda" | "Pokemon" | "Tarot" | "Italian" | "Ramolos" | "Mamluk"
+    > = ["Hanafuda", "Pokemon", "Tarot", "Italian", "Ramolos", "Mamluk"];
+
+    let specialCardsUsed = 0;
+
     for (let i = 0; i < amount; i++) {
       const pos = utils.randomPositionInPolygon(p, cardsArea);
       const size = p.random() < 0.3 ? "S" : p.random() < 0.6 ? "M" : "L";
       const speed = p.random(0.5, 2);
-      const card =
-        p.random() < 0.1
-          ? "Hanafuda"
-          : p.random() < 0.2
-          ? "Pokemon"
-          : p.random() < 0.3
-          ? "Tarot"
-          : p.random() < 0.4
-          ? "Italian"
-          : p.random() < 0.5
-          ? "Ramolos"
-          : undefined;
+
+      let card:
+        | "Hanafuda"
+        | "Pokemon"
+        | "Tarot"
+        | "Italian"
+        | "Ramolos"
+        | "Mamluk"
+        | undefined = undefined;
+
+      // Assigner une carte spéciale seulement s'il en reste et avec une probabilité faible
+      if (specialCardsUsed < specialCards.length && p.random() < 0.15) {
+        card = specialCards[specialCardsUsed];
+        specialCardsUsed++;
+      }
+
       cards.push({ x: pos.x, y: pos.y, size, speed, card });
     }
   };
-
   const drawMagnifier = () => {
     const copySize = zoomSize / zoomFactor;
     const sx = handX - copySize / 2;
@@ -196,18 +205,17 @@ export const createMmkScene = (p: p5): Scene => {
   };
 
   const drawScene = (pg: p5 | p5.Graphics, isMagnifier?: boolean) => {
-    if (!isMagnifier) {
-      pg.background(255);
-    } else pg.background(color.blue);
+    pg.background(color.blue);
 
     utils.image(pg, sun, config.screens.center.x - sun.width * 0.25 + 160, 40);
     utils.image(pg, sand, 0, config.screens.center.height - sand.height * 0.25);
     utils.image(pg, cloudLeft, cloudLeftX, 400);
 
     for (let card of cards) {
-      let cardImage: p5.Image = cardM;
+      let cardImage: p5.Image;
 
-      if (isMagnifier) {
+      if (isMagnifier && card.card) {
+        // Dans le magnifier, afficher les cartes spéciales
         switch (card.card) {
           case "Hanafuda":
             cardImage = hanafuda;
@@ -224,9 +232,17 @@ export const createMmkScene = (p: p5): Scene => {
           case "Ramolos":
             cardImage = ramolos;
             break;
-          default:
+          case "Mamluk":
             cardImage = mamluk;
+            break;
+          default:
+            cardImage =
+              card.size === "L" ? cardL : card.size === "M" ? cardM : cardS;
         }
+      } else {
+        // Dans la scène normale, afficher les cartes blanches selon leur taille
+        cardImage =
+          card.size === "L" ? cardL : card.size === "M" ? cardM : cardS;
       }
 
       const ratio = card.size === "L" ? 1 : card.size === "M" ? 0.9 : 0.8;
@@ -377,16 +393,6 @@ export const createMmkScene = (p: p5): Scene => {
 
       drawScene(p);
       drawScene(magnifier, true);
-
-      const sceneContent = p.get(
-        0,
-        0,
-        config.sketch.width,
-        config.sketch.height
-      );
-      p.clear();
-      p.background(255);
-      utils.image(p, sceneContent, 0, 0, { ascii: true, ratio: 1 });
 
       if (isAnyHand) {
         drawMagnifier();

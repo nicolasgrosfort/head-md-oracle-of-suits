@@ -209,7 +209,7 @@ export const createMmkScene = (p: p5): Scene => {
 
     utils.image(pg, sun, config.screens.center.x - sun.width * 0.25 + 160, 40);
     utils.image(pg, sand, 0, config.screens.center.height - sand.height * 0.25);
-    utils.image(pg, cloudLeft, cloudLeftX, 400);
+    utils.image(pg, cloudLeft, cloudLeftX, 320);
 
     for (let card of cards) {
       let cardImage: p5.Image;
@@ -250,7 +250,7 @@ export const createMmkScene = (p: p5): Scene => {
       utils.image(pg, cardImage, card.x, card.y, { ratio: 0.25 * ratio });
     }
 
-    utils.image(pg, cloudRight, cloudRightX, 140);
+    utils.image(pg, cloudRight, cloudRightX, 340);
     utils.image(pg, cloudCenter, cloudCenterX, 140);
   };
 
@@ -373,13 +373,12 @@ export const createMmkScene = (p: p5): Scene => {
             handY > cards[i].y &&
             handY < cards[i].y + cardImage.height * 0.25 * ratio
           ) {
-            const cardType = cards[i].card || "Mamluk";
-            prompt.title = cardPrompts[cardType]?.title || cardType;
-            prompt.description =
-              cardPrompts[cardType]?.description ||
-              `You have selected the ${cardType} card.`;
+            const cardType = cards[i].card;
+            if (!cardType) continue;
 
-            console.log("Collision détectée:", prompt.title);
+            prompt.title = cardPrompts[cardType]?.title || cardType;
+            prompt.description = cardPrompts[cardType]?.description;
+
             lastFrameTime = p.millis();
           }
         }

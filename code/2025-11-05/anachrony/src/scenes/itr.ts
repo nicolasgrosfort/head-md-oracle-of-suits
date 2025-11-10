@@ -44,8 +44,11 @@ export const createIntroScene = (p: p5): Scene => {
 
       mediaPipe.onHandMove((hand) => {
         p.fill(255, 0, 0);
-        p.circle(hand.x * p.width, hand.y * p.height, hand.z * 500 + 20);
+        p.circle(hand.x * p.width, hand.y * p.height, hand.z * 100 + 20);
       });
+
+      const bodyResult = mediaPipe.getPoseResults();
+      mediaPipe.drawBody(p, bodyResult);
     },
 
     cleanup: () => {

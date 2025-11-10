@@ -441,28 +441,36 @@ export const drawVideo = (
 
 export const onHandMove = (
   callback: (hand: Hand) => void,
-  index = 0,
   lerpAmount = 0.5,
-  ratio = 1.5
+  ratio = 1.5,
+  index = { left: 15, right: 16 }
 ) => {
   let hands: Hand[];
   let hand: Hand;
 
-  let gesture, landmarks;
+  let body, bodyLandmarks, gesture, gestureLandmarks;
 
   const centerX = 0.5;
   const centerY = 0.5;
 
   detect();
 
+  body = getPoseResults();
   gesture = getGestureResults();
-  if (!gesture) return;
+  if (!gesture || !body) return;
 
-  landmarks = gesture.landmarks;
-  if (!landmarks) return;
+  bodyLandmarks = body.landmarks;
+  gestureLandmarks = gesture.landmarks;
+  if (!gestureLandmarks) return;
 
-  hands = landmarks.map((landmarkList) => {
-    const landmark = landmarkList[index];
+  let [left, right] = [
+    bodyLandmarks?.[0][index.left],
+    bodyLandmarks?.[0][index.right],
+  ];
+
+  hands = [left, right].map((landmark) => {
+    console.log(landmark.z);
+
     return {
       x: 1 - landmark.x,
       y: landmark.y,
@@ -470,7 +478,7 @@ export const onHandMove = (
     };
   });
 
-  if (hands.length < 1) {
+  if (hands.length < 0) {
     lastHand = null;
     return;
   }

@@ -317,6 +317,7 @@ export const createMmkScene = (p: p5): Scene => {
       magnifier.pixelDensity(zoomFactor);
       magnifier.textFont("Monospace");
 
+      cards = [];
       createCards(p, 36);
     },
 

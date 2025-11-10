@@ -15,6 +15,9 @@ export const createEmdScene = (p: p5): Scene => {
     },
 
     draw: () => {
+      p.background(0);
+
+      p.push();
       p.imageMode(p.CENTER);
       p.image(
         emdImg,
@@ -23,6 +26,7 @@ export const createEmdScene = (p: p5): Scene => {
         emdImg.width * 0.25,
         emdImg.height * 0.25
       );
+      p.pop();
     },
 
     cleanup: () => {

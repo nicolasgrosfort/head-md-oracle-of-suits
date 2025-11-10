@@ -1,8 +1,8 @@
 import type { Screens } from "./types";
 
 export const sketch = {
-  width: 2232,
-  height: 1598,
+  width: 2252,
+  height: 1600,
 };
 
 export const screens: Screens = {

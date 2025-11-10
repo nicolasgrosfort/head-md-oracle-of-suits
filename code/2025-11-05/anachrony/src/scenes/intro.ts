@@ -8,7 +8,7 @@ export const createIntroScene = (p: p5): Scene => {
     },
 
     draw: () => {
-      p.background(50);
+      p.background(0);
 
       p.fill(255);
       p.textAlign(p.CENTER, p.CENTER);

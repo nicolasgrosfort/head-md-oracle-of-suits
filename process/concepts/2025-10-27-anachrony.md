@@ -304,31 +304,31 @@ Drawing on Nicolas Nova's writings (La persistance du merveilleux, Bestiary of t
 
 > _Backlog items sorted by priority_
 
-- Build a scene engine with P5
 - Refine global storyboard
-- Introduce the joker earlier in the story
-- Show the player that they must capture 4 cards per world
-- Implement the Cardodex (left screen)
 - Map gesture with possible actions (for each sequence)
 - Define how to show gestures to the user (onboarding ?)
+- Draw the "Edo "Japan" sequence
+- Prototype the Cardodex (left screen)
 - Define sound design approach
-- Make the installation autonomous
-- Document installation process
 - Write the facts about cards
 - Write PDF documentation
-- Prepare presentation
+- Record video presentation
+- Document installation process
 - Update "Research" section to reflect actual project
 
 ### Nice to have
 
-- Create a prototype of "The Mythological Breakdown" sequence
-- Prototype the head movement tracking for the final sequence
-- Prototype "The Chronoscope" gesture
-- Prototype "The Candle" gesture
-- Prototype "The Palette" gesture (v2)
+- Prototype the "Mythological Breakdown" sequence
+- Prototype the "Joker" sequence
+- Prototype the "Ancient China" sequence
+- Prototype the
 
 ### Done
 
+- ~~Make the installation autonomous~~
+- ~~Show the player that they must capture 4 cards per world~~
+- ~~Introduce the joker earlier in the story~~
+- ~~Build a basic scene engine with P5~~
 - ~~Write a first draft of the storyboard~~
 - ~~Define the tech-stack~~
 - ~~Define an "Initial State"~~

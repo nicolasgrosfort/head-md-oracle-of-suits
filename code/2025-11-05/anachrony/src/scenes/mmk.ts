@@ -364,13 +364,12 @@ export const createMmkScene = (p: p5): Scene => {
               `You have selected the ${cardType} card.`;
 
             console.log("Collision détectée:", prompt.title);
-          } else {
             lastFrameTime = p.millis();
           }
         }
       }
 
-      if (lastFrameTime > 0 && p.millis() - lastFrameTime > 4000) {
+      if (lastFrameTime > 0 && p.millis() - lastFrameTime > 5000) {
         prompt.title = "";
         prompt.description = "";
         lastFrameTime = 0;

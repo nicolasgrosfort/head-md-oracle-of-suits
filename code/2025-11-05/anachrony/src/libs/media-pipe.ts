@@ -17,6 +17,7 @@ type Hand = {
   x: number;
   y: number;
   z: number;
+  angle?: number;
 };
 
 let gestureRecognizer: GestureRecognizer | null = null;
@@ -31,6 +32,17 @@ let lastFaceResults: FaceLandmarkerResult | null = null;
 let lastPoseResults: PoseLandmarkerResult | null = null;
 let lastTimestamp = 0;
 let lastHand: Hand | null = null;
+
+const HANDS = {
+  LEFT: {
+    WRIST: 15,
+    INDEX: 19,
+  },
+  RIGHT: {
+    WRIST: 16,
+    INDEX: 20,
+  },
+};
 
 export const detect = () => {
   if (
@@ -442,8 +454,7 @@ export const drawVideo = (
 export const onHandMove = (
   callback: (hand: Hand) => void,
   lerpAmount = 0.5,
-  ratio = 2,
-  index = { left: 15, right: 16 }
+  ratio = 2
 ) => {
   let hands: Hand[];
   let hand: Hand;
@@ -461,17 +472,42 @@ export const onHandMove = (
   bodyLandmarks = body.landmarks;
   if (!bodyLandmarks) return;
 
-  let [left, right] = [
-    bodyLandmarks?.[0]?.[index.left],
-    bodyLandmarks?.[0]?.[index.right],
+  let [leftWrist, rightWrist] = [
+    bodyLandmarks?.[0]?.[HANDS.LEFT.WRIST],
+    bodyLandmarks?.[0]?.[HANDS.RIGHT.WRIST],
   ];
-  if (!left && !right) return;
+  if (!leftWrist && !rightWrist) return;
 
-  hands = [left, right].filter(Boolean).map((landmark) => {
+  let [leftIndex, rightIndex] = [
+    bodyLandmarks?.[0]?.[HANDS.LEFT.INDEX],
+    bodyLandmarks?.[0]?.[HANDS.RIGHT.INDEX],
+  ];
+  if (!leftIndex && !rightIndex) return;
+
+  hands = [leftWrist, rightWrist].filter(Boolean).map((landmark, i) => {
+    const indexFinger = i === 0 ? leftIndex : rightIndex;
+    const isLeftHand = i === 0;
+    let angle: number | undefined;
+
+    if (indexFinger) {
+      const dx = indexFinger.x - landmark.x;
+      const dy = indexFinger.y - landmark.y;
+
+      const angleRad = Math.atan2(dy, dx);
+      let normalizedAngle = (Math.PI - angleRad) / (2 * Math.PI);
+
+      if (isLeftHand) {
+        normalizedAngle = 1 - normalizedAngle;
+      }
+
+      angle = Math.max(0, Math.min(1, normalizedAngle));
+    }
+
     return {
       x: 1 - landmark.x,
       y: landmark.y,
       z: landmark.z,
+      angle,
     };
   });
 
@@ -491,12 +527,14 @@ export const onHandMove = (
       x: utils.lerp(lastHand.x, scaledX, lerpAmount),
       y: utils.lerp(lastHand.y, scaledY, lerpAmount),
       z: utils.lerp(lastHand.z, hand.z, lerpAmount),
+      angle: hand.angle,
     };
   } else {
     hand = {
       x: scaledX,
       y: scaledY,
       z: hand.z,
+      angle: hand.angle,
     };
   }
 

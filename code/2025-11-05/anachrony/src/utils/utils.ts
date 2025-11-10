@@ -110,3 +110,68 @@ const isPointInPolygon = (
 export const lerp = (start: number, end: number, amount: number): number => {
   return start + (end - start) * amount;
 };
+
+export const imageToAscii = (
+  pg: p5 | p5.Graphics,
+  img: p5.Image,
+  x: number,
+  y: number,
+  width: number,
+  height: number,
+  resolution: number = 12 // Augmenté pour moins de détails mais plus rapide
+) => {
+  const chars = " .:=+*#@"; // Réduit le nombre de caractères
+
+  pg.push();
+  pg.textAlign(pg.LEFT, pg.TOP);
+  pg.textSize(resolution);
+  pg.textFont("Courier New");
+  pg.fill(0);
+  pg.noStroke();
+
+  const cols = Math.floor(width / (resolution * 0.6));
+  const rows = Math.floor(height / resolution);
+
+  // Accéder directement aux pixels est plus rapide
+  img.loadPixels();
+
+  for (let j = 0; j < rows; j++) {
+    for (let i = 0; i < cols; i++) {
+      const imgX = Math.floor((i / cols) * img.width);
+      const imgY = Math.floor((j / rows) * img.height);
+
+      // Accès direct aux pixels au lieu de img.get()
+      const pixelIndex = (imgY * img.width + imgX) * 4;
+      const r = img.pixels[pixelIndex];
+      const g = img.pixels[pixelIndex + 1];
+      const b = img.pixels[pixelIndex + 2];
+
+      const brightness = (r + g + b) / 3;
+      const charIndex = Math.floor((brightness / 255) * (chars.length - 1));
+
+      pg.text(chars[charIndex], x + i * resolution * 0.6, y + j * resolution);
+    }
+  }
+
+  pg.pop();
+};
+
+export const image = (
+  pg: p5 | p5.Graphics,
+  image: p5.Image,
+  x: number,
+  y: number,
+  options: { ratio?: number; ascii?: boolean } = {
+    ratio: 0.25,
+    ascii: false,
+  }
+) => {
+  const ratio = options.ratio ?? 0.25;
+  const ascii = options.ascii ?? false;
+
+  if (ascii) {
+    imageToAscii(pg, image, x, y, image.width * ratio, image.height * ratio);
+  } else {
+    pg.image(image, x, y, image.width * ratio, image.height * ratio);
+  }
+};

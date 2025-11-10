@@ -196,27 +196,27 @@ export const createMmkScene = (p: p5): Scene => {
   };
 
   const drawScene = (pg: p5 | p5.Graphics, isMagnifier?: boolean) => {
-    pg.image(
-      sun,
-      config.screens.center.x - sun.width * 0.25 + 160,
-      40,
-      sun.width * 0.25,
-      sun.height * 0.25
-    );
-    pg.image(
+    if (!isMagnifier) {
+      pg.background(255);
+    } else pg.background(color.blue);
+
+    utils.image(pg, sun, config.screens.center.x - sun.width * 0.25 + 160, 40, {
+      ascii: !isMagnifier,
+    });
+
+    utils.image(
+      pg,
       sand,
       0,
       config.screens.center.height - sand.height * 0.25,
-      sand.width * 0.25,
-      sand.height * 0.25
+      {
+        ascii: !isMagnifier,
+      }
     );
-    pg.image(
-      cloudRight,
-      cloudRightX,
-      400,
-      cloudRight.width * 0.25,
-      cloudRight.height * 0.25
-    );
+
+    utils.image(pg, cloudLeft, cloudLeftX, 400, {
+      ascii: !isMagnifier,
+    });
 
     for (let card of cards) {
       let cardImage: p5.Image = cardM;
@@ -242,45 +242,22 @@ export const createMmkScene = (p: p5): Scene => {
             cardImage = mamluk;
         }
       }
-      // else {
-      //   switch (card.size) {
-      //     case "L":
-      //       cardImage = cardL;
-      //       break;
-      //     case "M":
-      //       cardImage = cardM;
-      //       break;
-      //     case "S":
-      //       cardImage = cardS;
-      //       break;
-      //   }
-      // }
 
       const ratio = card.size === "L" ? 1 : card.size === "M" ? 0.9 : 0.8;
 
-      pg.image(
-        cardImage,
-        card.x,
-        card.y,
-        cardImage.width * 0.25 * ratio,
-        cardImage.height * 0.25 * ratio
-      );
+      utils.image(pg, cardImage, card.x, card.y, {
+        ratio: 0.25 * ratio,
+        ascii: !isMagnifier,
+      });
     }
 
-    pg.image(
-      cloudCenter,
-      cloudCenterX,
-      140,
-      cloudCenter.width * 0.25,
-      cloudCenter.height * 0.25
-    );
-    pg.image(
-      cloudLeft,
-      cloudLeftX,
-      320,
-      cloudLeft.width * 0.25,
-      cloudLeft.height * 0.25
-    );
+    utils.image(pg, cloudRight, cloudRightX, 140, {
+      ascii: !isMagnifier,
+    });
+
+    utils.image(pg, cloudCenter, cloudCenterX, 140, {
+      ascii: !isMagnifier,
+    });
   };
 
   return {
@@ -323,8 +300,6 @@ export const createMmkScene = (p: p5): Scene => {
     },
 
     draw: () => {
-      p.background(color.blue);
-
       console.log("Drawing MMK scene");
 
       const leftResult = utils.animateX(
@@ -424,8 +399,6 @@ export const createMmkScene = (p: p5): Scene => {
       }
 
       drawScene(p);
-
-      magnifier.background(color.blue);
       drawScene(magnifier, true);
 
       if (isAnyHand) {

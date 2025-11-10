@@ -453,8 +453,8 @@ export const drawVideo = (
 
 export const onHandMove = (
   callback: (hand: Hand) => void,
-  lerpAmount = 0.5,
-  ratio = 2
+  lerpAmount = 0.2,
+  ratio = 1.8
 ) => {
   let hands: Hand[];
   let hand: Hand;

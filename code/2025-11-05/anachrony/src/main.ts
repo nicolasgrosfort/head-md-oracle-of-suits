@@ -13,8 +13,8 @@ import { createMmkScene } from "./scenes/mmk";
 new p5((p: p5) => {
   p.setup = async () => {
     p.createCanvas(config.sketch.width, config.sketch.height);
-    p.pixelDensity(1);
     p.textFont("Monospace");
+    p.pixelDensity(1);
 
     sceneManager.addScene("itr", createIntroScene(p));
     sceneManager.addScene("mmk", createMmkScene(p));

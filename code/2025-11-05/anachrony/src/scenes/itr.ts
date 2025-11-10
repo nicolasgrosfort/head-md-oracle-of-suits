@@ -1,6 +1,9 @@
 import p5 from "p5";
-import type { Scene } from "../libs/scene-manager";
+
+import * as mediaPipe from "../libs/media-pipe";
 import * as utils from "../utils/utils";
+
+import type { Scene } from "../libs/scene-manager";
 
 import itrUrl2 from "../assets/images/itr-2.png";
 import itrUrl from "../assets/images/itr.png";
@@ -37,6 +40,15 @@ export const createIntroScene = (p: p5): Scene => {
         currentImg.height * 0.25
       );
       p.pop();
+
+      mediaPipe.onHandMove((hand) => {
+        p.fill(255, 0, 0);
+        p.circle(
+          p.width - hand.x * p.width,
+          hand.y * p.height,
+          hand.z * 500 + 20
+        );
+      });
     },
 
     cleanup: () => {

@@ -411,6 +411,53 @@ export const drawBody = (
   }
 };
 
+type Hand = {
+  x: number;
+  y: number;
+  z: number;
+};
+
+export const onHandMove = (callback: (hand: Hand) => void) => {
+  let hands: Hand[];
+  let hand: Hand;
+  let result, landmarks;
+
+  detect();
+
+  result = getGestureResults();
+  if (!result) return;
+
+  landmarks = result.landmarks;
+  if (!landmarks) return;
+
+  // get the middle point of each hand
+  hands = landmarks.map((landmarkList) => {
+    let x = 0;
+    let y = 0;
+    let z = 0;
+
+    for (const landmark of landmarkList) {
+      x += Math.abs(landmark.x);
+      y += Math.abs(landmark.y);
+      z += Math.abs(landmark.z);
+    }
+
+    x /= landmarkList.length;
+    y /= landmarkList.length;
+    z /= landmarkList.length;
+
+    return { x, y, z };
+  });
+
+  if (hands.length < 1) return;
+
+  // get the closer hand (the one with the biggest z)
+  hands.sort((a, b) => b.z - a.z);
+  hand = hands[0];
+
+  callback(hand);
+};
+
 export const getGestureResults = () => lastGestureResults;
 export const getFaceResults = () => lastFaceResults;
 export const getPoseResults = () => lastPoseResults;

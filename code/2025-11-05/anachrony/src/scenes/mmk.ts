@@ -546,8 +546,7 @@ export const createMmkScene = (p: p5): Scene => {
         );
       }
 
-      const video = mediaPipe.getVideo();
-      utils.drawVideo(p, video, { hide: true });
+      mediaPipe.drawVideo(p, { hide: true });
 
       mediaPipe.drawHands(p, handResults, { hide: true });
 

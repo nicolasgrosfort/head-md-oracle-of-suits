@@ -16,6 +16,7 @@ export const createIntroScene = (p: p5): Scene => {
   return {
     setup: async () => {
       console.log("Intro setup");
+
       itrImg = await utils.loadImage(p, itrUrl, 1);
       itrImg2 = await utils.loadImage(p, itrUrl2, 1);
 

@@ -1,21 +1,6 @@
 import type p5 from "p5";
 import type { Screens } from "./types";
 
-export const drawVideo = (
-  p: p5,
-  video: p5.Element | null,
-  options: { hide: boolean }
-) => {
-  if (options.hide) return;
-  if (video) {
-    p.push();
-    p.translate(p.width, 0);
-    p.scale(-1, 1);
-    p.image(video as any, 0, 0, p.width, p.height);
-    p.pop();
-  }
-};
-
 export const drawScreens = (p: p5, screens: Screens, content?: p5.Image) => {
   if (!content) return;
 

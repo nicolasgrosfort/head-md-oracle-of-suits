@@ -38,6 +38,7 @@ new p5((p: p5) => {
 
     mediaPipe.detect();
     sceneManager.draw();
+    mediaPipe.drawVideo(p, { hide: false, opacity: 0.2 });
   };
 
   p.keyPressed = async () => {

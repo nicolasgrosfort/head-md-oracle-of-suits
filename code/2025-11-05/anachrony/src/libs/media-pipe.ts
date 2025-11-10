@@ -13,6 +13,12 @@ import type p5 from "p5";
 import * as config from "../utils/config.js";
 import * as utils from "../utils/utils.js";
 
+type Hand = {
+  x: number;
+  y: number;
+  z: number;
+};
+
 let gestureRecognizer: GestureRecognizer | null = null;
 let faceLandmarker: FaceLandmarker | null = null;
 let poseLandmarker: PoseLandmarker | null = null;
@@ -24,6 +30,7 @@ let lastGestureResults: GestureRecognizerResult | null = null;
 let lastFaceResults: FaceLandmarkerResult | null = null;
 let lastPoseResults: PoseLandmarkerResult | null = null;
 let lastTimestamp = 0;
+let lastHand: Hand | null = null;
 
 export const detect = () => {
   if (
@@ -412,13 +419,25 @@ export const drawBody = (
   }
 };
 
-type Hand = {
-  x: number;
-  y: number;
-  z: number;
-};
+export const drawVideo = (
+  p: p5,
+  options: { hide?: boolean; opacity?: number } = { hide: false, opacity: 1 }
+) => {
+  if (options.hide === true) return;
+  const video = getVideo();
 
-let previousHand: Hand | null = null;
+  if (video) {
+    p.push();
+    p.translate(p.width, 0);
+    p.scale(-1, 1);
+
+    const opacity = options.opacity !== undefined ? options.opacity : 1.0;
+    p.tint(255, 255 * opacity);
+
+    p.image(video, 0, 0, p.width, p.height);
+    p.pop();
+  }
+};
 
 export const onHandMove = (
   callback: (hand: Hand) => void,
@@ -452,7 +471,7 @@ export const onHandMove = (
   });
 
   if (hands.length < 1) {
-    previousHand = null;
+    lastHand = null;
     return;
   }
 
@@ -462,11 +481,11 @@ export const onHandMove = (
   const scaledX = centerX + (hand.x - centerX) * ratio;
   const scaledY = centerY + (hand.y - centerY) * ratio;
 
-  if (previousHand) {
+  if (lastHand) {
     hand = {
-      x: utils.lerp(previousHand.x, scaledX, lerpAmount),
-      y: utils.lerp(previousHand.y, scaledY, lerpAmount),
-      z: utils.lerp(previousHand.z, hand.z, lerpAmount),
+      x: utils.lerp(lastHand.x, scaledX, lerpAmount),
+      y: utils.lerp(lastHand.y, scaledY, lerpAmount),
+      z: utils.lerp(lastHand.z, hand.z, lerpAmount),
     };
   } else {
     hand = {
@@ -476,7 +495,7 @@ export const onHandMove = (
     };
   }
 
-  previousHand = hand;
+  lastHand = hand;
 
   callback(hand);
 };

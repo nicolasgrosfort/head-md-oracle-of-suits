@@ -17,7 +17,7 @@ type Hand = {
   x: number;
   y: number;
   z: number;
-  angle?: number;
+  angle: number;
 };
 
 let gestureRecognizer: GestureRecognizer | null = null;
@@ -486,8 +486,7 @@ export const onHandMove = (
 
   hands = [leftWrist, rightWrist].filter(Boolean).map((landmark, i) => {
     const indexFinger = i === 0 ? leftIndex : rightIndex;
-    const isLeftHand = i === 0;
-    let angle: number | undefined;
+    let angle: number = 0;
 
     if (indexFinger) {
       const dx = indexFinger.x - landmark.x;
@@ -495,10 +494,6 @@ export const onHandMove = (
 
       const angleRad = Math.atan2(dy, dx);
       let normalizedAngle = (Math.PI - angleRad) / (2 * Math.PI);
-
-      if (isLeftHand) {
-        normalizedAngle = 1 - normalizedAngle;
-      }
 
       angle = Math.max(0, Math.min(1, normalizedAngle));
     }

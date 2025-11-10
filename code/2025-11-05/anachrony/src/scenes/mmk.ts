@@ -29,6 +29,10 @@ import pokemonFullUrl from "../assets/images/pokemon.png";
 import ramolosFullUrl from "../assets/images/ramolos.png";
 import tarotFullUrl from "../assets/images/tarot.png";
 
+const color = {
+  blue: "#A8EEFE",
+};
+
 const cardPrompts = {
   Hanafuda: {
     title: "HANAFUDA",
@@ -110,9 +114,6 @@ export const createMmkScene = (p: p5): Scene => {
   let isAnyHand = false;
   let handX = 0;
   let handY = 0;
-  let targetHandX = 0;
-  let targetHandY = 0;
-  let lerpFactor = 0.15;
 
   let lastFrameTime = 0;
 
@@ -322,7 +323,7 @@ export const createMmkScene = (p: p5): Scene => {
     },
 
     draw: () => {
-      p.background("#BDF7FF");
+      p.background(color.blue);
 
       console.log("Drawing MMK scene");
 
@@ -356,31 +357,15 @@ export const createMmkScene = (p: p5): Scene => {
       cloudRightX = rightResult.x;
       cloudRightDirection = rightResult.direction;
 
-      const handResults = mediaPipe.getGestureResults();
-      const indexFingers: Array<{ x: number; y: number }> = [];
-      isAnyHand = false;
+      mediaPipe.onHandMove((hand) => {
+        isAnyHand = true;
+        handX = hand.x * config.sketch.width;
+        handY = hand.y * config.sketch.height;
+      });
 
-      if (handResults && handResults.landmarks) {
-        for (const landmarks of handResults.landmarks) {
-          const indexTip = landmarks[8];
-          if (indexTip) {
-            const fingerX =
-              config.sketch.width - indexTip.x * config.sketch.width;
-            const fingerY = indexTip.y * config.sketch.height;
-            indexFingers.push({ x: fingerX, y: fingerY });
-
-            if (!isAnyHand) {
-              targetHandX = fingerX;
-              targetHandY = fingerY;
-              isAnyHand = true;
-            }
-          }
-        }
-      }
-
-      if (isAnyHand) {
-        handX = p.lerp(handX, targetHandX, lerpFactor);
-        handY = p.lerp(handY, targetHandY, lerpFactor);
+      if (!isAnyHand) {
+        handX = 0;
+        handY = 0;
       }
 
       // Mettre à jour les cartes et détecter les collisions
@@ -413,7 +398,6 @@ export const createMmkScene = (p: p5): Scene => {
           const ratio =
             cards[i].size === "L" ? 1 : cards[i].size === "M" ? 0.9 : 0.8;
 
-          // Utiliser handX et handY au lieu de indexFingers
           if (
             handX > cards[i].x &&
             handX < cards[i].x + cardImage.width * 0.25 * ratio &&
@@ -424,9 +408,9 @@ export const createMmkScene = (p: p5): Scene => {
             prompt.title = cardPrompts[cardType]?.title || cardType;
             prompt.description =
               cardPrompts[cardType]?.description ||
-              `You have selected the ${cardType} card. Describe its significance and symbolism in detail.`;
+              `You have selected the ${cardType} card.`;
 
-            console.log("Collision détectée:", prompt.title); // Debug
+            console.log("Collision détectée:", prompt.title);
           } else {
             lastFrameTime = p.millis();
           }
@@ -441,12 +425,14 @@ export const createMmkScene = (p: p5): Scene => {
 
       drawScene(p);
 
-      magnifier.background("#BDF7FF");
+      magnifier.background(color.blue);
       drawScene(magnifier, true);
 
       if (isAnyHand) {
         drawMagnifier();
       }
+
+      isAnyHand = false;
 
       if (prompt.title) {
         p.push();
@@ -545,16 +531,6 @@ export const createMmkScene = (p: p5): Scene => {
           displayHeight
         );
       }
-
-      mediaPipe.drawVideo(p, { hide: true });
-
-      mediaPipe.drawHands(p, handResults, { hide: true });
-
-      const faceResults = mediaPipe.getFaceResults();
-      mediaPipe.drawFace(p, faceResults, { hide: true });
-
-      const poseResults = mediaPipe.getPoseResults();
-      mediaPipe.drawBody(p, poseResults, { hide: true });
 
       const canvasContent = p.get();
 

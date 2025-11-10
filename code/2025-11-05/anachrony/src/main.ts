@@ -27,6 +27,8 @@ new p5((p: p5) => {
   };
 
   p.draw = () => {
+    mediaPipe.detect();
+
     if (!sceneManager.sceneIsReady()) {
       p.background(0);
       p.fill(255);
@@ -35,8 +37,6 @@ new p5((p: p5) => {
       p.text("Loading...", p.width / 2, p.height / 2);
       return;
     }
-
-    mediaPipe.detect();
 
     sceneManager.draw();
 

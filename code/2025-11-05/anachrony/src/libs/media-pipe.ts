@@ -483,7 +483,7 @@ export const onHandMove = (
     return;
   }
 
-  hands.sort((a, b) => b.z - a.z);
+  hands.sort((a, b) => a.z - b.z);
   hand = hands[0];
 
   const scaledX = centerX + (hand.x - centerX) * ratio;

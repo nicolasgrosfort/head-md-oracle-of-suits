@@ -4,6 +4,7 @@ import * as mediaPipe from "./libs/media-pipe";
 import * as sceneManager from "./libs/scene-manager";
 import * as config from "./utils/config";
 
+import { createEmdScene } from "./scenes/emd";
 import { createIntroScene } from "./scenes/intro";
 import { createMmkScene } from "./scenes/mmk";
 
@@ -15,6 +16,7 @@ new p5((p: p5) => {
 
     sceneManager.addScene("intro", createIntroScene(p));
     sceneManager.addScene("mmk", createMmkScene(p));
+    sceneManager.addScene("emd", createEmdScene(p));
 
     await mediaPipe.initialize(p);
     await sceneManager.switchTo("intro");
@@ -35,10 +37,19 @@ new p5((p: p5) => {
   };
 
   p.keyPressed = async () => {
-    if (p.key === " ") {
-      await sceneManager.switchTo("intro");
-    } else if (p.key === "m") {
-      await sceneManager.switchTo("mmk");
+    switch (p.key) {
+      case "i": {
+        await sceneManager.switchTo("intro");
+        break;
+      }
+      case "e": {
+        await sceneManager.switchTo("emd");
+        break;
+      }
+      case "m": {
+        await sceneManager.switchTo("mmk");
+        break;
+      }
     }
   };
 });

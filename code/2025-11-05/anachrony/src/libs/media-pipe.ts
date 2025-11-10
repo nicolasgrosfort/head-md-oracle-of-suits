@@ -82,9 +82,9 @@ export const initialize = async (p: p5) => {
     },
     runningMode: "VIDEO",
     numHands: 2,
-    minHandDetectionConfidence: 0.5,
-    minHandPresenceConfidence: 0.5,
-    minTrackingConfidence: 0.5,
+    minHandDetectionConfidence: 0.8,
+    minHandPresenceConfidence: 0.8,
+    minTrackingConfidence: 0.8,
   });
 
   faceLandmarker = await FaceLandmarker.createFromOptions(vision, {
@@ -95,9 +95,9 @@ export const initialize = async (p: p5) => {
     },
     runningMode: "VIDEO",
     numFaces: 1,
-    minFaceDetectionConfidence: 0.3,
-    minFacePresenceConfidence: 0.3,
-    minTrackingConfidence: 0.3,
+    minFaceDetectionConfidence: 0.5,
+    minFacePresenceConfidence: 0.5,
+    minTrackingConfidence: 0.5,
   });
 
   poseLandmarker = await PoseLandmarker.createFromOptions(vision, {
@@ -108,9 +108,9 @@ export const initialize = async (p: p5) => {
     },
     runningMode: "VIDEO",
     numPoses: 1,
-    minPoseDetectionConfidence: 0.5,
-    minPosePresenceConfidence: 0.5,
-    minTrackingConfidence: 0.5,
+    minPoseDetectionConfidence: 0.8,
+    minPosePresenceConfidence: 0.8,
+    minTrackingConfidence: 0.8,
   });
 
   isReady = true;

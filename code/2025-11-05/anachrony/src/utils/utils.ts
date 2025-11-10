@@ -118,14 +118,15 @@ export const imageToAscii = (
   y: number,
   width: number,
   height: number,
-  resolution: number = 12 // Augmenté pour moins de détails mais plus rapide
+  resolution: number = 15 // Augmenté pour moins de détails mais plus rapide
 ) => {
-  const chars = " .:=+*#@"; // Réduit le nombre de caractères
+  // const chars = " .-+*#@";
+  const chars = " @#*+-.";
 
   pg.push();
   pg.textAlign(pg.LEFT, pg.TOP);
   pg.textSize(resolution);
-  pg.textFont("Courier New");
+  pg.textFont("Monospace");
   pg.fill(0);
   pg.noStroke();
 

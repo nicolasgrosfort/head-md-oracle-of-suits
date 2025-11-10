@@ -78,7 +78,7 @@ const cardPrompts = {
 };
 
 export const createMmkScene = (p: p5): Scene => {
-  let zoomFactor = 4;
+  let zoomFactor = 2;
   let zoomSize = 300;
   let magnifier: p5.Graphics;
 
@@ -200,23 +200,9 @@ export const createMmkScene = (p: p5): Scene => {
       pg.background(255);
     } else pg.background(color.blue);
 
-    utils.image(pg, sun, config.screens.center.x - sun.width * 0.25 + 160, 40, {
-      ascii: !isMagnifier,
-    });
-
-    utils.image(
-      pg,
-      sand,
-      0,
-      config.screens.center.height - sand.height * 0.25,
-      {
-        ascii: !isMagnifier,
-      }
-    );
-
-    utils.image(pg, cloudLeft, cloudLeftX, 400, {
-      ascii: !isMagnifier,
-    });
+    utils.image(pg, sun, config.screens.center.x - sun.width * 0.25 + 160, 40);
+    utils.image(pg, sand, 0, config.screens.center.height - sand.height * 0.25);
+    utils.image(pg, cloudLeft, cloudLeftX, 400);
 
     for (let card of cards) {
       let cardImage: p5.Image = cardM;
@@ -245,19 +231,11 @@ export const createMmkScene = (p: p5): Scene => {
 
       const ratio = card.size === "L" ? 1 : card.size === "M" ? 0.9 : 0.8;
 
-      utils.image(pg, cardImage, card.x, card.y, {
-        ratio: 0.25 * ratio,
-        ascii: !isMagnifier,
-      });
+      utils.image(pg, cardImage, card.x, card.y, { ratio: 0.25 * ratio });
     }
 
-    utils.image(pg, cloudRight, cloudRightX, 140, {
-      ascii: !isMagnifier,
-    });
-
-    utils.image(pg, cloudCenter, cloudCenterX, 140, {
-      ascii: !isMagnifier,
-    });
+    utils.image(pg, cloudRight, cloudRightX, 140);
+    utils.image(pg, cloudCenter, cloudCenterX, 140);
   };
 
   return {
@@ -400,6 +378,16 @@ export const createMmkScene = (p: p5): Scene => {
 
       drawScene(p);
       drawScene(magnifier, true);
+
+      const sceneContent = p.get(
+        0,
+        0,
+        config.sketch.width,
+        config.sketch.height
+      );
+      p.clear();
+      p.background(255);
+      utils.image(p, sceneContent, 0, 0, { ascii: true, ratio: 1 });
 
       if (isAnyHand) {
         drawMagnifier();

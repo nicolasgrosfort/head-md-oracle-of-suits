@@ -4,7 +4,7 @@ export type Scene = {
   cleanup: () => void;
 };
 
-type SceneName = "intro" | "mmk" | "emd";
+type SceneName = "itr" | "mmk" | "emd" | "jkr" | "acn";
 
 let currentScene: Scene | null = null;
 let scenes: Map<SceneName, Scene> = new Map();

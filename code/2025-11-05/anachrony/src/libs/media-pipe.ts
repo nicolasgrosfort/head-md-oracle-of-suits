@@ -11,6 +11,7 @@ import {
 import type p5 from "p5";
 
 import * as config from "../utils/config.js";
+import * as utils from "../utils/utils.js";
 
 let gestureRecognizer: GestureRecognizer | null = null;
 let faceLandmarker: FaceLandmarker | null = null;
@@ -417,43 +418,65 @@ type Hand = {
   z: number;
 };
 
-export const onHandMove = (callback: (hand: Hand) => void) => {
+let previousHand: Hand | null = null;
+
+export const onHandMove = (
+  callback: (hand: Hand) => void,
+  index = 0,
+  lerpAmount = 0.5,
+  ratio = 1.5
+) => {
   let hands: Hand[];
   let hand: Hand;
-  let result, landmarks;
+
+  let gesture, landmarks;
+
+  const centerX = 0.5;
+  const centerY = 0.5;
 
   detect();
 
-  result = getGestureResults();
-  if (!result) return;
+  gesture = getGestureResults();
+  if (!gesture) return;
 
-  landmarks = result.landmarks;
+  landmarks = gesture.landmarks;
   if (!landmarks) return;
 
-  // get the middle point of each hand
   hands = landmarks.map((landmarkList) => {
-    let x = 0;
-    let y = 0;
-    let z = 0;
-
-    for (const landmark of landmarkList) {
-      x += Math.abs(landmark.x);
-      y += Math.abs(landmark.y);
-      z += Math.abs(landmark.z);
-    }
-
-    x /= landmarkList.length;
-    y /= landmarkList.length;
-    z /= landmarkList.length;
-
-    return { x, y, z };
+    const landmark = landmarkList[index];
+    return {
+      x: 1 - landmark.x,
+      y: landmark.y,
+      z: landmark.z,
+    };
   });
 
-  if (hands.length < 1) return;
+  if (hands.length < 1) {
+    previousHand = null;
+    return;
+  }
 
-  // get the closer hand (the one with the biggest z)
   hands.sort((a, b) => b.z - a.z);
   hand = hands[0];
+
+  const scaledX = centerX + (hand.x - centerX) * ratio;
+  const scaledY = centerY + (hand.y - centerY) * ratio;
+
+  if (previousHand) {
+    hand = {
+      x: utils.lerp(previousHand.x, scaledX, lerpAmount),
+      y: utils.lerp(previousHand.y, scaledY, lerpAmount),
+      z: utils.lerp(previousHand.z, hand.z, lerpAmount),
+    };
+  } else {
+    hand = {
+      x: scaledX,
+      y: scaledY,
+      z: hand.z,
+    };
+  }
+
+  previousHand = hand;
 
   callback(hand);
 };

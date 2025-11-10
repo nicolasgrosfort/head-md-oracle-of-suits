@@ -462,13 +462,12 @@ export const onHandMove = (
   if (!bodyLandmarks) return;
 
   let [left, right] = [
-    bodyLandmarks?.[0][index.left],
-    bodyLandmarks?.[0][index.right],
+    bodyLandmarks?.[0]?.[index.left],
+    bodyLandmarks?.[0]?.[index.right],
   ];
+  if (!left && !right) return;
 
-  hands = [left, right].map((landmark) => {
-    console.log(landmark.z);
-
+  hands = [left, right].filter(Boolean).map((landmark) => {
     return {
       x: 1 - landmark.x,
       y: landmark.y,
@@ -476,7 +475,7 @@ export const onHandMove = (
     };
   });
 
-  if (hands.length < 0) {
+  if (hands.length <= 0) {
     lastHand = null;
     return;
   }

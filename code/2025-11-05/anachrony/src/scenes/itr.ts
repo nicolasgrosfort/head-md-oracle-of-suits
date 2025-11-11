@@ -24,7 +24,9 @@ export const createIntroScene = (p: p5): Scene => {
   let lastAngle: number | null = null;
   let frameDuringButton = 0;
 
-  const MAX_FRAME_DURING_BUTTON = 120;
+  const MAX_FRAME_DURING_BUTTON = 100;
+  const MAX_ZONE_RADIUS = 200;
+  const MIN_ZONE_RADIUS = 50;
 
   return {
     setup: async () => {
@@ -70,7 +72,6 @@ export const createIntroScene = (p: p5): Scene => {
       mediaPipe.onHandMove((hand) => {
         const circleX = 1022;
         const circleY = 1055;
-        const circleRadius = 300;
 
         const handX = hand.x * p.width;
         const handY = hand.y * p.height;
@@ -80,7 +81,7 @@ export const createIntroScene = (p: p5): Scene => {
           handY,
           circleX,
           circleY,
-          circleRadius
+          MAX_ZONE_RADIUS
         );
 
         if (isOnButton) {
@@ -111,8 +112,8 @@ export const createIntroScene = (p: p5): Scene => {
             frameDuringButton,
             MAX_FRAME_DURING_BUTTON,
             0,
-            100,
-            circleRadius
+            MIN_ZONE_RADIUS,
+            MAX_ZONE_RADIUS
           );
 
           if (frameDuringButton >= MAX_FRAME_DURING_BUTTON) {

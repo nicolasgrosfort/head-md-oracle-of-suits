@@ -32,6 +32,10 @@ import tarotFullUrl from "../assets/images/tarot.png";
 
 import vesselUrl from "../assets/images/vessel.png";
 
+const MAX_FRAME_DURING_VESSEL = 100;
+const MAX_ZONE_RADIUS = 200;
+const MIN_ZONE_RADIUS = 50;
+
 const color = {
   blue: "#A8EEFE",
 };
@@ -122,8 +126,10 @@ export const createMmkScene = (p: p5): Scene => {
   let lastFrameTime = 0;
 
   let frameDuringVessel = 0;
-
-  const MAX_FRAME_DURING_VESSEL = 120;
+  let isOnVessel = false;
+  let zoneRadius = MAX_ZONE_RADIUS;
+  let vesselX = 70;
+  let vesselY = 500;
 
   let cards: Array<{
     x: number;
@@ -181,8 +187,6 @@ export const createMmkScene = (p: p5): Scene => {
     }
   };
   const drawMagnifier = () => {
-    zoomSize = p.map(frameDuringVessel, 0, MAX_FRAME_DURING_VESSEL, 300, 100);
-
     const copySize = zoomSize / zoomFactor;
     const sx = handX - copySize / 2;
     const sy = handY - copySize / 2;
@@ -221,7 +225,7 @@ export const createMmkScene = (p: p5): Scene => {
     utils.image(pg, sand, 0, config.screens.center.height - sand.height * 0.25);
     utils.image(pg, cloudLeft, cloudLeftX, 320);
 
-    utils.image(pg, vessel, 70, 500);
+    utils.image(pg, vessel, vesselX, vesselY);
 
     for (let card of cards) {
       let cardImage: p5.Image;
@@ -264,6 +268,18 @@ export const createMmkScene = (p: p5): Scene => {
 
     utils.image(pg, cloudRight, cloudRightX, 340);
     utils.image(pg, cloudCenter, cloudCenterX, 140);
+
+    if (isOnVessel) {
+      p.push();
+      p.fill(255, 80);
+      p.stroke(0);
+      p.circle(
+        vesselX + vessel.width * 0.25 * 0.5,
+        vesselY + vessel.height * 0.25 * 0.5,
+        zoneRadius * 2
+      );
+      p.pop();
+    }
   };
 
   return {
@@ -299,6 +315,7 @@ export const createMmkScene = (p: p5): Scene => {
 
       vessel = await utils.loadImage(p, vesselUrl, 1);
       frameDuringVessel = 0;
+      isOnVessel = false;
 
       magnifier = p.createGraphics(config.sketch.width, config.sketch.height);
       magnifier.pixelDensity(zoomFactor);
@@ -346,19 +363,27 @@ export const createMmkScene = (p: p5): Scene => {
         handX = hand.x * config.sketch.width;
         handY = hand.y * config.sketch.height;
 
-        const vesselX = 70;
-        const vesselY = 500;
         const vesselWidth = vessel.width * 0.25;
         const vesselHeight = vessel.height * 0.25;
 
-        const isOnVessel =
+        const isHandOnVessel =
           handX > vesselX &&
           handX < vesselX + vesselWidth &&
           handY > vesselY &&
           handY < vesselY + vesselHeight;
 
-        if (isOnVessel) {
+        if (isHandOnVessel) {
           frameDuringVessel++;
+          isOnVessel = true;
+
+          zoneRadius = p.map(
+            frameDuringVessel,
+            MAX_FRAME_DURING_VESSEL,
+            0,
+            MIN_ZONE_RADIUS,
+            MAX_ZONE_RADIUS
+          );
+
           prompt.title = "";
           prompt.description = "";
 
@@ -368,6 +393,7 @@ export const createMmkScene = (p: p5): Scene => {
           }
         } else {
           frameDuringVessel = 0;
+          isOnVessel = false;
         }
       });
 
@@ -432,7 +458,7 @@ export const createMmkScene = (p: p5): Scene => {
       drawScene(p);
       drawScene(magnifier, true);
 
-      if (isAnyHand) {
+      if (isAnyHand && !isOnVessel) {
         drawMagnifier();
       }
 

@@ -31,4 +31,4 @@ jobs:
           username: ${{ secrets.USERNAME }}
           password: ${{ secrets.PASSWORD }}
           server-dir: /sites/lab.tekh.studio/anachrony
-          local-dir: dist/
+          local-dir: code/2025-11-05/anachrony/dist/

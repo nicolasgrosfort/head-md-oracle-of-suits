@@ -20,7 +20,7 @@ export const createIntroScene = (p: p5): Scene => {
   let currentImg: p5.Image;
 
   let buttonPosition = 0;
-  let lastAngle = 0;
+  let lastAngle: number | null = null;
 
   return {
     setup: async () => {
@@ -66,7 +66,7 @@ export const createIntroScene = (p: p5): Scene => {
       mediaPipe.onHandMove((hand) => {
         const circleX = 1022;
         const circleY = 1055;
-        const circleRadius = 150;
+        const circleRadius = 200;
 
         const handX = hand.x * p.width;
         const handY = hand.y * p.height;
@@ -80,11 +80,22 @@ export const createIntroScene = (p: p5): Scene => {
         );
 
         if (isOnButton) {
-          const angleDiff = hand.angle - lastAngle;
+          if (lastAngle === null) {
+            lastAngle = hand.angle;
+          }
 
-          if (Math.abs(angleDiff) >= 30) {
-            if (angleDiff > 0) buttonPosition = Math.min(3, buttonPosition + 1);
-            else buttonPosition = Math.max(0, buttonPosition - 1);
+          const currentStep = Math.round(hand.angle / 30) * 30;
+          const lastStep =
+            lastAngle !== null ? Math.round(lastAngle / 30) * 30 : currentStep;
+
+          if (currentStep !== lastStep) {
+            const stepDiff = (currentStep - lastStep) / 30;
+
+            if (stepDiff > 0) {
+              buttonPosition = Math.min(3, buttonPosition + 1);
+            } else if (stepDiff < 0) {
+              buttonPosition = Math.max(0, buttonPosition - 1);
+            }
 
             lastAngle = hand.angle;
           }
@@ -93,7 +104,7 @@ export const createIntroScene = (p: p5): Scene => {
           p.stroke(0);
           p.circle(circleX, circleY, circleRadius * 2);
         } else {
-          lastAngle = hand.angle;
+          lastAngle = null;
 
           p.fill("black");
           p.circle(hand.x * p.width, hand.y * p.height, 20);

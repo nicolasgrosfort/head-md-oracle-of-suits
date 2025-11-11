@@ -191,10 +191,14 @@ export const getAngle = (
   let angle = -1 * (Math.atan2(dy, dx) * (180 / Math.PI) + base);
   angle = Math.round(angle / step) * step;
 
-  while (angle < 0) angle += 360;
-  while (angle >= 360) angle -= 360;
+  while (angle > 180) angle -= 360;
+  while (angle <= -180) angle += 360;
 
-  return angle === 0 ? 0 : angle;
+  angle === 0 ? 0 : angle;
+
+  console.log(angle);
+
+  return angle;
 };
 
 export const isInsideCircle = (

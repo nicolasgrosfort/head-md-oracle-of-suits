@@ -478,7 +478,7 @@ export const drawVideo = (
 export const onHandMove = (callback: (hand: Hand) => void) => {
   let hand: Hand;
 
-  const TRANSLATE = { x: 1, y: 2 };
+  const TRANSLATE = { x: 1, y: 1.8 };
   const SCALE = { x: 4, y: 3 };
 
   const gestureResults = getGestureResults();

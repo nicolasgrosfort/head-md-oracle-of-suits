@@ -42,7 +42,7 @@ new p5((p: p5) => {
 
     sceneManager.draw();
 
-    mediaPipe.drawVideo(p, { hide: false, opacity: 0.2 });
+    mediaPipe.drawVideo(p, { hide: true, opacity: 0.2 });
   };
 
   p.keyPressed = async () => {

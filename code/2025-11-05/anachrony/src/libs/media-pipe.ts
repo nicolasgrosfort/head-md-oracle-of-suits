@@ -44,7 +44,7 @@ let lastTimestamp = 0;
 
 let smoothedHand: Hand | null = null;
 
-const SMOOTHING_FACTOR = 0.3;
+const SMOOTHING_FACTOR = 0.2;
 
 const HAND = {
   WRIST: 0,

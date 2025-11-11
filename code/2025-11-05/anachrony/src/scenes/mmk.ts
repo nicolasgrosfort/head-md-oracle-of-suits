@@ -35,6 +35,7 @@ import vesselUrl from "../assets/images/vessel.png";
 const MAX_FRAME_DURING_VESSEL = 100;
 const MAX_ZONE_RADIUS = 200;
 const MIN_ZONE_RADIUS = 50;
+const MAX_TIME_PROMPT = 10000;
 
 const color = {
   blue: "#A8EEFE",
@@ -449,7 +450,7 @@ export const createMmkScene = (p: p5): Scene => {
         }
       }
 
-      if (lastFrameTime > 0 && p.millis() - lastFrameTime > 5000) {
+      if (lastFrameTime > 0 && p.millis() - lastFrameTime > MAX_TIME_PROMPT) {
         prompt.title = "";
         prompt.description = "";
         lastFrameTime = 0;

@@ -13,6 +13,12 @@ import type p5 from "p5";
 import * as config from "../utils/config.js";
 import * as utils from "../utils/utils.js";
 
+type InitializeOptions = {
+  enableGestures?: boolean;
+  enableFace?: boolean;
+  enablePose?: boolean;
+};
+
 type GestureCategory = "Open_Palm" | "Closed_Fist";
 type Gesture = "open" | "close";
 
@@ -47,37 +53,14 @@ const GESTURES: Record<GestureCategory, Gesture> = {
   Closed_Fist: "close",
 };
 
-export const detect = () => {
-  if (
-    !isReady ||
-    !gestureRecognizer ||
-    !faceLandmarker ||
-    !poseLandmarker ||
-    !video
-  ) {
-    return;
+export const initialize = async (
+  p: p5,
+  options: InitializeOptions = {
+    enableGestures: true,
+    enableFace: false,
+    enablePose: false,
   }
-
-  const videoElement = (video as any).elt as HTMLVideoElement;
-  if (videoElement.readyState >= 2) {
-    lastTimestamp += 1;
-
-    lastGestureResults = gestureRecognizer.recognizeForVideo(
-      videoElement,
-      lastTimestamp
-    );
-    lastFaceResults = faceLandmarker.detectForVideo(
-      videoElement,
-      lastTimestamp
-    );
-    lastPoseResults = poseLandmarker.detectForVideo(
-      videoElement,
-      lastTimestamp
-    );
-  }
-};
-
-export const initialize = async (p: p5) => {
+) => {
   video = p.createCapture({
     video: true,
     audio: false,
@@ -89,46 +72,84 @@ export const initialize = async (p: p5) => {
     "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@latest/wasm"
   );
 
-  gestureRecognizer = await GestureRecognizer.createFromOptions(vision, {
-    baseOptions: {
-      modelAssetPath:
-        "https://storage.googleapis.com/mediapipe-models/gesture_recognizer/gesture_recognizer/float16/1/gesture_recognizer.task",
-      delegate: "GPU",
-    },
-    runningMode: "VIDEO",
-    numHands: 1,
-    minHandDetectionConfidence: 0.5,
-    minHandPresenceConfidence: 0.5,
-    minTrackingConfidence: 0.5,
-  });
+  if (options.enableGestures !== false) {
+    gestureRecognizer = await GestureRecognizer.createFromOptions(vision, {
+      baseOptions: {
+        modelAssetPath:
+          "https://storage.googleapis.com/mediapipe-models/gesture_recognizer/gesture_recognizer/float16/1/gesture_recognizer.task",
+        delegate: "GPU",
+      },
+      runningMode: "VIDEO",
+      numHands: 1,
+      minHandDetectionConfidence: 0.5,
+      minHandPresenceConfidence: 0.5,
+      minTrackingConfidence: 0.5,
+    });
+  }
 
-  faceLandmarker = await FaceLandmarker.createFromOptions(vision, {
-    baseOptions: {
-      modelAssetPath:
-        "https://storage.googleapis.com/mediapipe-models/face_landmarker/face_landmarker/float16/1/face_landmarker.task",
-      delegate: "GPU",
-    },
-    runningMode: "VIDEO",
-    numFaces: 1,
-    minFaceDetectionConfidence: 0.5,
-    minFacePresenceConfidence: 0.5,
-    minTrackingConfidence: 0.5,
-  });
+  if (options.enableFace !== false) {
+    faceLandmarker = await FaceLandmarker.createFromOptions(vision, {
+      baseOptions: {
+        modelAssetPath:
+          "https://storage.googleapis.com/mediapipe-models/face_landmarker/face_landmarker/float16/1/face_landmarker.task",
+        delegate: "GPU",
+      },
+      runningMode: "VIDEO",
+      numFaces: 1,
+      minFaceDetectionConfidence: 0.5,
+      minFacePresenceConfidence: 0.5,
+      minTrackingConfidence: 0.5,
+    });
+  }
 
-  poseLandmarker = await PoseLandmarker.createFromOptions(vision, {
-    baseOptions: {
-      modelAssetPath:
-        "https://storage.googleapis.com/mediapipe-models/pose_landmarker/pose_landmarker_heavy/float16/1/pose_landmarker_heavy.task",
-      delegate: "GPU",
-    },
-    runningMode: "VIDEO",
-    numPoses: 1,
-    minPoseDetectionConfidence: 0.5,
-    minPosePresenceConfidence: 0.5,
-    minTrackingConfidence: 0.5,
-  });
+  if (options.enablePose !== false) {
+    poseLandmarker = await PoseLandmarker.createFromOptions(vision, {
+      baseOptions: {
+        modelAssetPath:
+          "https://storage.googleapis.com/mediapipe-models/pose_landmarker/pose_landmarker_heavy/float16/1/pose_landmarker_heavy.task",
+        delegate: "GPU",
+      },
+      runningMode: "VIDEO",
+      numPoses: 1,
+      minPoseDetectionConfidence: 0.5,
+      minPosePresenceConfidence: 0.5,
+      minTrackingConfidence: 0.5,
+    });
+  }
 
   isReady = true;
+};
+
+export const detect = () => {
+  if (!isReady || !video) {
+    return;
+  }
+
+  const videoElement = (video as any).elt as HTMLVideoElement;
+  if (videoElement.readyState >= 2) {
+    lastTimestamp += 1;
+
+    if (gestureRecognizer) {
+      lastGestureResults = gestureRecognizer.recognizeForVideo(
+        videoElement,
+        lastTimestamp
+      );
+    }
+
+    if (faceLandmarker) {
+      lastFaceResults = faceLandmarker.detectForVideo(
+        videoElement,
+        lastTimestamp
+      );
+    }
+
+    if (poseLandmarker) {
+      lastPoseResults = poseLandmarker.detectForVideo(
+        videoElement,
+        lastTimestamp
+      );
+    }
+  }
 };
 
 export const drawHands = (
@@ -456,8 +477,6 @@ export const drawVideo = (
 
 export const onHandMove = (callback: (hand: Hand) => void) => {
   let hand: Hand;
-
-  detect();
 
   const gestureResults = getGestureResults();
   if (!gestureResults) return;

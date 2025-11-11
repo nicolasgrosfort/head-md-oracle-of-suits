@@ -36,7 +36,7 @@ new p5((p: p5) => {
       url: songUrl,
       autostart: true,
       loop: true,
-      fadeIn: 2,
+      fadeIn: 4,
       fadeOut: 2,
       onload: () => {
         isAudioLoading = false;
@@ -64,8 +64,8 @@ new p5((p: p5) => {
   };
 
   p.mousePressed = async () => {
-    console.log(player.state);
-    player.stop();
+    if (player.state === "stopped") player.start();
+    else if (player.state === "started") player.stop();
   };
 
   p.keyPressed = async () => {

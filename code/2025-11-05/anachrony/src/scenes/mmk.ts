@@ -29,6 +29,8 @@ import pokemonFullUrl from "../assets/images/pokemon.png";
 import ramolosFullUrl from "../assets/images/ramolos.png";
 import tarotFullUrl from "../assets/images/tarot.png";
 
+import vesselUrl from "../assets/images/vessel.png";
+
 const color = {
   blue: "#A8EEFE",
 };
@@ -102,6 +104,7 @@ export const createMmkScene = (p: p5): Scene => {
   let hanafudaFull: p5.Image;
   let mamlukFull: p5.Image;
   let ramolosFull: p5.Image;
+  let vessel: p5.Image;
 
   let cloudLeftX = 0;
   let cloudCenterX = 0;
@@ -211,6 +214,8 @@ export const createMmkScene = (p: p5): Scene => {
     utils.image(pg, sand, 0, config.screens.center.height - sand.height * 0.25);
     utils.image(pg, cloudLeft, cloudLeftX, 320);
 
+    utils.image(pg, vessel, 70, 50);
+
     for (let card of cards) {
       let cardImage: p5.Image;
 
@@ -284,6 +289,8 @@ export const createMmkScene = (p: p5): Scene => {
       hanafudaFull = await utils.loadImage(p, hanafudaFullUrl, 1);
       mamlukFull = await utils.loadImage(p, mamlukFullUrl, 1);
       ramolosFull = await utils.loadImage(p, ramolosFullUrl, 1);
+
+      vessel = await utils.loadImage(p, vesselUrl, 1);
 
       magnifier = p.createGraphics(config.sketch.width, config.sketch.height);
       magnifier.pixelDensity(zoomFactor);

@@ -66,10 +66,16 @@ export const initialize = async (
   }
 ) => {
   video = p.createCapture({
-    video: true,
+    video: {
+      width: { ideal: config.video.width },
+      height: { ideal: config.video.height },
+      frameRate: { ideal: 30 },
+      aspectRatio: { ideal: 16 / 9 },
+      facingMode: "user",
+    },
     audio: false,
   });
-  video.size(640, 480);
+  video.size(config.video.width, config.video.height);
   video.hide();
 
   const vision = await FilesetResolver.forVisionTasks(

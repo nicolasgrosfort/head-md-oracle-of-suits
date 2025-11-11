@@ -1,5 +1,10 @@
 import type { Screens } from "./types";
 
+export const video = {
+  width: 1280,
+  height: 720,
+};
+
 export const sketch = {
   width: 2252,
   height: 1600,

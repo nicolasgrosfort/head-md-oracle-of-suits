@@ -510,9 +510,12 @@ export const onHandMove = (callback: (hand: Hand) => void) => {
     .categoryName as GestureCategory;
   const gesture = GESTURES[gestureCategory];
 
+  const xCentered = (1 - wrist.x - 0.5) * 2 + 0.5;
+  const yCentered = (wrist.y - 0.5) * 2.5 + 0.5;
+
   hand = {
-    x: 1 - wrist.x,
-    y: wrist.y * 2,
+    x: xCentered,
+    y: yCentered,
     z: wrist.z,
     angle,
     gesture,

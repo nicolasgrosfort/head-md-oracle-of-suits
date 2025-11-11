@@ -80,10 +80,14 @@ export const createIntroScene = (p: p5): Scene => {
         );
 
         if (isOnButton) {
-          const baseAngle = hand.angle - lastAngle;
-          const stepButton = baseAngle / 30;
+          const angleDiff = hand.angle - lastAngle;
 
-          buttonPosition = Math.max(0, Math.min(4, stepButton));
+          if (Math.abs(angleDiff) >= 30) {
+            if (angleDiff > 0) buttonPosition = Math.min(3, buttonPosition + 1);
+            else buttonPosition = Math.max(0, buttonPosition - 1);
+
+            lastAngle = hand.angle;
+          }
 
           p.fill(255, 80);
           p.stroke(0);

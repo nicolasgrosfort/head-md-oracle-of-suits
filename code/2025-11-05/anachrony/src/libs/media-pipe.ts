@@ -82,7 +82,7 @@ export const initialize = async (
     video: {
       width: { ideal: config.video.width },
       height: { ideal: config.video.height },
-      frameRate: { ideal: 30 },
+      frameRate: { ideal: config.video.frameRate },
       aspectRatio: { ideal: 16 / 9 },
       facingMode: "user",
     },

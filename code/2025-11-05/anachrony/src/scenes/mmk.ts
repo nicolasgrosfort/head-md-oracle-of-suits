@@ -33,7 +33,6 @@ import tarotFullUrl from "../assets/images/tarot.png";
 
 import vesselUrl from "../assets/images/vessel.png";
 
-const MAX_FRAME_DURING_VESSEL = 100;
 const MAX_ZONE_RADIUS = 200;
 const MIN_ZONE_RADIUS = 50;
 const MAX_TIME_PROMPT = 10000;
@@ -380,7 +379,7 @@ export const createMmkScene = (p: p5): Scene => {
 
           zoneRadius = p.map(
             frameDuringVessel,
-            MAX_FRAME_DURING_VESSEL,
+            config.frame.toTravel,
             0,
             MIN_ZONE_RADIUS,
             MAX_ZONE_RADIUS
@@ -389,7 +388,7 @@ export const createMmkScene = (p: p5): Scene => {
           prompt.title = "";
           prompt.description = "";
 
-          if (frameDuringVessel >= MAX_FRAME_DURING_VESSEL) {
+          if (frameDuringVessel >= config.frame.toTravel) {
             frameDuringVessel = 0;
             audio.portal.start();
             sceneManager.switchTo("itr");

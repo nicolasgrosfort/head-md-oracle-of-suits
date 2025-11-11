@@ -3,6 +3,7 @@ import type { Screens } from "./types";
 export const video = {
   width: 1280,
   height: 720,
+  frameRate: 30,
 };
 
 export const sketch = {
@@ -24,4 +25,8 @@ export const landmark = {
 export const zoom = {
   factor: 4,
   size: 200,
+};
+
+export const frame = {
+  toTravel: 60,
 };

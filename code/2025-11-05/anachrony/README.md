@@ -38,25 +38,28 @@ Using p5.js with typescript and vite.js.
 
 > _Backlog items sorted by priority_
 
-- Reduce the camera area
-- Improve gesture detection for button
+- Implement the loader for traveling
 - Implement the Cardodex (left and right screens)
+- Implement the Magnifier for intro
+- Implement the Planet animation for intro
 - Define how to show gestures to the user (onboarding ?)
+- Prototype the "Joker" sequence
+- Implement the Joker sequence
 - Write the facts about cards
 - Record video presentation
 
 ### Nice to have
 
 - Compose sound design
-- Prototype the "Introduction" sequence
-- Prototype the "Joker" sequence
-- Prototype the "Medieval Europe" sequence
-- Prototype the "Ancient China" sequence
-- Draw the "Edo "Japan" sequence
-- Prototype the "Edo Japan" sequence
+- Implement the "Medieval Europe" sequence
+- Implement the "Ancient China" sequence
+- Prototype the "Edo "Japan" sequence
+- Implement the "Edo Japan" sequence
 
 ### Done
 
+- ~~Reduce the camera area~~
+- ~~Improve gesture detection for button~~
 - ~~Define sound design approach~~
 - ~~Write PDF documentation~~
 - ~~Document installation process~~

@@ -3,9 +3,8 @@ import p5 from "p5";
 import * as audio from "../libs/audio";
 import * as mediaPipe from "../libs/media-pipe";
 import * as sceneManager from "../libs/scene-manager";
+import * as config from "../utils/config";
 import * as utils from "../utils/utils";
-
-import type { Scene } from "../libs/scene-manager";
 
 import itrUrl1 from "../assets/images/itr-1.png";
 import itrUrl2 from "../assets/images/itr-2.png";
@@ -13,7 +12,7 @@ import itrUrl3 from "../assets/images/itr-3.png";
 import itrUrl4 from "../assets/images/itr-4.png";
 import itrUrl from "../assets/images/itr.png";
 
-export const createIntroScene = (p: p5): Scene => {
+export const createIntroScene = (p: p5): sceneManager.Scene => {
   let itrImg: p5.Image;
   let itrImg1: p5.Image;
   let itrImg2: p5.Image;
@@ -25,7 +24,6 @@ export const createIntroScene = (p: p5): Scene => {
   let lastAngle: number | null = null;
   let frameDuringButton = 0;
 
-  const MAX_FRAME_DURING_BUTTON = 100;
   const MAX_ZONE_RADIUS = 200;
   const MIN_ZONE_RADIUS = 50;
 
@@ -117,13 +115,13 @@ export const createIntroScene = (p: p5): Scene => {
           frameDuringButton += 1;
           const zoneRadius = p.map(
             frameDuringButton,
-            MAX_FRAME_DURING_BUTTON,
+            config.frame.toTravel,
             0,
             MIN_ZONE_RADIUS,
             MAX_ZONE_RADIUS
           );
 
-          if (frameDuringButton >= MAX_FRAME_DURING_BUTTON) {
+          if (frameDuringButton >= config.frame.toTravel) {
             frameDuringButton = 0;
             switch (buttonPosition) {
               case 0:

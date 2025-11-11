@@ -14,6 +14,7 @@ import { createMmkScene } from "./scenes/mmk";
 new p5((p: p5) => {
   p.setup = async () => {
     p.createCanvas(config.sketch.width, config.sketch.height);
+    p.frameRate(config.video.frameRate);
     p.textFont("Monospace");
     p.pixelDensity(1);
 

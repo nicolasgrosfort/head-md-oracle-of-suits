@@ -478,6 +478,9 @@ export const drawVideo = (
 export const onHandMove = (callback: (hand: Hand) => void) => {
   let hand: Hand;
 
+  const TRANSLATE = { x: 1, y: 2 };
+  const SCALE = { x: 4, y: 3 };
+
   const gestureResults = getGestureResults();
   if (!gestureResults) return;
 
@@ -510,8 +513,8 @@ export const onHandMove = (callback: (hand: Hand) => void) => {
     .categoryName as GestureCategory;
   const gesture = GESTURES[gestureCategory];
 
-  const xCentered = (1 - wrist.x - 0.5) * 4 + 0.5;
-  const yCentered = (wrist.y - 0.5) * 3 + 0.5;
+  const xCentered = (1 - wrist.x - 0.5) * SCALE.x + 0.5 * TRANSLATE.x;
+  const yCentered = (wrist.y - 0.5) * SCALE.y + 0.5 * TRANSLATE.y;
 
   hand = {
     x: xCentered,

@@ -1,5 +1,7 @@
 import p5 from "p5";
 
+import * as Tone from "tone";
+
 import * as mediaPipe from "./libs/media-pipe";
 import * as sceneManager from "./libs/scene-manager";
 import * as config from "./utils/config";
@@ -10,7 +12,12 @@ import { createIntroScene } from "./scenes/itr";
 import { createJokerScene } from "./scenes/jkr";
 import { createMmkScene } from "./scenes/mmk";
 
+import songUrl from "./assets/audios/audio.m4a";
+
 new p5((p: p5) => {
+  let isAudioLoading = true;
+  let player: Tone.Player;
+
   p.setup = async () => {
     p.createCanvas(config.sketch.width, config.sketch.height);
     p.textFont("Monospace");
@@ -24,6 +31,17 @@ new p5((p: p5) => {
 
     await mediaPipe.initialize(p);
     await sceneManager.switchTo("itr");
+
+    player = new Tone.Player({
+      url: songUrl,
+      autostart: true,
+      loop: true,
+      fadeIn: 2,
+      fadeOut: 2,
+      onload: () => {
+        isAudioLoading = false;
+      },
+    }).toDestination();
   };
 
   p.draw = () => {
@@ -31,7 +49,7 @@ new p5((p: p5) => {
 
     mediaPipe.detect();
 
-    if (!sceneManager.sceneIsReady()) {
+    if (!sceneManager.sceneIsReady() || isAudioLoading) {
       p.background(0);
       p.fill(255);
       p.textAlign(p.CENTER, p.CENTER);
@@ -43,6 +61,11 @@ new p5((p: p5) => {
     sceneManager.draw();
 
     mediaPipe.drawVideo(p, { hide: true, opacity: 0.2 });
+  };
+
+  p.mousePressed = async () => {
+    console.log(player.state);
+    player.stop();
   };
 
   p.keyPressed = async () => {

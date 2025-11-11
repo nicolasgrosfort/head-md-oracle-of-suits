@@ -13,12 +13,15 @@ import type p5 from "p5";
 import * as config from "../utils/config.js";
 import * as utils from "../utils/utils.js";
 
+type GestureCategory = "Open_Palm" | "Closed_Fist";
+type Gesture = "open" | "close";
+
 type Hand = {
   x: number;
   y: number;
   z: number;
   angle: number;
-  gesture?: string;
+  gesture?: Gesture;
 };
 
 let gestureRecognizer: GestureRecognizer | null = null;
@@ -36,6 +39,12 @@ let lastTimestamp = 0;
 const HAND = {
   WRIST: 0,
   MIDDLE_FINGER_TIP: 20,
+  THUMB_TIP: 4,
+};
+
+const GESTURES: Record<GestureCategory, Gesture> = {
+  Open_Palm: "open",
+  Closed_Fist: "close",
 };
 
 export const detect = () => {
@@ -87,10 +96,10 @@ export const initialize = async (p: p5) => {
       delegate: "GPU",
     },
     runningMode: "VIDEO",
-    numHands: 2,
-    minHandDetectionConfidence: 0.8,
-    minHandPresenceConfidence: 0.8,
-    minTrackingConfidence: 0.8,
+    numHands: 1,
+    minHandDetectionConfidence: 0.5,
+    minHandPresenceConfidence: 0.5,
+    minTrackingConfidence: 0.5,
   });
 
   faceLandmarker = await FaceLandmarker.createFromOptions(vision, {
@@ -114,9 +123,9 @@ export const initialize = async (p: p5) => {
     },
     runningMode: "VIDEO",
     numPoses: 1,
-    minPoseDetectionConfidence: 0.8,
-    minPosePresenceConfidence: 0.8,
-    minTrackingConfidence: 0.8,
+    minPoseDetectionConfidence: 0.5,
+    minPosePresenceConfidence: 0.5,
+    minTrackingConfidence: 0.5,
   });
 
   isReady = true;
@@ -470,20 +479,25 @@ export const onHandMove = (callback: (hand: Hand) => void) => {
 
   const wrist = closestResult.landmark[HAND.WRIST];
   const middleFingerTip = closestResult.landmark[HAND.MIDDLE_FINGER_TIP];
+  const thumbTip = closestResult.landmark[HAND.THUMB_TIP];
 
   const angle = utils.getAngle(
-    wrist.x,
-    wrist.y,
+    thumbTip.x,
+    thumbTip.y,
     middleFingerTip.x,
     middleFingerTip.y
   );
+
+  const gestureCategory = closestResult.gesture[0]
+    .categoryName as GestureCategory;
+  const gesture = GESTURES[gestureCategory];
 
   hand = {
     x: 1 - wrist.x,
     y: wrist.y,
     z: wrist.z,
     angle,
-    gesture: closestResult.gesture[0].categoryName,
+    gesture,
   };
 
   callback(hand);

@@ -182,7 +182,7 @@ export const getAngle = (
   y1: number,
   x2: number,
   y2: number,
-  base: number = 90,
+  base: number = 150,
   step: number = 30
 ): number => {
   const dx = x2 - x1;

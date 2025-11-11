@@ -11,6 +11,11 @@ import { createIntroScene } from "./scenes/itr";
 import { createJokerScene } from "./scenes/jkr";
 import { createMmkScene } from "./scenes/mmk";
 
+let displayCamera = false;
+let displayHand = false;
+let displayFace = false;
+let displayPose = false;
+
 new p5((p: p5) => {
   p.setup = async () => {
     p.createCanvas(config.sketch.width, config.sketch.height);
@@ -18,16 +23,18 @@ new p5((p: p5) => {
     p.textFont("Monospace");
     p.pixelDensity(1);
 
+    audio.load();
+
     sceneManager.addScene("itr", createIntroScene(p));
     sceneManager.addScene("mmk", createMmkScene(p));
     sceneManager.addScene("emd", createEmdScene(p));
     sceneManager.addScene("acn", createAncientChinaScene(p));
     sceneManager.addScene("jkr", createJokerScene(p));
 
-    audio.load();
-
     await mediaPipe.initialize(p, {
       enableGestures: true,
+      enableFace: true,
+      enablePose: false,
       videoCrop: {
         x: 0.25,
         y: 0.25,
@@ -39,10 +46,6 @@ new p5((p: p5) => {
   };
 
   p.draw = () => {
-    p.frameRate(60);
-
-    mediaPipe.detect();
-
     if (!sceneManager.sceneIsReady() || !audio.isSongLoaded) {
       p.background(0);
       p.fill(255);
@@ -52,8 +55,31 @@ new p5((p: p5) => {
       return;
     }
 
+    mediaPipe.detect();
+
     sceneManager.draw();
-    mediaPipe.drawVideo(p, { hide: false, opacity: 0.2 });
+
+    mediaPipe.drawFace(p, {
+      hide: !displayFace,
+      drawEyes: true,
+      drawNose: true,
+      drawMouth: true,
+      drawOutline: true,
+    });
+
+    mediaPipe.drawHands(p, {
+      hide: !displayHand,
+      drawLandmarks: true,
+      drawConnections: true,
+    });
+
+    mediaPipe.drawBody(p, {
+      hide: !displayPose,
+      drawLandmarks: true,
+      drawConnections: true,
+    });
+
+    mediaPipe.drawVideo(p, { hide: !displayCamera, opacity: 0.2 });
   };
 
   p.mousePressed = async () => {
@@ -80,6 +106,24 @@ new p5((p: p5) => {
       }
       case "j": {
         await sceneManager.switchTo("jkr");
+        break;
+      }
+
+      // Debugging
+      case "C": {
+        displayCamera = !displayCamera;
+        break;
+      }
+      case "H": {
+        displayHand = !displayHand;
+        break;
+      }
+      case "F": {
+        displayFace = !displayFace;
+        break;
+      }
+      case "P": {
+        displayPose = !displayPose;
         break;
       }
     }

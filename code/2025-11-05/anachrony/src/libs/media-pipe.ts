@@ -211,7 +211,6 @@ export const detect = () => {
 
 export const drawHands = (
   p: p5,
-  handResults: GestureRecognizerResult | null,
   options: {
     hide?: boolean;
     drawLandmarks?: boolean;
@@ -225,6 +224,9 @@ export const drawHands = (
   }
 ) => {
   if (options.hide) return;
+
+  const handResults = getGestureResults();
+  if (!handResults) return;
 
   if (handResults?.landmarks) {
     for (let i = 0; i < handResults.landmarks.length; i++) {
@@ -310,7 +312,6 @@ export const drawHands = (
 
 export const drawFace = (
   p: p5,
-  faceResults: FaceLandmarkerResult | null,
   options: {
     hide?: boolean;
     drawOutline?: boolean;
@@ -326,6 +327,9 @@ export const drawFace = (
   }
 ) => {
   if (options.hide) return;
+
+  const faceResults = getFaceResults();
+  if (!faceResults) return;
 
   if (faceResults?.faceLandmarks?.[0]) {
     const faceLandmarks = faceResults.faceLandmarks[0];
@@ -452,7 +456,6 @@ export const drawFace = (
 
 export const drawBody = (
   p: p5,
-  poseResults: PoseLandmarkerResult | null,
   options: {
     hide?: boolean;
     drawLandmarks?: boolean;
@@ -464,6 +467,9 @@ export const drawBody = (
   }
 ) => {
   if (options.hide) return;
+
+  const poseResults = getPoseResults();
+  if (!poseResults) return;
 
   if (poseResults?.landmarks?.[0]) {
     const poseLandmarks = poseResults.landmarks[0];

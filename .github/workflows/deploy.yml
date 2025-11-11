@@ -6,6 +6,9 @@ jobs:
   web-deploy:
     name: Deploy
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: code/2025-11-05/anachrony
     steps:
       - name: Get latest code
         uses: actions/checkout@v5
@@ -22,7 +25,7 @@ jobs:
           yarn build --webpack
 
       - name: List output files
-        run: find out/ -print
+        run: find dist/ -print
 
       - name: Copy files to FTP server
         uses: SamKirkland/FTP-Deploy-Action@v4.3.6
@@ -30,5 +33,5 @@ jobs:
           server: ${{ secrets.SERVER }}
           username: ${{ secrets.USERNAME }}
           password: ${{ secrets.PASSWORD }}
-          server-dir: /sites/lab.tekh.studio/anachrony
-          local-dir: code/2025-11-05/anachrony/dist/
+          server-dir: /sites/lab.tekh.studio/anachrony/
+          local-dir: dist/

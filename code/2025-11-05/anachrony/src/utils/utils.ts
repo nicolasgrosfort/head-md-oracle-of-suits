@@ -194,8 +194,6 @@ export const getAngle = (
   while (angle > 180) angle -= 360;
   while (angle <= -180) angle += 360;
 
-  angle === 0 ? 0 : angle;
-
   return angle;
 };
 

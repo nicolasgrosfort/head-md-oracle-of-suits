@@ -504,11 +504,11 @@ export const onHandMove = (callback: (hand: Hand) => void) => {
 
   const wrist = closestResult.landmark[HAND.WRIST];
   const middleFingerTip = closestResult.landmark[HAND.MIDDLE_FINGER_TIP];
-  const thumbTip = closestResult.landmark[HAND.THUMB_TIP];
+  const wirst = closestResult.landmark[HAND.WRIST];
 
   const angle = utils.getAngle(
-    thumbTip.x,
-    thumbTip.y,
+    wirst.x,
+    wirst.y,
     middleFingerTip.x,
     middleFingerTip.y
   );

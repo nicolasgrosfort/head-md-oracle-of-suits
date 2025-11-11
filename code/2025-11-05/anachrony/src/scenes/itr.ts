@@ -70,7 +70,7 @@ export const createIntroScene = (p: p5): Scene => {
       mediaPipe.onHandMove((hand) => {
         const circleX = 1022;
         const circleY = 1055;
-        const circleRadius = 200;
+        const circleRadius = 300;
 
         const handX = hand.x * p.width;
         const handY = hand.y * p.height;
@@ -111,7 +111,7 @@ export const createIntroScene = (p: p5): Scene => {
             frameDuringButton,
             MAX_FRAME_DURING_BUTTON,
             0,
-            20,
+            100,
             circleRadius
           );
 

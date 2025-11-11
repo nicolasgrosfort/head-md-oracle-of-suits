@@ -1,6 +1,7 @@
 import p5 from "p5";
 
 import * as mediaPipe from "../libs/media-pipe";
+import * as sceneManager from "../libs/scene-manager";
 import * as config from "../utils/config";
 import * as utils from "../utils/utils";
 
@@ -120,6 +121,10 @@ export const createMmkScene = (p: p5): Scene => {
 
   let lastFrameTime = 0;
 
+  let frameDuringVessel = 0;
+
+  const MAX_FRAME_DURING_VESSEL = 120;
+
   let cards: Array<{
     x: number;
     y: number;
@@ -176,6 +181,8 @@ export const createMmkScene = (p: p5): Scene => {
     }
   };
   const drawMagnifier = () => {
+    zoomSize = p.map(frameDuringVessel, 0, MAX_FRAME_DURING_VESSEL, 300, 100);
+
     const copySize = zoomSize / zoomFactor;
     const sx = handX - copySize / 2;
     const sy = handY - copySize / 2;
@@ -214,7 +221,7 @@ export const createMmkScene = (p: p5): Scene => {
     utils.image(pg, sand, 0, config.screens.center.height - sand.height * 0.25);
     utils.image(pg, cloudLeft, cloudLeftX, 320);
 
-    utils.image(pg, vessel, 70, 50);
+    utils.image(pg, vessel, 70, 500);
 
     for (let card of cards) {
       let cardImage: p5.Image;
@@ -291,6 +298,7 @@ export const createMmkScene = (p: p5): Scene => {
       ramolosFull = await utils.loadImage(p, ramolosFullUrl, 1);
 
       vessel = await utils.loadImage(p, vesselUrl, 1);
+      frameDuringVessel = 0;
 
       magnifier = p.createGraphics(config.sketch.width, config.sketch.height);
       magnifier.pixelDensity(zoomFactor);
@@ -337,6 +345,30 @@ export const createMmkScene = (p: p5): Scene => {
         isAnyHand = true;
         handX = hand.x * config.sketch.width;
         handY = hand.y * config.sketch.height;
+
+        const vesselX = 70;
+        const vesselY = 500;
+        const vesselWidth = vessel.width * 0.25;
+        const vesselHeight = vessel.height * 0.25;
+
+        const isOnVessel =
+          handX > vesselX &&
+          handX < vesselX + vesselWidth &&
+          handY > vesselY &&
+          handY < vesselY + vesselHeight;
+
+        if (isOnVessel) {
+          frameDuringVessel++;
+          prompt.title = "";
+          prompt.description = "";
+
+          if (frameDuringVessel >= MAX_FRAME_DURING_VESSEL) {
+            frameDuringVessel = 0;
+            sceneManager.switchTo("itr");
+          }
+        } else {
+          frameDuringVessel = 0;
+        }
       });
 
       if (!isAnyHand) {

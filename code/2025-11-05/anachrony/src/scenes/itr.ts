@@ -1,5 +1,6 @@
 import p5 from "p5";
 
+import * as audio from "../libs/audio";
 import * as mediaPipe from "../libs/media-pipe";
 import * as sceneManager from "../libs/scene-manager";
 import * as utils from "../utils/utils";
@@ -97,11 +98,17 @@ export const createIntroScene = (p: p5): Scene => {
             const stepDiff = (currentStep - lastStep) / 30;
 
             if (stepDiff > 0) {
-              buttonPosition = Math.min(3, buttonPosition + 1);
-              frameDuringButton = 0;
+              if (buttonPosition < 3) {
+                audio.clac.start();
+                buttonPosition++;
+                frameDuringButton = 0;
+              }
             } else if (stepDiff < 0) {
-              buttonPosition = Math.max(0, buttonPosition - 1);
-              frameDuringButton = 0;
+              if (buttonPosition > 0) {
+                audio.clac.start();
+                buttonPosition--;
+                frameDuringButton = 0;
+              }
             }
 
             lastAngle = hand.angle;
@@ -121,15 +128,19 @@ export const createIntroScene = (p: p5): Scene => {
             switch (buttonPosition) {
               case 0:
                 sceneManager.switchTo("mmk");
+                audio.portal.start();
                 break;
               case 1:
                 sceneManager.switchTo("emd");
+                audio.portal.start();
                 break;
               case 2:
                 sceneManager.switchTo("acn");
+                audio.portal.start();
                 break;
               case 3:
                 sceneManager.switchTo("jkr");
+                audio.portal.start();
                 break;
             }
           }

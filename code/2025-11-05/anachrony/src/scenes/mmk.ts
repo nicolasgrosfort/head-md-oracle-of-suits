@@ -1,5 +1,6 @@
 import p5 from "p5";
 
+import * as audio from "../libs/audio";
 import * as mediaPipe from "../libs/media-pipe";
 import * as sceneManager from "../libs/scene-manager";
 import * as config from "../utils/config";
@@ -390,6 +391,7 @@ export const createMmkScene = (p: p5): Scene => {
 
           if (frameDuringVessel >= MAX_FRAME_DURING_VESSEL) {
             frameDuringVessel = 0;
+            audio.portal.start();
             sceneManager.switchTo("itr");
           }
         } else {

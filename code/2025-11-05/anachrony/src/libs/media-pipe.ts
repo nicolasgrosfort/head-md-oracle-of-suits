@@ -17,6 +17,12 @@ type InitializeOptions = {
   enableGestures?: boolean;
   enableFace?: boolean;
   enablePose?: boolean;
+  videoCrop?: {
+    x?: number; // (0-1)
+    y?: number; // (0-1)
+    width?: number; // (0-1)
+    height?: number; // (0-1)
+  };
 };
 
 type GestureCategory = "Open_Palm" | "Closed_Fist";
@@ -35,6 +41,13 @@ let faceLandmarker: FaceLandmarker | null = null;
 let poseLandmarker: PoseLandmarker | null = null;
 
 let video: p5.Element | null = null;
+let croppedCanvas: p5.Graphics | null = null;
+let cropSettings: {
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+} | null = null;
 let isReady = false;
 
 let lastGestureResults: GestureRecognizerResult | null = null;
@@ -77,6 +90,17 @@ export const initialize = async (
   });
   video.size(config.video.width, config.video.height);
   video.hide();
+
+  if (options.videoCrop) {
+    cropSettings = {
+      x: options.videoCrop.x || 0,
+      y: options.videoCrop.y || 0,
+      width: options.videoCrop.width || 1,
+      height: options.videoCrop.height || 1,
+    };
+
+    croppedCanvas = p.createGraphics(config.video.width, config.video.height);
+  }
 
   const vision = await FilesetResolver.forVisionTasks(
     "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@latest/wasm"
@@ -139,23 +163,46 @@ export const detect = () => {
   if (videoElement.readyState >= 2) {
     lastTimestamp += 1;
 
+    let sourceElement: HTMLVideoElement | HTMLCanvasElement = videoElement;
+
+    if (cropSettings && croppedCanvas) {
+      const sx = cropSettings.x * videoElement.videoWidth;
+      const sy = cropSettings.y * videoElement.videoHeight;
+      const sw = cropSettings.width * videoElement.videoWidth;
+      const sh = cropSettings.height * videoElement.videoHeight;
+
+      croppedCanvas.image(
+        video,
+        0,
+        0,
+        config.video.width,
+        config.video.height,
+        sx,
+        sy,
+        sw,
+        sh
+      );
+
+      sourceElement = (croppedCanvas as any).canvas;
+    }
+
     if (gestureRecognizer) {
       lastGestureResults = gestureRecognizer.recognizeForVideo(
-        videoElement,
+        sourceElement,
         lastTimestamp
       );
     }
 
     if (faceLandmarker) {
       lastFaceResults = faceLandmarker.detectForVideo(
-        videoElement,
+        sourceElement,
         lastTimestamp
       );
     }
 
     if (poseLandmarker) {
       lastPoseResults = poseLandmarker.detectForVideo(
-        videoElement,
+        sourceElement,
         lastTimestamp
       );
     }
@@ -470,9 +517,10 @@ export const drawVideo = (
   options: { hide?: boolean; opacity?: number } = { hide: false, opacity: 1 }
 ) => {
   if (options.hide === true) return;
-  const video = getVideo();
 
-  if (video) {
+  const source = croppedCanvas || video;
+
+  if (source) {
     p.push();
     p.translate(p.width, 0);
     p.scale(-1, 1);
@@ -480,7 +528,7 @@ export const drawVideo = (
     const opacity = options.opacity !== undefined ? options.opacity : 1.0;
     p.tint(255, 255 * opacity);
 
-    p.image(video, 0, 0, p.width, p.height);
+    p.image(source, 0, 0, p.width, p.height);
     p.pop();
   }
 };
@@ -488,8 +536,8 @@ export const drawVideo = (
 export const onHandMove = (callback: (hand: Hand) => void) => {
   let hand: Hand;
 
-  const TRANSLATE = { x: 1, y: 1.8 };
-  const SCALE = { x: 4, y: 3 };
+  const TRANSLATE = { x: 1, y: 1 };
+  const SCALE = { x: 1, y: 1 };
 
   const gestureResults = getGestureResults();
   if (!gestureResults) return;
@@ -508,7 +556,21 @@ export const onHandMove = (callback: (hand: Hand) => void) => {
     return currentZ > closestZ ? current : closest;
   });
 
-  const wrist = closestResult.landmark[HAND.WRIST];
+  const allLandmarks = closestResult.landmark;
+  let sumX = 0;
+  let sumY = 0;
+  let sumZ = 0;
+
+  for (const landmark of allLandmarks) {
+    sumX += landmark.x;
+    sumY += landmark.y;
+    sumZ += landmark.z;
+  }
+
+  const avgX = sumX / allLandmarks.length;
+  const avgY = sumY / allLandmarks.length;
+  const avgZ = sumZ / allLandmarks.length;
+
   const middleFingerTip = closestResult.landmark[HAND.MIDDLE_FINGER_TIP];
   const thumbTip = closestResult.landmark[HAND.THUMB_TIP];
 
@@ -523,13 +585,13 @@ export const onHandMove = (callback: (hand: Hand) => void) => {
     .categoryName as GestureCategory;
   const gesture = GESTURES[gestureCategory];
 
-  const xCentered = (1 - wrist.x - 0.5) * SCALE.x + 0.5 * TRANSLATE.x;
-  const yCentered = (wrist.y - 0.5) * SCALE.y + 0.5 * TRANSLATE.y;
+  const xCentered = (1 - avgX - 0.5) * SCALE.x + 0.5 * TRANSLATE.x;
+  const yCentered = (avgY - 0.5) * SCALE.y + 0.5 * TRANSLATE.y;
 
   hand = {
     x: xCentered,
     y: yCentered,
-    z: wrist.z,
+    z: avgZ,
     angle,
     gesture,
   };
@@ -554,6 +616,6 @@ export const onHandMove = (callback: (hand: Hand) => void) => {
 export const getGestureResults = () => lastGestureResults;
 export const getFaceResults = () => lastFaceResults;
 export const getPoseResults = () => lastPoseResults;
-export const getVideo = () => video;
+export const getVideo = () => croppedCanvas || video;
 
 export const ready = () => isReady;

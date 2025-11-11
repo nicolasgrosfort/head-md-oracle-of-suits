@@ -25,7 +25,15 @@ new p5((p: p5) => {
 
     audio.load();
 
-    await mediaPipe.initialize(p);
+    await mediaPipe.initialize(p, {
+      enableGestures: true,
+      videoCrop: {
+        x: 0.25,
+        y: 0.25,
+        width: 0.5,
+        height: 0.5,
+      },
+    });
     await sceneManager.switchTo("itr");
   };
 
@@ -44,7 +52,7 @@ new p5((p: p5) => {
     }
 
     sceneManager.draw();
-    mediaPipe.drawVideo(p, { hide: true, opacity: 0.2 });
+    mediaPipe.drawVideo(p, { hide: false, opacity: 0.2 });
   };
 
   p.mousePressed = async () => {

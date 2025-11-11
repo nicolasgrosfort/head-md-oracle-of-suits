@@ -1,6 +1,7 @@
 import p5 from "p5";
 
 import * as mediaPipe from "../libs/media-pipe";
+import * as sceneManager from "../libs/scene-manager";
 import * as utils from "../utils/utils";
 
 import type { Scene } from "../libs/scene-manager";
@@ -21,6 +22,9 @@ export const createIntroScene = (p: p5): Scene => {
 
   let buttonPosition = 0;
   let lastAngle: number | null = null;
+  let frameDuringButton = 0;
+
+  const MAX_FRAME_DURING_BUTTON = 120;
 
   return {
     setup: async () => {
@@ -93,18 +97,48 @@ export const createIntroScene = (p: p5): Scene => {
 
             if (stepDiff > 0) {
               buttonPosition = Math.min(3, buttonPosition + 1);
+              frameDuringButton = 0;
             } else if (stepDiff < 0) {
               buttonPosition = Math.max(0, buttonPosition - 1);
+              frameDuringButton = 0;
             }
 
             lastAngle = hand.angle;
           }
 
+          frameDuringButton += 1;
+          const zoneRadius = p.map(
+            frameDuringButton,
+            MAX_FRAME_DURING_BUTTON,
+            0,
+            20,
+            circleRadius
+          );
+
+          if (frameDuringButton >= MAX_FRAME_DURING_BUTTON) {
+            frameDuringButton = 0;
+            switch (buttonPosition) {
+              case 0:
+                sceneManager.switchTo("mmk");
+                break;
+              case 1:
+                sceneManager.switchTo("emd");
+                break;
+              case 2:
+                sceneManager.switchTo("acn");
+                break;
+              case 3:
+                sceneManager.switchTo("jkr");
+                break;
+            }
+          }
+
           p.fill(255, 80);
           p.stroke(0);
-          p.circle(circleX, circleY, circleRadius * 2);
+          p.circle(circleX, circleY, zoneRadius * 2);
         } else {
           lastAngle = null;
+          frameDuringButton = 0;
 
           p.fill("black");
           p.circle(hand.x * p.width, hand.y * p.height, 20);

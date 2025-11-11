@@ -196,8 +196,6 @@ export const getAngle = (
 
   angle === 0 ? 0 : angle;
 
-  console.log(angle);
-
   return angle;
 };
 

@@ -11,8 +11,6 @@ import itrUrl3 from "../assets/images/itr-3.png";
 import itrUrl4 from "../assets/images/itr-4.png";
 import itrUrl from "../assets/images/itr.png";
 
-const NOTCH = 0.05;
-
 export const createIntroScene = (p: p5): Scene => {
   let itrImg: p5.Image;
   let itrImg1: p5.Image;
@@ -22,53 +20,7 @@ export const createIntroScene = (p: p5): Scene => {
   let currentImg: p5.Image;
 
   let buttonPosition = 0;
-  let lastNotchAngle: number | null = 0;
-
-  const handleRotateButton = (
-    angle: number,
-    buttonPosition: number,
-    lastNotchAngle: number | null,
-    min: number,
-    max: number
-  ) => {
-    if (lastNotchAngle === null) {
-      return { buttonPosition, lastNotchAngle: angle };
-    }
-
-    console.log(lastNotchAngle, angle);
-
-    const currentAngle = angle;
-    const angleDiff = currentAngle - lastNotchAngle;
-    let correctedDiff = angleDiff;
-    if (Math.abs(angleDiff) > 0.5) {
-      if (angleDiff > 0) {
-        correctedDiff = angleDiff - 1;
-      } else {
-        correctedDiff = angleDiff + 1;
-      }
-    }
-
-    if (Math.abs(correctedDiff) >= NOTCH) {
-      const direction = correctedDiff > 0 ? 1 : -1;
-
-      buttonPosition += direction;
-      lastNotchAngle += direction * NOTCH;
-
-      while (lastNotchAngle > 1) lastNotchAngle -= 1;
-      while (lastNotchAngle < 0) lastNotchAngle += 1;
-    }
-
-    if (buttonPosition < min) {
-      buttonPosition = min;
-      lastNotchAngle = angle;
-    }
-    if (buttonPosition > max) {
-      buttonPosition = max;
-      lastNotchAngle = angle;
-    }
-
-    return { buttonPosition, lastNotchAngle };
-  };
+  let lastAngle = 0;
 
   return {
     setup: async () => {
@@ -88,18 +40,15 @@ export const createIntroScene = (p: p5): Scene => {
 
       switch (buttonPosition) {
         case 0:
-          currentImg = itrImg;
-          break;
-        case 1:
           currentImg = itrImg1;
           break;
-        case 2:
+        case 1:
           currentImg = itrImg2;
           break;
-        case 3:
+        case 2:
           currentImg = itrImg3;
           break;
-        case 4:
+        case 3:
           currentImg = itrImg4;
           break;
       }
@@ -115,36 +64,36 @@ export const createIntroScene = (p: p5): Scene => {
       p.pop();
 
       mediaPipe.onHandMove((hand) => {
-        const circleX = 928;
-        const circleY = 995;
-        const circleRadius = 150;
+        const circleX = 1022;
+        const circleY = 1055;
+        const circleRadius = 200;
 
         const handX = hand.x * p.width;
         const handY = hand.y * p.height;
-        const distance = Math.sqrt(
-          Math.pow(handX - circleX, 2) + Math.pow(handY - circleY, 2)
+
+        const isOnButton = utils.isInsideCircle(
+          handX,
+          handY,
+          circleX,
+          circleY,
+          circleRadius
         );
 
-        if (distance < circleRadius) {
-          const buttonRotation = handleRotateButton(
-            hand.angle,
-            buttonPosition,
-            lastNotchAngle,
-            0,
-            4
-          );
+        if (isOnButton) {
+          const baseAngle = hand.angle - lastAngle;
+          const stepButton = baseAngle / 30;
 
-          buttonPosition = buttonRotation.buttonPosition;
-          lastNotchAngle = buttonRotation.lastNotchAngle;
+          buttonPosition = Math.max(0, Math.min(4, stepButton));
 
-          console.log("Button position:", buttonPosition);
-          p.fill("green");
+          p.fill(255, 80);
+          p.stroke(0);
+          p.circle(circleX, circleY, circleRadius * 2);
         } else {
-          p.fill("red");
-          lastNotchAngle = null;
-        }
+          lastAngle = hand.angle;
 
-        p.circle(hand.x * p.width, hand.y * p.height, hand.z * 100 + 20);
+          p.fill("black");
+          p.circle(hand.x * p.width, hand.y * p.height, 20);
+        }
       });
     },
 

@@ -176,3 +176,35 @@ export const image = (
     pg.image(image, x, y, image.width * ratio, image.height * ratio);
   }
 };
+
+export const getAngle = (
+  x1: number,
+  y1: number,
+  x2: number,
+  y2: number,
+  base: number = 90,
+  step: number = 30
+): number => {
+  const dx = x2 - x1;
+  const dy = y2 - y1;
+
+  let angle = -1 * (Math.atan2(dy, dx) * (180 / Math.PI) + base);
+  angle = Math.round(angle / step) * step;
+
+  while (angle < 0) angle += 360;
+  while (angle >= 360) angle -= 360;
+
+  return angle === 0 ? 0 : angle;
+};
+
+export const isInsideCircle = (
+  pointX: number,
+  pointY: number,
+  circleX: number,
+  circleY: number,
+  radius: number
+): boolean => {
+  const dx = pointX - circleX;
+  const dy = pointY - circleY;
+  return dx * dx + dy * dy <= radius * radius;
+};

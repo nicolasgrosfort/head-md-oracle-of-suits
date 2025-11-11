@@ -18,6 +18,7 @@ type Hand = {
   y: number;
   z: number;
   angle: number;
+  gesture?: string;
 };
 
 let gestureRecognizer: GestureRecognizer | null = null;
@@ -31,17 +32,10 @@ let lastGestureResults: GestureRecognizerResult | null = null;
 let lastFaceResults: FaceLandmarkerResult | null = null;
 let lastPoseResults: PoseLandmarkerResult | null = null;
 let lastTimestamp = 0;
-let lastHand: Hand | null = null;
 
-const HANDS = {
-  LEFT: {
-    WRIST: 15,
-    INDEX: 19,
-  },
-  RIGHT: {
-    WRIST: 16,
-    INDEX: 20,
-  },
+const HAND = {
+  WRIST: 0,
+  MIDDLE_FINGER_TIP: 20,
 };
 
 export const detect = () => {
@@ -451,89 +445,46 @@ export const drawVideo = (
   }
 };
 
-export const onHandMove = (
-  callback: (hand: Hand) => void,
-  lerpAmount = 0.2,
-  ratio = 1.8
-) => {
-  let hands: Hand[];
+export const onHandMove = (callback: (hand: Hand) => void) => {
   let hand: Hand;
-
-  let body, bodyLandmarks;
-
-  const centerX = 0.5;
-  const centerY = 0.5;
 
   detect();
 
-  body = getPoseResults();
-  if (!body) return;
+  const gestureResults = getGestureResults();
+  if (!gestureResults) return;
 
-  bodyLandmarks = body.landmarks;
-  if (!bodyLandmarks) return;
+  const { landmarks, gestures } = gestureResults;
+  if (landmarks.length === 0 || gestures.length === 0) return;
 
-  let [leftWrist, rightWrist] = [
-    bodyLandmarks?.[0]?.[HANDS.LEFT.WRIST],
-    bodyLandmarks?.[0]?.[HANDS.RIGHT.WRIST],
-  ];
-  if (!leftWrist && !rightWrist) return;
+  const mergedResults = landmarks.map((landmark, index) => ({
+    landmark,
+    gesture: gestures[index],
+  }));
 
-  let [leftIndex, rightIndex] = [
-    bodyLandmarks?.[0]?.[HANDS.LEFT.INDEX],
-    bodyLandmarks?.[0]?.[HANDS.RIGHT.INDEX],
-  ];
-  if (!leftIndex && !rightIndex) return;
+  const closestResult = mergedResults.reduce((closest, current) => {
+    const currentZ = current.landmark[HAND.WRIST].z;
+    const closestZ = closest.landmark[HAND.WRIST].z;
 
-  hands = [leftWrist, rightWrist].filter(Boolean).map((landmark, i) => {
-    const indexFinger = i === 0 ? leftIndex : rightIndex;
-    let angle: number = 0;
-
-    if (indexFinger) {
-      const dx = indexFinger.x - landmark.x;
-      const dy = indexFinger.y - landmark.y;
-
-      const angleRad = Math.atan2(dy, dx);
-      let normalizedAngle = (Math.PI - angleRad) / (2 * Math.PI);
-
-      angle = Math.max(0, Math.min(1, normalizedAngle));
-    }
-
-    return {
-      x: 1 - landmark.x,
-      y: landmark.y,
-      z: landmark.z,
-      angle,
-    };
+    return currentZ > closestZ ? current : closest;
   });
 
-  if (hands.length <= 0) {
-    lastHand = null;
-    return;
-  }
+  const wrist = closestResult.landmark[HAND.WRIST];
+  const middleFingerTip = closestResult.landmark[HAND.MIDDLE_FINGER_TIP];
 
-  hands.sort((a, b) => a.z - b.z);
-  hand = hands[0];
+  const angle = utils.getAngle(
+    wrist.x,
+    wrist.y,
+    middleFingerTip.x,
+    middleFingerTip.y
+  );
 
-  const scaledX = centerX + (hand.x - centerX) * ratio;
-  const scaledY = centerY + (hand.y - centerY) * ratio;
-
-  if (lastHand) {
-    hand = {
-      x: utils.lerp(lastHand.x, scaledX, lerpAmount),
-      y: utils.lerp(lastHand.y, scaledY, lerpAmount),
-      z: utils.lerp(lastHand.z, hand.z, lerpAmount),
-      angle: hand.angle,
-    };
-  } else {
-    hand = {
-      x: scaledX,
-      y: scaledY,
-      z: hand.z,
-      angle: hand.angle,
-    };
-  }
-
-  lastHand = hand;
+  hand = {
+    x: 1 - wrist.x,
+    y: wrist.y,
+    z: wrist.z,
+    angle,
+    gesture: closestResult.gesture[0].categoryName,
+  };
 
   callback(hand);
 };

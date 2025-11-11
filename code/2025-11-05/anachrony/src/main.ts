@@ -27,6 +27,8 @@ new p5((p: p5) => {
   };
 
   p.draw = () => {
+    p.frameRate(60);
+
     mediaPipe.detect();
 
     if (!sceneManager.sceneIsReady()) {

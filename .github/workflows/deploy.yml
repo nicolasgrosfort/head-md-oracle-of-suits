@@ -18,11 +18,12 @@ jobs:
         with:
           node-version: "22"
           cache: "yarn"
+          cache-dependency-path: code/2025-11-05/anachrony/yarn.lock
 
       - name: Build the project
         run: |
           yarn install --frozen-lockfile
-          yarn build --webpack
+          yarn build
 
       - name: List output files
         run: find dist/ -print
@@ -34,4 +35,4 @@ jobs:
           username: ${{ secrets.USERNAME }}
           password: ${{ secrets.PASSWORD }}
           server-dir: /sites/lab.tekh.studio/anachrony/
-          local-dir: dist/
+          local-dir: code/2025-11-05/anachrony/dist/

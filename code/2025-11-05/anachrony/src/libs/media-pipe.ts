@@ -42,6 +42,10 @@ let lastFaceResults: FaceLandmarkerResult | null = null;
 let lastPoseResults: PoseLandmarkerResult | null = null;
 let lastTimestamp = 0;
 
+let smoothedHand: Hand | null = null;
+
+const SMOOTHING_FACTOR = 0.3;
+
 const HAND = {
   WRIST: 0,
   MIDDLE_FINGER_TIP: 20,
@@ -524,7 +528,21 @@ export const onHandMove = (callback: (hand: Hand) => void) => {
     gesture,
   };
 
-  callback(hand);
+  if (smoothedHand === null) {
+    smoothedHand = hand;
+  } else {
+    smoothedHand = {
+      x: smoothedHand.x + (hand.x - smoothedHand.x) * SMOOTHING_FACTOR,
+      y: smoothedHand.y + (hand.y - smoothedHand.y) * SMOOTHING_FACTOR,
+      z: smoothedHand.z + (hand.z - smoothedHand.z) * SMOOTHING_FACTOR,
+      angle:
+        smoothedHand.angle +
+        (hand.angle - smoothedHand.angle) * SMOOTHING_FACTOR,
+      gesture: hand.gesture,
+    };
+  }
+
+  callback(smoothedHand);
 };
 
 export const getGestureResults = () => lastGestureResults;

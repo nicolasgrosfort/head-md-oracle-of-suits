@@ -492,7 +492,6 @@ export const onHandMove = (callback: (hand: Hand) => void) => {
   const closestResult = mergedResults.reduce((closest, current) => {
     const currentZ = current.landmark[HAND.WRIST].z;
     const closestZ = closest.landmark[HAND.WRIST].z;
-
     return currentZ > closestZ ? current : closest;
   });
 
@@ -513,7 +512,7 @@ export const onHandMove = (callback: (hand: Hand) => void) => {
 
   hand = {
     x: 1 - wrist.x,
-    y: wrist.y,
+    y: wrist.y * 2,
     z: wrist.z,
     angle,
     gesture,

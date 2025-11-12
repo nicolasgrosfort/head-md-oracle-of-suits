@@ -207,6 +207,7 @@ export const createIntroScene = (p: p5): sceneManager.Scene => {
                 audio.loader.start();
                 buttonPosition++;
                 frameDuringButton = 0;
+                currentLoader = 0;
               }
             } else if (stepDiff < 0) {
               if (buttonPosition > 0) {
@@ -214,6 +215,7 @@ export const createIntroScene = (p: p5): sceneManager.Scene => {
                 audio.loader.start();
                 buttonPosition--;
                 frameDuringButton = 0;
+                currentLoader = 0;
               }
             }
 
@@ -253,6 +255,8 @@ export const createIntroScene = (p: p5): sceneManager.Scene => {
 
           if (frameDuringButton >= config.frame.toTravel) {
             frameDuringButton = 0;
+            currentLoader = 0;
+
             scale = 1;
             wasOnButton = false;
 

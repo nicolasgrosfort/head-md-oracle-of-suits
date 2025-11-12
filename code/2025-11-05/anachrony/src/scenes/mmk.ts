@@ -346,6 +346,8 @@ export const createMmkScene = (p: p5): Scene => {
       if (!isAnyHand) {
         handX = 0;
         handY = 0;
+        interactionZone.reset("vessel");
+        isOnVessel = false;
       }
 
       // Mettre à jour les cartes et détecter les collisions

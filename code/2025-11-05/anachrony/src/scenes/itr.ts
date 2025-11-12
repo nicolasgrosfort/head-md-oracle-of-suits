@@ -243,7 +243,10 @@ export const createIntroScene = (p: p5): sceneManager.Scene => {
         drawScene(magnifierGraphics, true);
       }
 
+      let isAnyHand = false;
+
       mediaPipe.onHandMove((hand) => {
+        isAnyHand = true;
         const handX = hand.x * p.width;
         const handY = hand.y * p.height;
 
@@ -284,6 +287,12 @@ export const createIntroScene = (p: p5): sceneManager.Scene => {
           magnifier.draw(p, "itr", handX, handY, magnifierGraphics);
         }
       });
+
+      if (!isAnyHand) {
+        interactionZone.reset("button");
+        isOnButton = false;
+        lastAngle = null;
+      }
 
       // Dessiner la zone d'interaction
       interactionZone.draw(p, "button", true);

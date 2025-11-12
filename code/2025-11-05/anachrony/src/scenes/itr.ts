@@ -1,6 +1,7 @@
 import p5 from "p5";
 
 import * as audio from "../libs/audio";
+import * as cardodex from "../libs/cardodex";
 import * as interactionZone from "../libs/interaction-zone";
 import * as magnifier from "../libs/magnifier";
 import * as mediaPipe from "../libs/media-pipe";
@@ -36,6 +37,23 @@ import card1VisibleUrl from "../assets/images/card-1-visible.png";
 import card5VisibleUrl from "../assets/images/card-5-visible.png";
 
 import baseButtonUrl from "../assets/images/base-button.png";
+
+const cardPrompts: Record<string, Omit<cardodex.PromptData, "image">> = {
+  card1: {
+    title: "18 Rock'n Pop",
+    description:
+      "In Hanafuda, the January “Hikari” card shows a crane and rising sun — symbols of luck and long life.",
+    date: "1980",
+    type: "France",
+  },
+  card5: {
+    title: "CARD 5",
+    description:
+      "In the 17th century, the Ace of Diamonds stood for both wealth and deceit — hence the saying “an ace up your sleeve.”",
+    date: "2023",
+    type: "Japan",
+  },
+};
 
 export const createIntroScene = (p: p5): sceneManager.Scene => {
   let itrImg1: p5.Image;
@@ -189,8 +207,6 @@ export const createIntroScene = (p: p5): sceneManager.Scene => {
       interactionZone.create("button", {
         x: ORIGINAL_CIRCLE_X,
         y: ORIGINAL_CIRCLE_Y,
-        width: 0, // Le cercle sera centré sur x,y
-        height: 0,
         minRadius: MIN_ZONE_RADIUS,
         maxRadius: MAX_ZONE_RADIUS,
         requiredFrames: config.frame.toTravel,
@@ -246,6 +262,26 @@ export const createIntroScene = (p: p5): sceneManager.Scene => {
         const handX = hand.x * p.width;
         const handY = hand.y * p.height;
 
+        [card1VisibleImg, card5VisibleImg].forEach((cardVisibleImg, index) => {
+          const cardX = index === 0 ? card1X : card5X;
+          const cardY = index === 0 ? card1Y : card5Y;
+          const cardWidth = cardVisibleImg.width;
+          const cardHeight = cardVisibleImg.height;
+
+          if (
+            handX >= cardX &&
+            handX <= cardX + cardWidth &&
+            handY >= cardY &&
+            handY <= cardY + cardHeight
+          ) {
+            const cardId = index === 0 ? "card1" : "card5";
+            cardodex.setPrompt({
+              ...cardPrompts[cardId],
+              image: cardVisibleImg,
+            });
+          }
+        });
+
         if (interactionZone.isActive("button")) {
           if (lastAngle === null) {
             lastAngle = hand.angle;
@@ -287,13 +323,17 @@ export const createIntroScene = (p: p5): sceneManager.Scene => {
         lastAngle = null;
       }
 
+      cardodex.draw(p);
       interactionZone.draw(p, "button", true);
     },
 
     cleanup: () => {
       console.log("Intro cleanup");
+
       interactionZone.remove("button");
       magnifier.remove("itr");
+
+      cardodex.clear();
     },
   };
 };

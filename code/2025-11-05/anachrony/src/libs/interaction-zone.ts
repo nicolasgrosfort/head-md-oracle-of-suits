@@ -34,8 +34,8 @@ export const create = (id: string, config: ZoneConfig): void => {
   const fullConfig: Required<ZoneConfig> = {
     x: config.x,
     y: config.y,
-    width: config.width ?? 100,
-    height: config.height ?? 100,
+    width: config.width ?? 0,
+    height: config.height ?? 0,
     minRadius: config.minRadius ?? 50,
     maxRadius: config.maxRadius ?? 200,
     requiredFrames: config.requiredFrames,

@@ -12,7 +12,6 @@ import itrUrl1 from "../assets/images/itr-1.png";
 import itrUrl2 from "../assets/images/itr-2.png";
 import itrUrl3 from "../assets/images/itr-3.png";
 import itrUrl4 from "../assets/images/itr-4.png";
-import itrUrl from "../assets/images/itr.png";
 
 import loader0Url from "../assets/images/loader-0.png";
 import loader1Url from "../assets/images/loader-1.png";
@@ -39,7 +38,6 @@ import card5VisibleUrl from "../assets/images/card-5-visible.png";
 import baseButtonUrl from "../assets/images/base-button.png";
 
 export const createIntroScene = (p: p5): sceneManager.Scene => {
-  let itrImg: p5.Image;
   let itrImg1: p5.Image;
   let itrImg2: p5.Image;
   let itrImg3: p5.Image;
@@ -152,12 +150,11 @@ export const createIntroScene = (p: p5): sceneManager.Scene => {
     setup: async () => {
       console.log("Intro setup");
 
-      itrImg = await utils.loadImage(p, itrUrl, 1);
       itrImg1 = await utils.loadImage(p, itrUrl1, 1);
       itrImg2 = await utils.loadImage(p, itrUrl2, 1);
       itrImg3 = await utils.loadImage(p, itrUrl3, 1);
       itrImg4 = await utils.loadImage(p, itrUrl4, 1);
-      currentImg = itrImg;
+      currentImg = itrImg1;
 
       card1Img = await utils.loadImage(p, card1Url, 1);
       card5Img = await utils.loadImage(p, card5Url, 1);

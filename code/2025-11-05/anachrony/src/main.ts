@@ -9,7 +9,9 @@ import { createAncientChinaScene } from "./scenes/acn";
 import { createEmdScene } from "./scenes/emd";
 import { createIntroScene } from "./scenes/itr";
 import { createJokerScene } from "./scenes/jkr";
+import { createEdoJapanScene } from "./scenes/jpn";
 import { createMmkScene } from "./scenes/mmk";
+import { createStandbyScene } from "./scenes/sby";
 
 let displayVideo = false;
 let displayHand = false;
@@ -30,6 +32,8 @@ new p5((p: p5) => {
     sceneManager.addScene("emd", createEmdScene(p));
     sceneManager.addScene("acn", createAncientChinaScene(p));
     sceneManager.addScene("jkr", createJokerScene(p));
+    sceneManager.addScene("sby", createStandbyScene(p));
+    sceneManager.addScene("jpn", createEdoJapanScene(p));
 
     await mediaPipe.initialize(p, {
       enableGestures: true,
@@ -85,6 +89,10 @@ new p5((p: p5) => {
 
   p.keyPressed = async () => {
     switch (p.key) {
+      case "s": {
+        await sceneManager.switchTo("sby");
+        break;
+      }
       case "i": {
         await sceneManager.switchTo("itr");
         break;
@@ -102,6 +110,10 @@ new p5((p: p5) => {
         break;
       }
       case "j": {
+        await sceneManager.switchTo("jpn");
+        break;
+      }
+      case "f": {
         await sceneManager.switchTo("jkr");
         break;
       }

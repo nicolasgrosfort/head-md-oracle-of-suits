@@ -2,26 +2,37 @@ import p5 from "p5";
 import type { Scene } from "../libs/scene-manager";
 import * as utils from "../utils/utils";
 
-import jkrUrl from "../assets/images/jkr.png";
+import jkrUrl1 from "../assets/images/jkr-1.png";
+import jkrUrl2 from "../assets/images/jkr-2.png";
 
 export const createJokerScene = (p: p5): Scene => {
-  let jkrImg: p5.Image;
+  let jkrImg1: p5.Image;
+  let jkrImg2: p5.Image;
+  let currentImg: p5.Image;
 
   return {
     setup: async () => {
       console.log("Joker setup");
-      jkrImg = await utils.loadImage(p, jkrUrl, 1);
+      jkrImg1 = await utils.loadImage(p, jkrUrl1, 1);
+      jkrImg2 = await utils.loadImage(p, jkrUrl2, 1);
+      currentImg = jkrImg1;
     },
 
     draw: () => {
+      if (p.key === "1") {
+        currentImg = jkrImg1;
+      } else if (p.key === "2") {
+        currentImg = jkrImg2;
+      }
+
       p.push();
       p.imageMode(p.CENTER);
       p.image(
-        jkrImg,
+        currentImg,
         p.width * 0.5,
         p.height * 0.5,
-        jkrImg.width * 0.25,
-        jkrImg.height * 0.25
+        currentImg.width * 0.25,
+        currentImg.height * 0.25
       );
       p.pop();
     },

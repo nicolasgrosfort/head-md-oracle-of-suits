@@ -77,9 +77,6 @@ new p5((p: p5) => {
       drawLandmarks: true,
       drawConnections: true,
     });
-
-    p.fill(255);
-    p.rect(100, 100, 100, 100);
   };
 
   p.mousePressed = async () => {

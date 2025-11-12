@@ -63,14 +63,7 @@ new p5((p: p5) => {
       return;
     }
 
-    mediaPipe.detect({
-      videoCrop: {
-        x: config.video.crop.x,
-        y: config.video.crop.y,
-        width: config.video.crop.width,
-        height: config.video.crop.height,
-      },
-    });
+    mediaPipe.detect();
 
     sceneManager.draw();
 

@@ -38,7 +38,6 @@ let isReady = false;
 let lastGestureResults: HandLandmarkerResult | null = null;
 let lastFaceResults: FaceLandmarkerResult | null = null;
 let lastPoseResults: PoseLandmarkerResult | null = null;
-let lastTimestamp = 0;
 
 let smoothedHand: Hand | null = null;
 let smoothedThumbTip: { x: number; y: number } | null = null;
@@ -119,7 +118,7 @@ export const initialize = async (
           "https://storage.googleapis.com/mediapipe-models/pose_landmarker/pose_landmarker_lite/float16/1/pose_landmarker_lite.task",
         delegate: "GPU",
       },
-      runningMode: "VIDEO",
+      runningMode: "IMAGE",
       numPoses: 1,
       minPoseDetectionConfidence: 0.5,
       minPosePresenceConfidence: 0.5,
@@ -153,8 +152,6 @@ export const detect = () => {
       crop.height - 575
     );
 
-    lastTimestamp += 1;
-
     if (handLandmarker) {
       lastGestureResults = handLandmarker.detect(cropCanvas);
     }
@@ -164,10 +161,7 @@ export const detect = () => {
     }
 
     if (poseLandmarker) {
-      lastPoseResults = poseLandmarker.detectForVideo(
-        videoElement,
-        lastTimestamp
-      );
+      lastPoseResults = poseLandmarker.detect(cropCanvas);
     }
   }
 };

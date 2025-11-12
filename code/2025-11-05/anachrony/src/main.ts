@@ -37,10 +37,11 @@ new p5((p: p5) => {
 
     await mediaPipe.initialize(p, {
       enableGestures: true,
-      enableFace: true,
+      enableFace: false,
       enablePose: false,
     });
-    await sceneManager.switchTo("itr");
+
+    await sceneManager.switchTo("sby");
   };
 
   p.draw = () => {

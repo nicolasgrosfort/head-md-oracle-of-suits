@@ -13,17 +13,17 @@ import type p5 from "p5";
 import * as config from "../utils/config.js";
 import * as utils from "../utils/utils.js";
 
-type VideoSourceMode = "crop" | "full";
+export type VideoSourceMode = "crop" | "full";
 
 type InitializeOptions = {
   enableGestures?: boolean;
   enableFace?: boolean;
   enablePose?: boolean;
   videoCrop?: {
-    x?: number; // (0-1)
-    y?: number; // (0-1)
-    width?: number; // (0-1)
-    height?: number; // (0-1)
+    x?: number;
+    y?: number;
+    width?: number;
+    height?: number;
   };
 };
 

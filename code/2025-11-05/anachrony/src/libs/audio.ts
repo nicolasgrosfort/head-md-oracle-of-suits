@@ -2,15 +2,18 @@ import * as Tone from "tone";
 
 import songUrl from "../assets/audios/audio.m4a";
 import clacUrl from "../assets/audios/clac.m4a";
+import loaderUrl from "../assets/audios/loader.mp3";
 import portalUrl from "../assets/audios/portal.mp3";
 
 export let isSongLoaded = false;
 export let isClacLoaded = false;
 export let isPortalLoaded = false;
+export let isLoaderLoaded = false;
 
 export let song: Tone.Player;
 export let clac: Tone.Player;
 export let portal: Tone.Player;
+export let loader: Tone.Player;
 
 export const load = () => {
   song = new Tone.Player({
@@ -38,6 +41,14 @@ export const load = () => {
     autostart: false,
     onload: () => {
       isPortalLoaded = true;
+    },
+  }).toDestination();
+
+  loader = new Tone.Player({
+    url: loaderUrl,
+    autostart: false,
+    onload: () => {
+      isLoaderLoaded = true;
     },
   }).toDestination();
 };

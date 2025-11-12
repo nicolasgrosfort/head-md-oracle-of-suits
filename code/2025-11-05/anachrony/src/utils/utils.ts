@@ -162,18 +162,33 @@ export const image = (
   image: p5.Image,
   x: number,
   y: number,
-  options: { ratio?: number; ascii?: boolean } = {
+  options: { ratio?: number; ascii?: boolean; flipX?: boolean } = {
     ratio: 0.25,
     ascii: false,
+    flipX: false,
   }
 ) => {
   const ratio = options.ratio ?? 0.25;
   const ascii = options.ascii ?? false;
+  const flipX = options.flipX ?? false;
 
   if (ascii) {
     imageToAscii(pg, image, x, y, image.width * ratio, image.height * ratio);
   } else {
-    pg.image(image, x, y, image.width * ratio, image.height * ratio);
+    if (flipX) {
+      pg.push();
+      pg.scale(-1, 1);
+      pg.image(
+        image,
+        -x - image.width * ratio,
+        y,
+        image.width * ratio,
+        image.height * ratio
+      );
+      pg.pop();
+    } else {
+      pg.image(image, x, y, image.width * ratio, image.height * ratio);
+    }
   }
 };
 

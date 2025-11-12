@@ -54,9 +54,6 @@ export const createIntroScene = (p: p5): sceneManager.Scene => {
   let lastAngle: number | null = null;
   let frameDuringButton = 0;
 
-  let magneticOffsetX = 0;
-  let magneticOffsetY = 0;
-
   const MIN_ZONE_RADIUS = 50;
   const MAX_ZONE_RADIUS = 200;
   const ORIGINAL_CIRCLE_X = 1022;

@@ -142,9 +142,9 @@ export const detect = () => {
       crop.width,
       crop.height,
       crop.width * 0.5 - 600 * 0.5,
-      0,
+      200,
       600,
-      config.video.height
+      crop.height - 200
     );
 
     lastTimestamp += 1;

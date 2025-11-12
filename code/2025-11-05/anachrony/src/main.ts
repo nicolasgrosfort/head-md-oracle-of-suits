@@ -79,7 +79,7 @@ new p5((p: p5) => {
       drawConnections: true,
     });
 
-    mediaPipe.drawVideo(p, { hide: !displayCamera, opacity: 0.2 });
+    mediaPipe.drawVideo(p, { hide: !displayCamera, opacity: 0.4 });
   };
 
   p.mousePressed = async () => {

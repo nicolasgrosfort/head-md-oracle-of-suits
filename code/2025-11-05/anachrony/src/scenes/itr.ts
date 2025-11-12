@@ -30,6 +30,12 @@ import planetEmdUrl from "../assets/images/planet-emd.png";
 import planetJpnUrl from "../assets/images/planet-jpn.png";
 import planetMmkUrl from "../assets/images/planet-mmk.png";
 
+import card1Url from "../assets/images/card-1.png";
+import card5Url from "../assets/images/card-5.png";
+
+import card1VisibleUrl from "../assets/images/card-1-visible.png";
+import card5VisibleUrl from "../assets/images/card-5-visible.png";
+
 import baseButtonUrl from "../assets/images/base-button.png";
 
 export const createIntroScene = (p: p5): sceneManager.Scene => {
@@ -39,6 +45,18 @@ export const createIntroScene = (p: p5): sceneManager.Scene => {
   let itrImg3: p5.Image;
   let itrImg4: p5.Image;
   let currentImg: p5.Image;
+
+  let card1Img: p5.Image;
+  let card5Img: p5.Image;
+
+  let card1VisibleImg: p5.Image;
+  let card5VisibleImg: p5.Image;
+
+  const card1X = 611;
+  const card5X = 1232;
+
+  const card1Y = 1144;
+  const card5Y = 911;
 
   let loaderImgs: p5.Image[] = [];
   let currentLoader = 0;
@@ -63,6 +81,73 @@ export const createIntroScene = (p: p5): sceneManager.Scene => {
 
   let scale = 1;
 
+  const drawScene = (pg: p5 | p5.Graphics, isMagnifier?: boolean) => {
+    pg.push();
+
+    pg.background(0);
+
+    switch (buttonPosition) {
+      case 0:
+        currentImg = itrImg1;
+        currentBtn = 0;
+        currentPlanet = 0;
+        break;
+      case 1:
+        currentImg = itrImg2;
+        currentBtn = 1;
+        currentPlanet = 1;
+        break;
+      case 2:
+        currentImg = itrImg3;
+        currentBtn = 2;
+        currentPlanet = 2;
+        break;
+      case 3:
+        currentImg = itrImg4;
+        currentBtn = 3;
+        currentPlanet = 3;
+        break;
+    }
+
+    utils.image(pg, currentImg, 0, 0);
+
+    if (isMagnifier) {
+      utils.image(pg, card1VisibleImg, card1X, card1Y);
+      utils.image(pg, card5VisibleImg, card5X, card5Y);
+    } else {
+      utils.image(pg, card1Img, card1X, card1Y);
+      utils.image(pg, card5Img, card5X, card5Y);
+    }
+
+    utils.image(pg, loaderImgs[currentLoader + (isOnButton ? 1 : 0)], 623, 815);
+
+    utils.image(
+      pg,
+      loaderImgs[currentLoader + (isOnButton ? 1 : 0)],
+      1303,
+      815,
+      { flipX: true }
+    );
+
+    pg.push();
+    pg.translate(
+      832 + (planetImgs[currentPlanet].width / 2) * 0.25,
+      166 + (planetImgs[currentPlanet].height / 2) * 0.25
+    );
+    pg.scale(scale);
+    pg.translate(
+      (-planetImgs[currentPlanet].width / 2) * 0.25,
+      (-planetImgs[currentPlanet].height / 2) * 0.25
+    );
+    utils.image(pg, planetImgs[currentPlanet], 0, 0);
+    pg.pop();
+
+    utils.image(pg, baseButtonImg, 889, 967);
+    utils.image(pg, btnImgs[currentBtn], 926, 991);
+
+    pg.pop();
+  };
+
   return {
     setup: async () => {
       console.log("Intro setup");
@@ -73,6 +158,12 @@ export const createIntroScene = (p: p5): sceneManager.Scene => {
       itrImg3 = await utils.loadImage(p, itrUrl3, 1);
       itrImg4 = await utils.loadImage(p, itrUrl4, 1);
       currentImg = itrImg;
+
+      card1Img = await utils.loadImage(p, card1Url, 1);
+      card5Img = await utils.loadImage(p, card5Url, 1);
+
+      card1VisibleImg = await utils.loadImage(p, card1VisibleUrl, 1);
+      card5VisibleImg = await utils.loadImage(p, card5VisibleUrl, 1);
 
       loaderImgs = [];
       loaderImgs.push(await utils.loadImage(p, loader0Url, 1));
@@ -145,71 +236,12 @@ export const createIntroScene = (p: p5): sceneManager.Scene => {
     },
 
     draw: () => {
-      p.push();
+      drawScene(p, false);
 
-      switch (buttonPosition) {
-        case 0:
-          currentImg = itrImg1;
-          currentBtn = 0;
-          currentPlanet = 0;
-          break;
-        case 1:
-          currentImg = itrImg2;
-          currentBtn = 1;
-          currentPlanet = 1;
-          break;
-        case 2:
-          currentImg = itrImg3;
-          currentBtn = 2;
-          currentPlanet = 2;
-          break;
-        case 3:
-          currentImg = itrImg4;
-          currentBtn = 3;
-          currentPlanet = 3;
-          break;
+      const magnifierGraphics = magnifier.getGraphics("itr");
+      if (magnifierGraphics) {
+        drawScene(magnifierGraphics, true);
       }
-
-      p.imageMode(p.CENTER);
-      p.image(
-        currentImg,
-        p.width * 0.5,
-        p.height * 0.5,
-        currentImg.width * 0.25,
-        currentImg.height * 0.25
-      );
-      p.pop();
-
-      utils.image(
-        p,
-        loaderImgs[currentLoader + (isOnButton ? 1 : 0)],
-        623,
-        815
-      );
-
-      utils.image(
-        p,
-        loaderImgs[currentLoader + (isOnButton ? 1 : 0)],
-        1303,
-        815,
-        { flipX: true }
-      );
-
-      p.push();
-      p.translate(
-        832 + (planetImgs[currentPlanet].width / 2) * 0.25,
-        166 + (planetImgs[currentPlanet].height / 2) * 0.25
-      );
-      p.scale(scale);
-      p.translate(
-        (-planetImgs[currentPlanet].width / 2) * 0.25,
-        (-planetImgs[currentPlanet].height / 2) * 0.25
-      );
-      utils.image(p, planetImgs[currentPlanet], 0, 0);
-      p.pop();
-
-      utils.image(p, baseButtonImg, 889, 967);
-      utils.image(p, btnImgs[currentBtn], 926, 991);
 
       mediaPipe.onHandMove((hand) => {
         const handX = hand.x * p.width;
@@ -248,8 +280,8 @@ export const createIntroScene = (p: p5): sceneManager.Scene => {
         isOnButton = interactionZone.isActive("button");
 
         // Afficher un petit cercle quand pas sur le bouton
-        if (!isOnButton) {
-          magnifier.draw(p, "itr", handX, handY);
+        if (!isOnButton && magnifierGraphics) {
+          magnifier.draw(p, "itr", handX, handY, magnifierGraphics);
         }
       });
 

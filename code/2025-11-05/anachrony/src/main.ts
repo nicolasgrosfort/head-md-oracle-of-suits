@@ -1,6 +1,7 @@
 import p5 from "p5";
 
 import * as audio from "./libs/audio";
+import * as cardodex from "./libs/cardodex";
 import * as mediaPipe from "./libs/media-pipe";
 import * as sceneManager from "./libs/scene-manager";
 import * as config from "./utils/config";
@@ -35,6 +36,7 @@ new p5((p: p5) => {
     sceneManager.addScene("sby", createStandbyScene(p));
     sceneManager.addScene("jpn", createEdoJapanScene(p));
 
+    await cardodex.initialize(p);
     await mediaPipe.initialize(p, {
       enableGestures: true,
       enableFace: false,

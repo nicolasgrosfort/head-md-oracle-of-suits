@@ -6,7 +6,7 @@ import * as utils from "../utils/utils";
 
 import sbyUrl1 from "../assets/images/sby-1.png";
 
-const FRAME_TO_SWITCH = 30;
+const FRAME_TO_SWITCH = 5;
 
 export const createStandbyScene = (p: p5): sceneManager.Scene => {
   let sbyImg1: p5.Image;

@@ -148,7 +148,7 @@ export const detect = () => {
       crop.width,
       crop.height,
       crop.width * 0.5 - 400 * 0.5 - 25,
-      0,
+      250,
       400,
       crop.height - 500
     );

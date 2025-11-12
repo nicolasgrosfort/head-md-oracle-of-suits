@@ -255,15 +255,15 @@ export const createIntroScene = (p: p5): sceneManager.Scene => {
 
           frameDuringButton += 1;
 
-          utils.image(p, baseButtonImg, 885, 961);
+          utils.image(p, baseButtonImg, 888, 966);
 
-          // const zoneRadius = p.map(
-          //   frameDuringButton,
-          //   config.frame.toTravel,
-          //   0,
-          //   MIN_ZONE_RADIUS,
-          //   MAX_ZONE_RADIUS
-          // );
+          const zoneRadius = p.map(
+            frameDuringButton,
+            config.frame.toTravel,
+            0,
+            50,
+            MAX_ZONE_RADIUS
+          );
 
           scale = p.map(
             frameDuringButton,
@@ -311,9 +311,9 @@ export const createIntroScene = (p: p5): sceneManager.Scene => {
             }
           }
 
-          // p.fill(255, 80);
-          // p.stroke(0);
-          // p.circle(circleX, circleY, zoneRadius * 2);
+          p.fill(255, 80);
+          p.stroke(0);
+          p.circle(ORIGINAL_CIRCLE_X, ORIGINAL_CIRCLE_Y, zoneRadius * 2);
         } else {
           if (wasOnButton) {
             circleX = ORIGINAL_CIRCLE_X;
@@ -333,7 +333,7 @@ export const createIntroScene = (p: p5): sceneManager.Scene => {
         }
       });
 
-      utils.image(p, btnImgs[currentBtn], 928, 993);
+      utils.image(p, btnImgs[currentBtn], 926, 991);
     },
 
     cleanup: () => {

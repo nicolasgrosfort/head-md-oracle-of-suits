@@ -15,20 +15,6 @@ let displayVideo = false;
 let displayHand = false;
 let displayFace = false;
 let displayPose = false;
-let displayCroppedZone = false;
-let videoSourceMode: mediaPipe.VideoSourceMode = "full";
-
-const drawCroppedZone = (p: p5) => {
-  if (!displayCroppedZone) return;
-
-  const crop = config.video.crop;
-  p.push();
-  p.noFill();
-  p.stroke(0, 255, 0);
-  p.strokeWeight(2);
-  p.rect(crop.x, crop.y, crop.width, crop.height);
-  p.pop();
-};
 
 new p5((p: p5) => {
   p.setup = async () => {
@@ -69,8 +55,7 @@ new p5((p: p5) => {
 
     mediaPipe.drawVideo(p, {
       hide: !displayVideo,
-      opacity: 0.8,
-      source: videoSourceMode,
+      opacity: 0.5,
     });
 
     mediaPipe.drawFace(p, {
@@ -92,8 +77,6 @@ new p5((p: p5) => {
       drawLandmarks: true,
       drawConnections: true,
     });
-
-    drawCroppedZone(p);
   };
 
   p.mousePressed = async () => {
@@ -124,14 +107,6 @@ new p5((p: p5) => {
       }
 
       // Debugging
-      case "Z": {
-        displayCroppedZone = !displayCroppedZone;
-        break;
-      }
-      case "C": {
-        videoSourceMode = videoSourceMode === "full" ? "crop" : "full";
-        break;
-      }
       case "V": {
         displayVideo = !displayVideo;
         break;

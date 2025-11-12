@@ -18,7 +18,7 @@ export let loader: Tone.Player;
 export const load = () => {
   song = new Tone.Player({
     url: songUrl,
-    autostart: false,
+    autostart: true,
     loop: true,
     fadeIn: 4,
     fadeOut: 2,

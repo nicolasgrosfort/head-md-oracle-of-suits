@@ -7,6 +7,7 @@ export type Scene = {
 type SceneName = "itr" | "mmk" | "emd" | "jkr" | "acn" | "sby" | "jpn";
 
 let currentScene: Scene | null = null;
+let currentSceneName: SceneName | null = null;
 let scenes: Map<SceneName, Scene> = new Map();
 let isSceneReady: boolean = false;
 
@@ -30,7 +31,9 @@ export const switchTo = async (name: SceneName) => {
   currentScene = nextScene;
   await currentScene.setup();
 
+  currentSceneName = name;
   isSceneReady = true;
+
   console.log(`Switched to scene "${name}"`);
 };
 
@@ -42,4 +45,8 @@ export const draw = () => {
 
 export const sceneIsReady = (): boolean => {
   return isSceneReady;
+};
+
+export const getCurrentSceneName = (): SceneName | null => {
+  return currentSceneName;
 };

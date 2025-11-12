@@ -1,16 +1,23 @@
 import p5 from "p5";
-import type { Scene } from "../libs/scene-manager";
+
+import * as mediaPipe from "../libs/media-pipe";
+import * as sceneManager from "../libs/scene-manager";
 import * as utils from "../utils/utils";
 
 import sbyUrl1 from "../assets/images/sby-1.png";
 
-export const createStandbyScene = (p: p5): Scene => {
+const FRAME_TO_SWITCH = 30;
+
+export const createStandbyScene = (p: p5): sceneManager.Scene => {
   let sbyImg1: p5.Image;
+  let frameWithHand = 0;
+  let isAnyHand = false;
 
   return {
     setup: async () => {
       console.log("Standby setup");
       sbyImg1 = await utils.loadImage(p, sbyUrl1, 1);
+      frameWithHand = 0;
     },
 
     draw: () => {
@@ -24,6 +31,16 @@ export const createStandbyScene = (p: p5): Scene => {
         sbyImg1.height * 0.25
       );
       p.pop();
+
+      isAnyHand = false;
+      mediaPipe.onHandMove(() => {
+        isAnyHand = true;
+      });
+
+      if (isAnyHand) frameWithHand++;
+      else frameWithHand = 0;
+
+      if (frameWithHand >= FRAME_TO_SWITCH) sceneManager.switchTo("itr");
     },
 
     cleanup: () => {

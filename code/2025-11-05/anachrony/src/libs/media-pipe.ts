@@ -35,6 +35,7 @@ let crop: p5.Graphics | null = null;
 
 let isReady = false;
 
+let lastHand: Hand | null = null;
 let lastGestureResults: HandLandmarkerResult | null = null;
 let lastFaceResults: FaceLandmarkerResult | null = null;
 let lastPoseResults: PoseLandmarkerResult | null = null;
@@ -490,10 +491,16 @@ export const onHandMove = (callback: (hand: Hand) => void) => {
   const SCALE = { x: 1, y: 1 };
 
   const gestureResults = getGestureResults();
-  if (!gestureResults) return;
+  if (!gestureResults) {
+    if (lastHand) callback(lastHand);
+    return;
+  }
 
   const { landmarks } = gestureResults;
-  if (landmarks.length === 0) return;
+  if (landmarks.length === 0) {
+    if (lastHand) callback(lastHand);
+    return;
+  }
 
   const mergedResults = landmarks.map((landmark) => ({
     landmark,
@@ -583,6 +590,7 @@ export const onHandMove = (callback: (hand: Hand) => void) => {
     };
   }
 
+  lastHand = smoothedHand;
   callback(smoothedHand);
 };
 

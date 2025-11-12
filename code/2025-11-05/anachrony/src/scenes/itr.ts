@@ -261,11 +261,11 @@ export const createIntroScene = (p: p5): sceneManager.Scene => {
               if (stepDiff > 0 && buttonPosition < 3) {
                 audio.clac.start();
                 buttonPosition++;
-                interactionZone.reset("button");
+                interactionZone.reset("button", true);
               } else if (stepDiff < 0 && buttonPosition > 0) {
                 audio.clac.start();
                 buttonPosition--;
-                interactionZone.reset("button");
+                interactionZone.reset("button", true);
               }
 
               lastAngle = hand.angle;

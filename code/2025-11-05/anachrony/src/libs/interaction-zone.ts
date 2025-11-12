@@ -153,7 +153,7 @@ export const isActive = (id: string): boolean => {
   return zone?.isActive ?? false;
 };
 
-export const reset = (id: string): void => {
+export const reset = (id: string, keepActive: boolean = false): void => {
   const zone = zones.get(id);
   if (!zone) return;
 
@@ -161,6 +161,8 @@ export const reset = (id: string): void => {
   zone.frameCount = 0;
   zone.progress = 0;
   audio.loader.stop();
+
+  if (keepActive === true) zone.wasActive = false;
 };
 
 const complete = (id: string): void => {

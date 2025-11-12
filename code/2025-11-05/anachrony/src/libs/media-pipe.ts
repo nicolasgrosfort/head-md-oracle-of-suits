@@ -35,7 +35,6 @@ let crop: p5.Graphics | null = null;
 
 let isReady = false;
 
-let lastHand: Hand | null = null;
 let lastGestureResults: HandLandmarkerResult | null = null;
 let lastFaceResults: FaceLandmarkerResult | null = null;
 let lastPoseResults: PoseLandmarkerResult | null = null;
@@ -43,7 +42,7 @@ let lastTimestamp = 0;
 
 let smoothedHand: Hand | null = null;
 let smoothedThumbTip: { x: number; y: number } | null = null;
-let smoothedMiddleFingerTip: { x: number; y: number } | null = null;
+let smoothedPinkyTip: { x: number; y: number } | null = null;
 
 const SMOOTHING_FACTOR = 0.2;
 const ANGLE_SMOOTHING_FACTOR = 0.15;
@@ -52,6 +51,7 @@ const HAND = {
   WRIST: 0,
   MIDDLE_FINGER_TIP: 20,
   THUMB_TIP: 4,
+  PINKY_TIP: 20,
 };
 
 export const initialize = async (
@@ -492,13 +492,11 @@ export const onHandMove = (callback: (hand: Hand) => void) => {
 
   const gestureResults = getGestureResults();
   if (!gestureResults) {
-    // if (lastHand) callback(lastHand);
     return;
   }
 
   const { landmarks } = gestureResults;
   if (landmarks.length === 0) {
-    // if (lastHand) callback(lastHand);
     return;
   }
 
@@ -527,7 +525,7 @@ export const onHandMove = (callback: (hand: Hand) => void) => {
   const avgY = sumY / allLandmarks.length;
   const avgZ = sumZ / allLandmarks.length;
 
-  const middleFingerTip = closestResult.landmark[HAND.MIDDLE_FINGER_TIP];
+  const pinkyTip = closestResult.landmark[HAND.PINKY_TIP];
   const thumbTip = closestResult.landmark[HAND.THUMB_TIP];
 
   // Lisser les positions des doigts
@@ -544,18 +542,16 @@ export const onHandMove = (callback: (hand: Hand) => void) => {
     };
   }
 
-  if (smoothedMiddleFingerTip === null) {
-    smoothedMiddleFingerTip = { x: middleFingerTip.x, y: middleFingerTip.y };
+  if (smoothedPinkyTip === null) {
+    smoothedPinkyTip = { x: pinkyTip.x, y: pinkyTip.y };
   } else {
-    smoothedMiddleFingerTip = {
+    smoothedPinkyTip = {
       x:
-        smoothedMiddleFingerTip.x +
-        (middleFingerTip.x - smoothedMiddleFingerTip.x) *
-          ANGLE_SMOOTHING_FACTOR,
+        smoothedPinkyTip.x +
+        (pinkyTip.x - smoothedPinkyTip.x) * ANGLE_SMOOTHING_FACTOR,
       y:
-        smoothedMiddleFingerTip.y +
-        (middleFingerTip.y - smoothedMiddleFingerTip.y) *
-          ANGLE_SMOOTHING_FACTOR,
+        smoothedPinkyTip.y +
+        (pinkyTip.y - smoothedPinkyTip.y) * ANGLE_SMOOTHING_FACTOR,
     };
   }
 
@@ -563,8 +559,8 @@ export const onHandMove = (callback: (hand: Hand) => void) => {
   const angle = utils.getAngle(
     smoothedThumbTip.x,
     smoothedThumbTip.y,
-    smoothedMiddleFingerTip.x,
-    smoothedMiddleFingerTip.y
+    smoothedPinkyTip.x,
+    smoothedPinkyTip.y
   );
 
   const xCentered = (1 - avgX - 0.5) * SCALE.x + 0.5 * TRANSLATE.x;
@@ -590,7 +586,6 @@ export const onHandMove = (callback: (hand: Hand) => void) => {
     };
   }
 
-  lastHand = smoothedHand;
   callback(smoothedHand);
 };
 

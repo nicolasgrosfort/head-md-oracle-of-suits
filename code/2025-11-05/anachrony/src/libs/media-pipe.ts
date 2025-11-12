@@ -148,9 +148,9 @@ export const detect = () => {
       crop.width,
       crop.height,
       crop.width * 0.5 - 400 * 0.5 - 25,
-      250,
+      275,
       400,
-      crop.height - 500
+      crop.height - 575
     );
 
     lastTimestamp += 1;

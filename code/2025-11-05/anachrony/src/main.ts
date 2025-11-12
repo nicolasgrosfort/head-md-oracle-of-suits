@@ -11,10 +11,24 @@ import { createIntroScene } from "./scenes/itr";
 import { createJokerScene } from "./scenes/jkr";
 import { createMmkScene } from "./scenes/mmk";
 
-let displayCamera = false;
+let displayVideo = false;
 let displayHand = false;
 let displayFace = false;
 let displayPose = false;
+let displayCroppedZone = false;
+let videoSourceMode: mediaPipe.VideoSourceMode = "full";
+
+const drawCroppedZone = (p: p5) => {
+  if (!displayCroppedZone) return;
+
+  const crop = config.video.crop;
+  p.push();
+  p.noFill();
+  p.stroke(0, 255, 0);
+  p.strokeWeight(2);
+  p.rect(crop.x, crop.y, crop.width, crop.height);
+  p.pop();
+};
 
 new p5((p: p5) => {
   p.setup = async () => {
@@ -35,12 +49,6 @@ new p5((p: p5) => {
       enableGestures: true,
       enableFace: true,
       enablePose: false,
-      videoCrop: {
-        x: 0.25,
-        y: 0.25,
-        width: 0.5,
-        height: 0.5,
-      },
     });
     await sceneManager.switchTo("itr");
   };
@@ -55,9 +63,22 @@ new p5((p: p5) => {
       return;
     }
 
-    mediaPipe.detect();
+    mediaPipe.detect({
+      videoCrop: {
+        x: config.video.crop.x,
+        y: config.video.crop.y,
+        width: config.video.crop.width,
+        height: config.video.crop.height,
+      },
+    });
 
     sceneManager.draw();
+
+    mediaPipe.drawVideo(p, {
+      hide: !displayVideo,
+      opacity: 0.8,
+      source: videoSourceMode,
+    });
 
     mediaPipe.drawFace(p, {
       hide: !displayFace,
@@ -79,7 +100,7 @@ new p5((p: p5) => {
       drawConnections: true,
     });
 
-    mediaPipe.drawVideo(p, { hide: !displayCamera, opacity: 0.4 });
+    drawCroppedZone(p);
   };
 
   p.mousePressed = async () => {
@@ -110,8 +131,16 @@ new p5((p: p5) => {
       }
 
       // Debugging
+      case "Z": {
+        displayCroppedZone = !displayCroppedZone;
+        break;
+      }
       case "C": {
-        displayCamera = !displayCamera;
+        videoSourceMode = videoSourceMode === "full" ? "crop" : "full";
+        break;
+      }
+      case "V": {
+        displayVideo = !displayVideo;
         break;
       }
       case "H": {

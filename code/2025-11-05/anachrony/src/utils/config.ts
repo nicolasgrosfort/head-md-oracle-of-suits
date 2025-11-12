@@ -4,6 +4,12 @@ export const video = {
   width: 1280,
   height: 720,
   frameRate: 30,
+  crop: {
+    x: 100,
+    y: 100,
+    width: 100,
+    height: 100,
+  },
 };
 
 export const sketch = {

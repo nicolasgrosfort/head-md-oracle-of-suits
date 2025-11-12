@@ -13,6 +13,8 @@ import type p5 from "p5";
 import * as config from "../utils/config.js";
 import * as utils from "../utils/utils.js";
 
+type VideoSourceMode = "crop" | "full";
+
 type InitializeOptions = {
   enableGestures?: boolean;
   enableFace?: boolean;
@@ -48,6 +50,7 @@ let cropSettings: {
   width: number;
   height: number;
 } | null = null;
+
 let isReady = false;
 
 let lastGestureResults: GestureRecognizerResult | null = null;
@@ -91,16 +94,7 @@ export const initialize = async (
   video.size(config.video.width, config.video.height);
   video.hide();
 
-  if (options.videoCrop) {
-    cropSettings = {
-      x: options.videoCrop.x || 0,
-      y: options.videoCrop.y || 0,
-      width: options.videoCrop.width || 1,
-      height: options.videoCrop.height || 1,
-    };
-
-    croppedCanvas = p.createGraphics(config.video.width, config.video.height);
-  }
+  croppedCanvas = p.createGraphics(config.video.width, config.video.height);
 
   const vision = await FilesetResolver.forVisionTasks(
     "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@latest/wasm"
@@ -154,9 +148,27 @@ export const initialize = async (
   isReady = true;
 };
 
-export const detect = () => {
+export const detect = (
+  options = {
+    videoCrop: {
+      x: 0,
+      y: 0,
+      width: config.video.width,
+      height: config.video.height,
+    },
+  }
+) => {
   if (!isReady || !video) {
     return;
+  }
+
+  if (options.videoCrop) {
+    cropSettings = {
+      x: options.videoCrop.x || 0,
+      y: options.videoCrop.y || 0,
+      width: options.videoCrop.width || config.video.width,
+      height: options.videoCrop.height || config.video.height,
+    };
   }
 
   const videoElement = (video as any).elt as HTMLVideoElement;
@@ -166,10 +178,10 @@ export const detect = () => {
     let sourceElement: HTMLVideoElement | HTMLCanvasElement = videoElement;
 
     if (cropSettings && croppedCanvas) {
-      const sx = cropSettings.x * videoElement.videoWidth;
-      const sy = cropSettings.y * videoElement.videoHeight;
-      const sw = cropSettings.width * videoElement.videoWidth;
-      const sh = cropSettings.height * videoElement.videoHeight;
+      const sx = cropSettings.x;
+      const sy = cropSettings.y;
+      const sw = cropSettings.width;
+      const sh = cropSettings.height;
 
       croppedCanvas.image(
         video,
@@ -520,11 +532,15 @@ export const drawBody = (
 
 export const drawVideo = (
   p: p5,
-  options: { hide?: boolean; opacity?: number } = { hide: false, opacity: 1 }
+  options: { hide?: boolean; opacity?: number; source?: VideoSourceMode } = {
+    hide: false,
+    opacity: 1,
+    source: "full",
+  }
 ) => {
   if (options.hide === true) return;
 
-  const source = croppedCanvas || video;
+  const source = options.source === "crop" ? croppedCanvas : video;
 
   if (source) {
     p.push();

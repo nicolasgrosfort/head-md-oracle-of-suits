@@ -33,8 +33,6 @@ import tarotFullUrl from "../assets/images/tarot.png";
 
 import vesselUrl from "../assets/images/vessel.png";
 
-const MAX_ZONE_RADIUS = 200;
-const MIN_ZONE_RADIUS = 50;
 const MAX_TIME_PROMPT = 10000;
 
 const color = {
@@ -126,9 +124,7 @@ export const createMmkScene = (p: p5): Scene => {
 
   let lastFrameTime = 0;
 
-  let frameDuringVessel = 0;
   let isOnVessel = false;
-  let zoneRadius = MAX_ZONE_RADIUS;
   let vesselX = 70;
   let vesselY = 500;
 
@@ -307,7 +303,6 @@ export const createMmkScene = (p: p5): Scene => {
       ramolosFull = await utils.loadImage(p, ramolosFullUrl, 1);
 
       vessel = await utils.loadImage(p, vesselUrl, 1);
-      frameDuringVessel = 0;
       isOnVessel = false;
 
       magnifier = p.createGraphics(config.sketch.width, config.sketch.height);
@@ -374,7 +369,6 @@ export const createMmkScene = (p: p5): Scene => {
 
         interactionZone.update("vessel", handX, handY);
         isOnVessel = interactionZone.isActive("vessel");
-        zoneRadius = interactionZone.getRadius(p, "vessel");
       });
 
       if (!isAnyHand) {

@@ -1,5 +1,6 @@
 import type p5 from "p5";
 
+import * as config from "../utils/config";
 import * as utils from "../utils/utils";
 import * as audio from "./audio";
 
@@ -118,8 +119,9 @@ export const draw = (p: p5, id: string, showDebug: boolean = false): void => {
   );
 
   p.push();
-  p.fill(255, 80);
-  p.stroke(0);
+  p.fill(255, 100);
+  p.strokeWeight(4);
+  p.stroke(config.color.black);
 
   // Dessiner le cercle à la position d'origine de la zone
   const originalX = zone.config.x + zone.config.width / 2;

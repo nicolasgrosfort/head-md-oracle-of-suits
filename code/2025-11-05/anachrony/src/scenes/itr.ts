@@ -229,9 +229,9 @@ export const createIntroScene = (p: p5): sceneManager.Scene => {
 
       magnifier.create(p, "itr", {
         zoomFactor: 2,
-        size: 250,
-        strokeWeight: 3,
-        strokeColor: [255, 255, 255],
+        size: 300,
+        strokeWeight: 4,
+        strokeColor: config.color.black,
       });
     },
 

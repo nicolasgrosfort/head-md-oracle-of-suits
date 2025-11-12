@@ -278,7 +278,7 @@ export const createMmkScene = (p: p5): Scene => {
         zoomFactor: 2,
         size: 300,
         strokeWeight: 4,
-        strokeColor: 0,
+        strokeColor: config.color.black,
       });
 
       cards = [];

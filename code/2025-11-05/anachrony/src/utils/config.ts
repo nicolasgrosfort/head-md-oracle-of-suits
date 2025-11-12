@@ -30,3 +30,8 @@ export const zoom = {
 export const frame = {
   toTravel: 60,
 };
+
+export const color = {
+  white: [245, 245, 245],
+  black: [37, 37, 37],
+};

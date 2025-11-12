@@ -13,18 +13,10 @@ import type p5 from "p5";
 import * as config from "../utils/config.js";
 import * as utils from "../utils/utils.js";
 
-export type VideoSourceMode = "crop" | "full";
-
 type InitializeOptions = {
   enableGestures?: boolean;
   enableFace?: boolean;
   enablePose?: boolean;
-  videoCrop?: {
-    x?: number;
-    y?: number;
-    width?: number;
-    height?: number;
-  };
 };
 
 type Hand = {
@@ -39,6 +31,7 @@ let faceLandmarker: FaceLandmarker | null = null;
 let poseLandmarker: PoseLandmarker | null = null;
 
 let video: p5.Element | null = null;
+let crop: p5.Graphics | null = null;
 
 let isReady = false;
 
@@ -79,6 +72,8 @@ export const initialize = async (
   video.size(config.video.width, config.video.height);
   video.hide();
 
+  crop = p.createGraphics(config.video.width, config.video.height);
+
   const vision = await FilesetResolver.forVisionTasks(
     "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@latest/wasm"
   );
@@ -90,7 +85,7 @@ export const initialize = async (
           "https://storage.googleapis.com/mediapipe-models/hand_landmarker/hand_landmarker/float16/1/hand_landmarker.task",
         delegate: "GPU",
       },
-      runningMode: "VIDEO",
+      runningMode: "IMAGE",
       numHands: 1,
       minHandDetectionConfidence: 0.5,
       minHandPresenceConfidence: 0.5,
@@ -132,20 +127,30 @@ export const initialize = async (
 };
 
 export const detect = () => {
-  if (!isReady || !video) {
+  if (!isReady || !video || !crop) {
     return;
   }
 
-  const videoElement = (video as any).elt as HTMLVideoElement;
+  const videoElement = video.elt;
 
   if (videoElement.readyState >= 2) {
+    crop.clear();
+    crop.image(
+      video,
+      0,
+      0,
+      crop.width,
+      crop.height,
+      crop.width * 0.5 - 600 * 0.5,
+      0,
+      600,
+      config.video.height
+    );
+
     lastTimestamp += 1;
 
     if (handLandmarker) {
-      lastGestureResults = handLandmarker.detectForVideo(
-        videoElement,
-        lastTimestamp
-      );
+      lastGestureResults = handLandmarker.detect((crop as any).canvas);
     }
 
     if (faceLandmarker) {
@@ -456,10 +461,9 @@ export const drawBody = (
 
 export const drawVideo = (
   p: p5,
-  options: { hide?: boolean; opacity?: number; source?: VideoSourceMode } = {
+  options: { hide?: boolean; opacity?: number } = {
     hide: false,
     opacity: 1,
-    source: "full",
   }
 ) => {
   if (options.hide === true) return;
@@ -472,7 +476,7 @@ export const drawVideo = (
     const opacity = options.opacity !== undefined ? options.opacity : 1.0;
     p.tint(255, 255 * opacity);
 
-    p.image(video, 0, 0, p.width, p.height);
+    p.image(crop ? crop : video, 0, 0, p.width, p.height);
     p.pop();
   }
 };

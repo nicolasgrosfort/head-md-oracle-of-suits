@@ -54,11 +54,14 @@ export const createIntroScene = (p: p5): sceneManager.Scene => {
   let lastAngle: number | null = null;
   let frameDuringButton = 0;
 
-  // const MIN_ZONE_RADIUS = 50;
+  let magneticOffsetX = 0;
+  let magneticOffsetY = 0;
+
+  const MIN_ZONE_RADIUS = 50;
   const MAX_ZONE_RADIUS = 200;
   const ORIGINAL_CIRCLE_X = 1022;
   const ORIGINAL_CIRCLE_Y = 1055;
-  const MAX_SCALE = 1.1;
+  const MAX_PLANET_SCALE = 1.1;
 
   let scale = 1;
   let circleX = 1022;
@@ -102,10 +105,6 @@ export const createIntroScene = (p: p5): sceneManager.Scene => {
     },
 
     draw: () => {
-      // p.translate(p.width / 2, p.height / 2);
-      // p.scale(scale);
-      // p.translate(-p.width / 2, -p.height / 2);
-
       p.push();
 
       switch (buttonPosition) {
@@ -168,6 +167,9 @@ export const createIntroScene = (p: p5): sceneManager.Scene => {
       );
       utils.image(p, planetImgs[currentPlanet], 0, 0);
       p.pop();
+
+      utils.image(p, baseButtonImg, 889, 967);
+      utils.image(p, btnImgs[currentBtn], 926, 991);
 
       // DEBUG: Dessiner les zones de détection
       // p.push();
@@ -268,13 +270,11 @@ export const createIntroScene = (p: p5): sceneManager.Scene => {
 
           frameDuringButton += 1;
 
-          utils.image(p, baseButtonImg, 889, 967);
-
           const zoneRadius = p.map(
             frameDuringButton,
             config.frame.toTravel,
             0,
-            50,
+            MIN_ZONE_RADIUS,
             MAX_ZONE_RADIUS
           );
 
@@ -283,7 +283,7 @@ export const createIntroScene = (p: p5): sceneManager.Scene => {
             0,
             config.frame.toTravel,
             1,
-            MAX_SCALE
+            MAX_PLANET_SCALE
           );
 
           const loaderSetp = p.map(
@@ -301,6 +301,8 @@ export const createIntroScene = (p: p5): sceneManager.Scene => {
 
           if (frameDuringButton >= config.frame.toTravel) {
             frameDuringButton = 0;
+            scale = 1;
+            wasOnButton = false;
 
             audio.loader.stop();
             audio.portal.start();
@@ -311,15 +313,12 @@ export const createIntroScene = (p: p5): sceneManager.Scene => {
                 break;
               case 1:
                 sceneManager.switchTo("emd");
-
                 break;
               case 2:
                 sceneManager.switchTo("acn");
-
                 break;
               case 3:
                 sceneManager.switchTo("jkr");
-
                 break;
             }
           }
@@ -341,12 +340,10 @@ export const createIntroScene = (p: p5): sceneManager.Scene => {
 
           audio.loader.stop();
 
-          p.fill("black");
+          p.fill(0);
           p.circle(hand.x * p.width, hand.y * p.height, 20);
         }
       });
-
-      utils.image(p, btnImgs[currentBtn], 926, 991);
     },
 
     cleanup: () => {

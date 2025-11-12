@@ -186,7 +186,6 @@ export const createIntroScene = (p: p5): sceneManager.Scene => {
 
       baseButtonImg = await utils.loadImage(p, baseButtonUrl, 1);
 
-      // Créer la zone d'interaction pour le bouton
       interactionZone.create("button", {
         x: ORIGINAL_CIRCLE_X,
         y: ORIGINAL_CIRCLE_Y,
@@ -247,7 +246,6 @@ export const createIntroScene = (p: p5): sceneManager.Scene => {
         const handX = hand.x * p.width;
         const handY = hand.y * p.height;
 
-        // Gestion de la rotation
         if (interactionZone.isActive("button")) {
           if (lastAngle === null) {
             lastAngle = hand.angle;
@@ -275,11 +273,9 @@ export const createIntroScene = (p: p5): sceneManager.Scene => {
           lastAngle = null;
         }
 
-        // Mise à jour de la zone d'interaction
         interactionZone.update("button", handX, handY);
         isOnButton = interactionZone.isActive("button");
 
-        // Afficher un petit cercle quand pas sur le bouton
         if (!isOnButton && magnifierGraphics) {
           magnifier.draw(p, "itr", handX, handY, magnifierGraphics);
         }
@@ -291,7 +287,6 @@ export const createIntroScene = (p: p5): sceneManager.Scene => {
         lastAngle = null;
       }
 
-      // Dessiner la zone d'interaction
       interactionZone.draw(p, "button", true);
     },
 

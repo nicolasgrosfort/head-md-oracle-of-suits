@@ -5,10 +5,10 @@ export const video = {
   height: 720,
   frameRate: 30,
   crop: {
-    x: 100,
-    y: 100,
-    width: 100,
-    height: 100,
+    x: 787,
+    y: 467,
+    width: 640,
+    height: 1080,
   },
 };
 

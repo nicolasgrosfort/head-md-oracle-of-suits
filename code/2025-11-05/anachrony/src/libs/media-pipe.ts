@@ -103,7 +103,7 @@ export const initialize = async (
           "https://storage.googleapis.com/mediapipe-models/face_landmarker/face_landmarker/float16/1/face_landmarker.task",
         delegate: "GPU",
       },
-      runningMode: "VIDEO",
+      runningMode: "IMAGE",
       numFaces: 1,
       minFaceDetectionConfidence: 0.5,
       minFacePresenceConfidence: 0.5,
@@ -137,6 +137,8 @@ export const detect = () => {
   const videoElement = video.elt;
 
   if (videoElement.readyState >= 2) {
+    const cropCanvas = (crop as any).canvas as HTMLCanvasElement;
+
     crop.clear();
     crop.image(
       video,
@@ -153,14 +155,11 @@ export const detect = () => {
     lastTimestamp += 1;
 
     if (handLandmarker) {
-      lastGestureResults = handLandmarker.detect((crop as any).canvas);
+      lastGestureResults = handLandmarker.detect(cropCanvas);
     }
 
     if (faceLandmarker) {
-      lastFaceResults = faceLandmarker.detectForVideo(
-        videoElement,
-        lastTimestamp
-      );
+      lastFaceResults = faceLandmarker.detect(cropCanvas);
     }
 
     if (poseLandmarker) {

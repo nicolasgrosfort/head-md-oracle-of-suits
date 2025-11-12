@@ -1,6 +1,7 @@
 import p5 from "p5";
 
 import * as interactionZone from "../libs/interaction-zone";
+import * as magnifier from "../libs/magnifier";
 import * as mediaPipe from "../libs/media-pipe";
 import * as sceneManager from "../libs/scene-manager";
 import * as config from "../utils/config";
@@ -84,9 +85,9 @@ const cardPrompts = {
 };
 
 export const createMmkScene = (p: p5): Scene => {
-  let zoomFactor = 2;
-  let zoomSize = 300;
-  let magnifier: p5.Graphics;
+  // let zoomFactor = 2;
+  // let zoomSize = 300;
+  // let magnifier: p5.Graphics;
 
   let cloudLeft: p5.Image;
   let cloudCenter: p5.Image;
@@ -183,37 +184,6 @@ export const createMmkScene = (p: p5): Scene => {
       cards.push({ x: pos.x, y: pos.y, size, speed, card });
     }
   };
-  const drawMagnifier = () => {
-    const copySize = zoomSize / zoomFactor;
-    const sx = handX - copySize / 2;
-    const sy = handY - copySize / 2;
-
-    p.push();
-    const zoomedRegion = magnifier.get(sx, sy, copySize, copySize);
-
-    // Activer le smooth pour la loupe uniquement
-    (zoomedRegion as any).loadPixels();
-
-    p.drawingContext.save();
-    p.drawingContext.beginPath();
-    p.drawingContext.arc(handX, handY, zoomSize / 2, 0, p.TWO_PI);
-    p.drawingContext.clip();
-
-    // Activer l'interpolation pour un zoom lisse
-    p.drawingContext.imageSmoothingEnabled = true;
-    p.drawingContext.imageSmoothingQuality = "high";
-
-    p.translate(handX - zoomSize / 2, handY - zoomSize / 2);
-    p.image(zoomedRegion, 0, 0, zoomSize, zoomSize);
-
-    p.drawingContext.restore();
-
-    p.noFill();
-    p.stroke(0);
-    p.strokeWeight(4);
-    p.circle(handX, handY, zoomSize);
-    p.pop();
-  };
 
   const drawScene = (pg: p5 | p5.Graphics, isMagnifier?: boolean) => {
     pg.background(color.blue);
@@ -253,20 +223,19 @@ export const createMmkScene = (p: p5): Scene => {
               card.size === "L" ? cardL : card.size === "M" ? cardM : cardS;
         }
       } else {
-        // Dans la scène normale, afficher les cartes blanches selon leur taille
+        // Dans la scène normale, afficher les cartes blanches
         cardImage =
           card.size === "L" ? cardL : card.size === "M" ? cardM : cardS;
       }
 
       const ratio = card.size === "L" ? 1 : card.size === "M" ? 0.9 : 0.8;
-
       utils.image(pg, cardImage, card.x, card.y, { ratio: 0.25 * ratio });
     }
 
     utils.image(pg, cloudRight, cloudRightX, 340);
     utils.image(pg, cloudCenter, cloudCenterX, 140);
 
-    if (isOnVessel) {
+    if (isOnVessel && !isMagnifier) {
       interactionZone.draw(p, "vessel", true);
     }
   };
@@ -305,9 +274,12 @@ export const createMmkScene = (p: p5): Scene => {
       vessel = await utils.loadImage(p, vesselUrl, 1);
       isOnVessel = false;
 
-      magnifier = p.createGraphics(config.sketch.width, config.sketch.height);
-      magnifier.pixelDensity(zoomFactor);
-      magnifier.textFont("Monospace");
+      magnifier.create(p, "mmk", {
+        zoomFactor: 2,
+        size: 300,
+        strokeWeight: 4,
+        strokeColor: 0,
+      });
 
       cards = [];
       createCards(p, 36);
@@ -429,11 +401,15 @@ export const createMmkScene = (p: p5): Scene => {
         lastFrameTime = 0;
       }
 
-      drawScene(p);
-      drawScene(magnifier, true);
+      drawScene(p, false);
 
-      if (isAnyHand && !isOnVessel) {
-        drawMagnifier();
+      const magnifierGraphics = magnifier.getGraphics("mmk");
+      if (magnifierGraphics) {
+        drawScene(magnifierGraphics, true);
+      }
+
+      if (isAnyHand && !isOnVessel && magnifierGraphics) {
+        magnifier.draw(p, "mmk", handX, handY, magnifierGraphics);
       }
 
       isAnyHand = false;
@@ -544,6 +520,7 @@ export const createMmkScene = (p: p5): Scene => {
 
     cleanup: () => {
       interactionZone.remove("vessel");
+      magnifier.remove("mmk");
     },
   };
 };

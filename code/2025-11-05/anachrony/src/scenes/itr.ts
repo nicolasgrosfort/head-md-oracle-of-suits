@@ -2,6 +2,7 @@ import p5 from "p5";
 
 import * as audio from "../libs/audio";
 import * as interactionZone from "../libs/interaction-zone";
+import * as magnifier from "../libs/magnifier";
 import * as mediaPipe from "../libs/media-pipe";
 import * as sceneManager from "../libs/scene-manager";
 import * as config from "../utils/config";
@@ -134,6 +135,13 @@ export const createIntroScene = (p: p5): sceneManager.Scene => {
           currentLoader = 0;
         },
       });
+
+      magnifier.create(p, "itr", {
+        zoomFactor: 2,
+        size: 250,
+        strokeWeight: 3,
+        strokeColor: [255, 255, 255],
+      });
     },
 
     draw: () => {
@@ -241,8 +249,7 @@ export const createIntroScene = (p: p5): sceneManager.Scene => {
 
         // Afficher un petit cercle quand pas sur le bouton
         if (!isOnButton) {
-          p.fill(0);
-          p.circle(handX, handY, 20);
+          magnifier.draw(p, "itr", handX, handY);
         }
       });
 
@@ -253,6 +260,7 @@ export const createIntroScene = (p: p5): sceneManager.Scene => {
     cleanup: () => {
       console.log("Intro cleanup");
       interactionZone.remove("button");
+      magnifier.remove("itr");
     },
   };
 };

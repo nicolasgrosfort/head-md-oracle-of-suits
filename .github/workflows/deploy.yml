@@ -1,14 +1,25 @@
-name: Deploy to production
+name: Build & Deploy (Anachrony)
+
 on:
+  push:
+    branches: [main]
   workflow_dispatch:
-concurrency: ftp_deploy_production
+
+concurrency:
+  group: deploy-anachrony
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
 jobs:
-  web-deploy:
-    name: Deploy
+  build-and-deploy:
     runs-on: ubuntu-latest
+
     defaults:
       run:
         working-directory: code/2025-11-05/anachrony
+
     steps:
       - name: Get latest code
         uses: actions/checkout@v5
@@ -20,10 +31,11 @@ jobs:
           cache: "yarn"
           cache-dependency-path: code/2025-11-05/anachrony/yarn.lock
 
+      - name: Install deps
+        run: yarn install --frozen-lockfile
+
       - name: Build the project
-        run: |
-          yarn install --frozen-lockfile
-          yarn build
+        run: yarn build
 
       - name: List output files
         run: find dist/ -print

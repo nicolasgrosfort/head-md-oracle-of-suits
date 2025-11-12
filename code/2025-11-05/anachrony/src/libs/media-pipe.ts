@@ -41,8 +41,11 @@ let lastPoseResults: PoseLandmarkerResult | null = null;
 let lastTimestamp = 0;
 
 let smoothedHand: Hand | null = null;
+let smoothedThumbTip: { x: number; y: number } | null = null;
+let smoothedMiddleFingerTip: { x: number; y: number } | null = null;
 
 const SMOOTHING_FACTOR = 0.2;
+const ANGLE_SMOOTHING_FACTOR = 0.15;
 
 const HAND = {
   WRIST: 0,
@@ -521,11 +524,41 @@ export const onHandMove = (callback: (hand: Hand) => void) => {
   const middleFingerTip = closestResult.landmark[HAND.MIDDLE_FINGER_TIP];
   const thumbTip = closestResult.landmark[HAND.THUMB_TIP];
 
+  // Lisser les positions des doigts
+  if (smoothedThumbTip === null) {
+    smoothedThumbTip = { x: thumbTip.x, y: thumbTip.y };
+  } else {
+    smoothedThumbTip = {
+      x:
+        smoothedThumbTip.x +
+        (thumbTip.x - smoothedThumbTip.x) * ANGLE_SMOOTHING_FACTOR,
+      y:
+        smoothedThumbTip.y +
+        (thumbTip.y - smoothedThumbTip.y) * ANGLE_SMOOTHING_FACTOR,
+    };
+  }
+
+  if (smoothedMiddleFingerTip === null) {
+    smoothedMiddleFingerTip = { x: middleFingerTip.x, y: middleFingerTip.y };
+  } else {
+    smoothedMiddleFingerTip = {
+      x:
+        smoothedMiddleFingerTip.x +
+        (middleFingerTip.x - smoothedMiddleFingerTip.x) *
+          ANGLE_SMOOTHING_FACTOR,
+      y:
+        smoothedMiddleFingerTip.y +
+        (middleFingerTip.y - smoothedMiddleFingerTip.y) *
+          ANGLE_SMOOTHING_FACTOR,
+    };
+  }
+
+  // Calculer l'angle avec les valeurs lissées
   const angle = utils.getAngle(
-    thumbTip.x,
-    thumbTip.y,
-    middleFingerTip.x,
-    middleFingerTip.y
+    smoothedThumbTip.x,
+    smoothedThumbTip.y,
+    smoothedMiddleFingerTip.x,
+    smoothedMiddleFingerTip.y
   );
 
   const xCentered = (1 - avgX - 0.5) * SCALE.x + 0.5 * TRANSLATE.x;

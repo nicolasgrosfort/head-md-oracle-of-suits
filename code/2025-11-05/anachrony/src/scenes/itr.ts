@@ -1,6 +1,7 @@
 import p5 from "p5";
 
 import * as audio from "../libs/audio";
+import * as interactionZone from "../libs/interaction-zone";
 import * as mediaPipe from "../libs/media-pipe";
 import * as sceneManager from "../libs/scene-manager";
 import * as config from "../utils/config";
@@ -52,7 +53,6 @@ export const createIntroScene = (p: p5): sceneManager.Scene => {
   let buttonPosition = 0;
   let isOnButton = false;
   let lastAngle: number | null = null;
-  let frameDuringButton = 0;
 
   const MIN_ZONE_RADIUS = 50;
   const MAX_ZONE_RADIUS = 200;
@@ -61,9 +61,6 @@ export const createIntroScene = (p: p5): sceneManager.Scene => {
   const MAX_PLANET_SCALE = 1.1;
 
   let scale = 1;
-  let circleX = 1022;
-  let circleY = 1055;
-  let wasOnButton = false;
 
   return {
     setup: async () => {
@@ -99,6 +96,44 @@ export const createIntroScene = (p: p5): sceneManager.Scene => {
       currentPlanet = 0;
 
       baseButtonImg = await utils.loadImage(p, baseButtonUrl, 1);
+
+      // Créer la zone d'interaction pour le bouton
+      interactionZone.create("button", {
+        x: ORIGINAL_CIRCLE_X,
+        y: ORIGINAL_CIRCLE_Y,
+        width: 0, // Le cercle sera centré sur x,y
+        height: 0,
+        minRadius: MIN_ZONE_RADIUS,
+        maxRadius: MAX_ZONE_RADIUS,
+        requiredFrames: config.frame.toTravel,
+        onProgress: (progress) => {
+          scale = p.map(progress, 0, 1, 1, MAX_PLANET_SCALE);
+          currentLoader = Math.min(
+            loaderImgs.length - 1,
+            Math.floor(progress * (loaderImgs.length - 1))
+          );
+        },
+        onComplete: () => {
+          switch (buttonPosition) {
+            case 0:
+              sceneManager.switchTo("mmk");
+              break;
+            case 1:
+              sceneManager.switchTo("emd");
+              break;
+            case 2:
+              sceneManager.switchTo("acn");
+              break;
+            case 3:
+              sceneManager.switchTo("jkr");
+              break;
+          }
+        },
+        onExit: () => {
+          scale = 1;
+          currentLoader = 0;
+        },
+      });
     },
 
     draw: () => {
@@ -172,137 +207,52 @@ export const createIntroScene = (p: p5): sceneManager.Scene => {
         const handX = hand.x * p.width;
         const handY = hand.y * p.height;
 
-        isOnButton = utils.isInsideCircle(
-          handX,
-          handY,
-          circleX,
-          circleY,
-          MAX_ZONE_RADIUS
-        );
-
-        if (isOnButton) {
-          if (!wasOnButton) {
-            circleX = handX;
-            circleY = handY;
-            audio.loader.start();
-            lastAngle = hand.angle;
-            wasOnButton = true;
-          }
-
+        // Gestion de la rotation
+        if (interactionZone.isActive("button")) {
           if (lastAngle === null) {
-            audio.loader.start();
             lastAngle = hand.angle;
-          }
+          } else {
+            const currentStep = Math.round(hand.angle / 30) * 30;
+            const lastStep = Math.round(lastAngle / 30) * 30;
 
-          const currentStep = Math.round(hand.angle / 30) * 30;
-          const lastStep =
-            lastAngle !== null ? Math.round(lastAngle / 30) * 30 : currentStep;
+            if (currentStep !== lastStep) {
+              const stepDiff = (currentStep - lastStep) / 30;
 
-          if (currentStep !== lastStep) {
-            const stepDiff = (currentStep - lastStep) / 30;
-
-            if (stepDiff > 0) {
-              if (buttonPosition < 3) {
+              if (stepDiff > 0 && buttonPosition < 3) {
                 audio.clac.start();
-                audio.loader.start();
                 buttonPosition++;
-                frameDuringButton = 0;
-                currentLoader = 0;
-              }
-            } else if (stepDiff < 0) {
-              if (buttonPosition > 0) {
+                interactionZone.reset("button");
+              } else if (stepDiff < 0 && buttonPosition > 0) {
                 audio.clac.start();
-                audio.loader.start();
                 buttonPosition--;
-                frameDuringButton = 0;
-                currentLoader = 0;
+                interactionZone.reset("button");
               }
-            }
 
-            lastAngle = hand.angle;
-          }
-
-          frameDuringButton += 1;
-
-          const zoneRadius = p.map(
-            frameDuringButton,
-            config.frame.toTravel,
-            0,
-            MIN_ZONE_RADIUS,
-            MAX_ZONE_RADIUS
-          );
-
-          scale = p.map(
-            frameDuringButton,
-            0,
-            config.frame.toTravel,
-            1,
-            MAX_PLANET_SCALE
-          );
-
-          const loaderSetp = p.map(
-            frameDuringButton,
-            0,
-            config.frame.toTravel,
-            0,
-            loaderImgs.length - 1
-          );
-
-          currentLoader = Math.min(
-            loaderImgs.length - 1,
-            Math.floor(loaderSetp)
-          );
-
-          if (frameDuringButton >= config.frame.toTravel) {
-            frameDuringButton = 0;
-            currentLoader = 0;
-            scale = 1;
-            wasOnButton = false;
-
-            audio.loader.stop();
-            audio.portal.start();
-
-            switch (buttonPosition) {
-              case 0:
-                sceneManager.switchTo("mmk");
-                break;
-              case 1:
-                sceneManager.switchTo("emd");
-                break;
-              case 2:
-                sceneManager.switchTo("acn");
-                break;
-              case 3:
-                sceneManager.switchTo("jkr");
-                break;
+              lastAngle = hand.angle;
             }
           }
-
-          p.fill(255, 80);
-          p.stroke(0);
-          p.circle(ORIGINAL_CIRCLE_X, ORIGINAL_CIRCLE_Y, zoneRadius * 2);
         } else {
-          if (wasOnButton) {
-            circleX = ORIGINAL_CIRCLE_X;
-            circleY = ORIGINAL_CIRCLE_Y;
-            wasOnButton = false;
-          }
-
           lastAngle = null;
-          frameDuringButton = 0;
-          currentLoader = 0;
-          scale = 1;
+        }
 
-          audio.loader.stop();
+        // Mise à jour de la zone d'interaction
+        interactionZone.update("button", handX, handY);
+        isOnButton = interactionZone.isActive("button");
 
+        // Afficher un petit cercle quand pas sur le bouton
+        if (!isOnButton) {
           p.fill(0);
-          p.circle(hand.x * p.width, hand.y * p.height, 20);
+          p.circle(handX, handY, 20);
         }
       });
+
+      // Dessiner la zone d'interaction
+      interactionZone.draw(p, "button", true);
     },
 
     cleanup: () => {
       console.log("Intro cleanup");
+      interactionZone.remove("button");
     },
   };
 };

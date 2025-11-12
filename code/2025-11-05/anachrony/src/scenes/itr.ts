@@ -23,6 +23,9 @@ import btn2Url from "../assets/images/btn-2.png";
 import btn3Url from "../assets/images/btn-3.png";
 import btn4Url from "../assets/images/btn-4.png";
 
+import planetAcnUrl from "../assets/images/planet-acn.png";
+import planetEmdUrl from "../assets/images/planet-emd.png";
+import planetJpnUrl from "../assets/images/planet-jpn.png";
 import planetMmkUrl from "../assets/images/planet-mmk.png";
 
 import baseButtonUrl from "../assets/images/base-button.png";
@@ -43,7 +46,8 @@ export const createIntroScene = (p: p5): sceneManager.Scene => {
 
   let baseButtonImg: p5.Image;
 
-  let planetMmkImg: p5.Image;
+  let planetImgs: p5.Image[] = [];
+  let currentPlanet = 0;
 
   let buttonPosition = 0;
   let isOnButton = false;
@@ -87,9 +91,14 @@ export const createIntroScene = (p: p5): sceneManager.Scene => {
       btnImgs.push(await utils.loadImage(p, btn4Url, 1));
       currentBtn = 0;
 
-      baseButtonImg = await utils.loadImage(p, baseButtonUrl, 1);
+      planetImgs = [];
+      planetImgs.push(await utils.loadImage(p, planetMmkUrl, 1));
+      planetImgs.push(await utils.loadImage(p, planetAcnUrl, 1));
+      planetImgs.push(await utils.loadImage(p, planetEmdUrl, 1));
+      planetImgs.push(await utils.loadImage(p, planetJpnUrl, 1));
+      currentPlanet = 0;
 
-      planetMmkImg = await utils.loadImage(p, planetMmkUrl, 1);
+      baseButtonImg = await utils.loadImage(p, baseButtonUrl, 1);
     },
 
     draw: () => {
@@ -103,18 +112,22 @@ export const createIntroScene = (p: p5): sceneManager.Scene => {
         case 0:
           currentImg = itrImg1;
           currentBtn = 0;
+          currentPlanet = 0;
           break;
         case 1:
           currentImg = itrImg2;
           currentBtn = 1;
+          currentPlanet = 1;
           break;
         case 2:
           currentImg = itrImg3;
           currentBtn = 2;
+          currentPlanet = 2;
           break;
         case 3:
           currentImg = itrImg4;
           currentBtn = 3;
+          currentPlanet = 3;
           break;
       }
 
@@ -145,15 +158,15 @@ export const createIntroScene = (p: p5): sceneManager.Scene => {
 
       p.push();
       p.translate(
-        832 + (planetMmkImg.width / 2) * 0.25,
-        166 + (planetMmkImg.height / 2) * 0.25
+        832 + (planetImgs[currentPlanet].width / 2) * 0.25,
+        166 + (planetImgs[currentPlanet].height / 2) * 0.25
       );
       p.scale(scale);
       p.translate(
-        (-planetMmkImg.width / 2) * 0.25,
-        (-planetMmkImg.height / 2) * 0.25
+        (-planetImgs[currentPlanet].width / 2) * 0.25,
+        (-planetImgs[currentPlanet].height / 2) * 0.25
       );
-      utils.image(p, planetMmkImg, 0, 0);
+      utils.image(p, planetImgs[currentPlanet], 0, 0);
       p.pop();
 
       // DEBUG: Dessiner les zones de détection
@@ -255,7 +268,7 @@ export const createIntroScene = (p: p5): sceneManager.Scene => {
 
           frameDuringButton += 1;
 
-          utils.image(p, baseButtonImg, 888, 966);
+          utils.image(p, baseButtonImg, 889, 967);
 
           const zoneRadius = p.map(
             frameDuringButton,

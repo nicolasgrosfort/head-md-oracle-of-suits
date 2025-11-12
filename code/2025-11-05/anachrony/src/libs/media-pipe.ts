@@ -141,10 +141,10 @@ export const detect = () => {
       0,
       crop.width,
       crop.height,
-      crop.width * 0.5 - 600 * 0.5,
-      200,
-      600,
-      crop.height - 200
+      crop.width * 0.5 - 500 * 0.5,
+      0,
+      500,
+      crop.height - 400
     );
 
     lastTimestamp += 1;

@@ -492,13 +492,13 @@ export const onHandMove = (callback: (hand: Hand) => void) => {
 
   const gestureResults = getGestureResults();
   if (!gestureResults) {
-    if (lastHand) callback(lastHand);
+    // if (lastHand) callback(lastHand);
     return;
   }
 
   const { landmarks } = gestureResults;
   if (landmarks.length === 0) {
-    if (lastHand) callback(lastHand);
+    // if (lastHand) callback(lastHand);
     return;
   }
 

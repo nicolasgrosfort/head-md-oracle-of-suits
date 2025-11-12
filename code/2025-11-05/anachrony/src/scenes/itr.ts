@@ -171,51 +171,6 @@ export const createIntroScene = (p: p5): sceneManager.Scene => {
       utils.image(p, baseButtonImg, 889, 967);
       utils.image(p, btnImgs[currentBtn], 926, 991);
 
-      // DEBUG: Dessiner les zones de détection
-      // p.push();
-      // p.noFill();
-      // p.strokeWeight(3);
-
-      // // Zone originale en vert
-      // p.stroke(0, 255, 0, 200);
-      // p.circle(ORIGINAL_CIRCLE_X, ORIGINAL_CIRCLE_Y, MAX_ZONE_RADIUS * 2);
-
-      // // Zone actuelle en rouge (déplacée avec la main)
-      // p.stroke(255, 0, 0, 200);
-      // p.circle(circleX, circleY, MAX_ZONE_RADIUS * 2);
-
-      // // Ligne entre les deux centres si différents
-      // if (circleX !== ORIGINAL_CIRCLE_X || circleY !== ORIGINAL_CIRCLE_Y) {
-      //   p.stroke(255, 255, 0, 200);
-      //   p.strokeWeight(2);
-      //   p.line(ORIGINAL_CIRCLE_X, ORIGINAL_CIRCLE_Y, circleX, circleY);
-      // }
-
-      // // Crosshair au centre de la zone actuelle
-      // p.stroke(255, 0, 0);
-      // p.strokeWeight(2);
-      // p.line(circleX - 15, circleY, circleX + 15, circleY);
-      // p.line(circleX, circleY - 15, circleX, circleY + 15);
-
-      // // Crosshair au centre de la zone originale
-      // p.stroke(0, 255, 0);
-      // p.line(
-      //   ORIGINAL_CIRCLE_X - 15,
-      //   ORIGINAL_CIRCLE_Y,
-      //   ORIGINAL_CIRCLE_X + 15,
-      //   ORIGINAL_CIRCLE_Y
-      // );
-      // p.line(
-      //   ORIGINAL_CIRCLE_X,
-      //   ORIGINAL_CIRCLE_Y - 15,
-      //   ORIGINAL_CIRCLE_X,
-      //   ORIGINAL_CIRCLE_Y + 15
-      // );
-
-      // p.pop();
-
-      // END DEBUG
-
       mediaPipe.onHandMove((hand) => {
         const handX = hand.x * p.width;
         const handY = hand.y * p.height;

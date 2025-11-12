@@ -54,6 +54,7 @@ export const load = () => {
 };
 
 export const toggle = () => {
+  if (!isSongLoaded) return;
   if (song.state === "stopped") song.start();
   else if (song.state === "started") song.stop();
 };

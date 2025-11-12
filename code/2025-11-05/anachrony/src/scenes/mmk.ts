@@ -1,6 +1,6 @@
 import p5 from "p5";
 
-import * as audio from "../libs/audio";
+import * as interactionZone from "../libs/interaction-zone";
 import * as mediaPipe from "../libs/media-pipe";
 import * as sceneManager from "../libs/scene-manager";
 import * as config from "../utils/config";
@@ -271,15 +271,7 @@ export const createMmkScene = (p: p5): Scene => {
     utils.image(pg, cloudCenter, cloudCenterX, 140);
 
     if (isOnVessel) {
-      p.push();
-      p.fill(255, 80);
-      p.stroke(0);
-      p.circle(
-        vesselX + vessel.width * 0.25 * 0.5,
-        vesselY + vessel.height * 0.25 * 0.5,
-        zoneRadius * 2
-      );
-      p.pop();
+      interactionZone.draw(p, "vessel", true);
     }
   };
 
@@ -324,6 +316,22 @@ export const createMmkScene = (p: p5): Scene => {
 
       cards = [];
       createCards(p, 36);
+
+      interactionZone.create("vessel", {
+        x: vesselX,
+        y: vesselY,
+        width: vessel.width * 0.25,
+        height: vessel.height * 0.25,
+        requiredFrames: config.frame.toTravel,
+        onProgress: () => {
+          prompt.title = "";
+          prompt.description = "";
+        },
+        onComplete: () => {
+          console.log("Vessel interaction complete");
+          sceneManager.switchTo("itr");
+        },
+      });
     },
 
     draw: () => {
@@ -364,39 +372,9 @@ export const createMmkScene = (p: p5): Scene => {
         handX = hand.x * config.sketch.width;
         handY = hand.y * config.sketch.height;
 
-        const vesselWidth = vessel.width * 0.25;
-        const vesselHeight = vessel.height * 0.25;
-
-        const isHandOnVessel =
-          handX > vesselX &&
-          handX < vesselX + vesselWidth &&
-          handY > vesselY &&
-          handY < vesselY + vesselHeight;
-
-        if (isHandOnVessel) {
-          frameDuringVessel++;
-          isOnVessel = true;
-
-          zoneRadius = p.map(
-            frameDuringVessel,
-            config.frame.toTravel,
-            0,
-            MIN_ZONE_RADIUS,
-            MAX_ZONE_RADIUS
-          );
-
-          prompt.title = "";
-          prompt.description = "";
-
-          if (frameDuringVessel >= config.frame.toTravel) {
-            frameDuringVessel = 0;
-            audio.portal.start();
-            sceneManager.switchTo("itr");
-          }
-        } else {
-          frameDuringVessel = 0;
-          isOnVessel = false;
-        }
+        interactionZone.update("vessel", handX, handY);
+        isOnVessel = interactionZone.isActive("vessel");
+        zoneRadius = interactionZone.getRadius(p, "vessel");
       });
 
       if (!isAnyHand) {
@@ -570,6 +548,8 @@ export const createMmkScene = (p: p5): Scene => {
       utils.drawScreens(p, config.screens, canvasContent);
     },
 
-    cleanup: () => {},
+    cleanup: () => {
+      interactionZone.remove("vessel");
+    },
   };
 };

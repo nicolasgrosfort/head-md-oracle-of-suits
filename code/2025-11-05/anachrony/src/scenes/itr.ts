@@ -256,7 +256,6 @@ export const createIntroScene = (p: p5): sceneManager.Scene => {
           if (frameDuringButton >= config.frame.toTravel) {
             frameDuringButton = 0;
             currentLoader = 0;
-
             scale = 1;
             wasOnButton = false;
 

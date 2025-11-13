@@ -88,6 +88,10 @@ new p5((p: p5) => {
       drawConnections: true,
     });
 
+    if (sceneManager.getCurrentSceneName() === "sby") {
+      frameWithoutHand = 0;
+    }
+
     if (!mediaPipe.anyHand()) frameWithoutHand++;
     else frameWithoutHand = 0;
 
@@ -95,7 +99,6 @@ new p5((p: p5) => {
       frameWithoutHand >= FRAME_TO_SWITCH_OFF &&
       sceneManager.getCurrentSceneName() !== "sby"
     ) {
-      frameWithoutHand = 0;
       audio.lock.start();
       sceneManager.switchTo("sby");
     }

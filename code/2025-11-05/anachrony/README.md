@@ -57,24 +57,24 @@ In each scene, use the numbers (1, 2, 3, 4...) to change the variations.
 
 > _Backlog items sorted by priority_
 
-- Choose card for MMK sequences
 - Write the facts about cards for MMK and Intro sequences
 - Define how to show gestures to the user (hidden things in interface)
 - Implement the Planet animation for intro
-- Prototype the "Joker" sequence
-- Implement the Joker sequence
 - Record video presentation
 
 ### Nice to have
 
-- Compose sound design
+- Prototype the "Joker" sequence
+- Prototype the "Edo "Japan" sequence
+- Implement the Joker sequence
 - Implement the "Medieval Europe" sequence
 - Implement the "Ancient China" sequence
-- Prototype the "Edo "Japan" sequence
 - Implement the "Edo Japan" sequence
+- Compose sound design
 
 ### Done
 
+- ~~Choose card for MMK sequences~~
 - ~~Implement the Cardodex (left and right screens)~~
 - ~~Implement the loader for traveling~~
 - ~~Implement the Magnifier for intro~~

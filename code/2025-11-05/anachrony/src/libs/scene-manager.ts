@@ -28,10 +28,11 @@ export const switchTo = async (name: SceneName) => {
     currentScene.cleanup();
   }
 
+  currentSceneName = name;
+
   currentScene = nextScene;
   await currentScene.setup();
 
-  currentSceneName = name;
   isSceneReady = true;
 
   console.log(`Switched to scene "${name}"`);

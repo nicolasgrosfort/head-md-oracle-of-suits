@@ -1,29 +1,48 @@
 # Anachrony
 
-Using p5.js with typescript and vite.js.
+## Technical
 
-## Initial setup
+The project needs `Node 22` and `Yarn 1.22` to works.
+
+### Development
+
+The projet using p5.js with typescript and vite.js.
 
 ```bash
-    yarn install
+    yarn install # Install dependencies
+    yarn dev # Start development server
+    yarn build # Build for production
+    yarn preview # Preview the production build
 ```
 
-## Start the development server
+### Deployment
 
-```bash
-    yarn dev
+The project is automatically deployed to [lab.tekh.studio/anachrony/](https://lab.tekh.studio/anachrony/) when the code is pushed to the main branch.
+
+## Shortcuts
+
+### Debugging
+
+```text
+    'SHIFT + F' - Draw face landmarks
+    'SHIFT + P' - Draw pose landmarks
+    'SHIFT + H' - Draw hand landmarks
+    'SHIFT + V' - Draw video feed
+
 ```
 
-## Build for production
+### Scene management
 
-```bash
-    yarn build
-```
+In each scene, use the numbers (1, 2, 3, 4...) to change the variations.
 
-## Preview the production build
-
-```bash
-    yarn preview
+```text
+    's' - Switch to Standby scene
+    'i' - Switch to Intro scene
+    'e' - Switch to Medieval Europe scene
+    'm' - Switch to Mamluk scene
+    'j' - Switch to Japan Edo scene
+    'a' - Switch to Ancient China scene
+    'f' - Switch to Final scene
 ```
 
 ---
@@ -38,14 +57,12 @@ Using p5.js with typescript and vite.js.
 
 > _Backlog items sorted by priority_
 
-- Implement the loader for traveling
 - Implement the Cardodex (left and right screens)
-- Implement the Magnifier for intro
+- Define how to show gestures to the user (hidden things in interface)
+- Write the facts about cards
 - Implement the Planet animation for intro
-- Define how to show gestures to the user (onboarding ?)
 - Prototype the "Joker" sequence
 - Implement the Joker sequence
-- Write the facts about cards
 - Record video presentation
 
 ### Nice to have
@@ -58,6 +75,8 @@ Using p5.js with typescript and vite.js.
 
 ### Done
 
+- ~~Implement the loader for traveling~~
+- ~~Implement the Magnifier for intro~~
 - ~~Reduce the camera area~~
 - ~~Improve gesture detection for button~~
 - ~~Define sound design approach~~

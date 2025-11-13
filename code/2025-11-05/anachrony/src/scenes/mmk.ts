@@ -1,5 +1,6 @@
 import p5 from "p5";
 
+import * as cardodex from "../libs/cardodex";
 import * as interactionZone from "../libs/interaction-zone";
 import * as magnifier from "../libs/magnifier";
 import * as mediaPipe from "../libs/media-pipe";
@@ -32,9 +33,13 @@ import pokemonFullUrl from "../assets/images/pokemon.png";
 import ramolosFullUrl from "../assets/images/ramolos.png";
 import tarotFullUrl from "../assets/images/tarot.png";
 
+import cardMmk1FullUrl from "../assets/images/mmk/card-mmk-1-full.png";
+import cardMmk1SkewUrl from "../assets/images/mmk/card-mmk-1-skew.png";
+import cardMmkSkewBlankUrl from "../assets/images/mmk/card-mmk-skew-blank.png";
+
 import vesselUrl from "../assets/images/vessel.png";
 
-const MAX_TIME_PROMPT = 10000;
+// const MAX_TIME_PROMPT = 10000;
 
 const color = {
   blue: "#A8EEFE",
@@ -107,6 +112,10 @@ export const createMmkScene = (p: p5): Scene => {
   let ramolosFull: p5.Image;
   let vessel: p5.Image;
 
+  let cardMmk1Full: p5.Image;
+  let cardMmk1Skew: p5.Image;
+  let cardMmkSkewBlank: p5.Image;
+
   let cloudLeftX = 0;
   let cloudCenterX = 0;
   let cloudRightX = 0;
@@ -119,8 +128,6 @@ export const createMmkScene = (p: p5): Scene => {
   let handX = 0;
   let handY = 0;
 
-  let lastFrameTime = 0;
-
   let isOnVessel = false;
   let vesselX = 70;
   let vesselY = 500;
@@ -132,8 +139,6 @@ export const createMmkScene = (p: p5): Scene => {
     speed: number;
     card?: "Hanafuda" | "Pokemon" | "Tarot" | "Italian" | "Ramolos" | "Mamluk";
   }> = [];
-
-  let prompt = { title: "", description: "" };
 
   const cardsArea: Array<{ x: number; y: number }> = [
     { x: 0, y: 750 },
@@ -267,6 +272,10 @@ export const createMmkScene = (p: p5): Scene => {
       mamlukFull = await utils.loadImage(p, mamlukFullUrl, 1);
       ramolosFull = await utils.loadImage(p, ramolosFullUrl, 1);
 
+      cardMmk1Full = await utils.loadImage(p, cardMmk1FullUrl, 1);
+      cardMmk1Skew = await utils.loadImage(p, cardMmk1SkewUrl, 1);
+      cardMmkSkewBlank = await utils.loadImage(p, cardMmkSkewBlankUrl, 1);
+
       vessel = await utils.loadImage(p, vesselUrl, 1);
       isOnVessel = false;
 
@@ -287,8 +296,7 @@ export const createMmkScene = (p: p5): Scene => {
         height: vessel.height * 0.25,
         requiredFrames: config.frame.toTravel,
         onProgress: () => {
-          prompt.title = "";
-          prompt.description = "";
+          cardodex.clear();
         },
         onComplete: () => {
           console.log("Vessel interaction complete");
@@ -385,18 +393,34 @@ export const createMmkScene = (p: p5): Scene => {
             const cardType = cards[i].card;
             if (!cardType) continue;
 
-            prompt.title = cardPrompts[cardType]?.title || cardType;
-            prompt.description = cardPrompts[cardType]?.description;
+            let fullCardImage: p5.Image;
 
-            lastFrameTime = p.millis();
+            switch (cardType) {
+              case "Hanafuda":
+                fullCardImage = hanafudaFull;
+                break;
+              case "Pokemon":
+                fullCardImage = pokemonFull;
+                break;
+              case "Tarot":
+                fullCardImage = tarotFull;
+                break;
+              case "Italian":
+                fullCardImage = italianFull;
+                break;
+              case "Ramolos":
+                fullCardImage = ramolosFull;
+                break;
+              default:
+                fullCardImage = mamlukFull;
+            }
+
+            cardodex.setPrompt({
+              ...cardPrompts[cardType],
+              image: fullCardImage,
+            });
           }
         }
-      }
-
-      if (lastFrameTime > 0 && p.millis() - lastFrameTime > MAX_TIME_PROMPT) {
-        prompt.title = "";
-        prompt.description = "";
-        lastFrameTime = 0;
       }
 
       drawScene(p, false);
@@ -412,113 +436,18 @@ export const createMmkScene = (p: p5): Scene => {
 
       isAnyHand = false;
 
-      if (prompt.title) {
-        p.push();
-        p.fill(255, 255, 255, 200);
-        p.noStroke();
-        p.rect(
-          config.screens.right.x,
-          config.screens.right.y,
-          config.screens.right.width,
-          config.screens.right.height,
-          20
-        );
-        p.pop();
-
-        p.push();
-        p.textSize(40);
-        p.fill(0);
-        p.noStroke();
-        p.textAlign(p.LEFT, p.TOP);
-        p.textStyle(p.BOLD);
-        p.text(
-          prompt.title,
-          config.screens.right.x + 30,
-          config.screens.right.y + 40
-        );
-        p.textSize(30);
-        p.textStyle(p.NORMAL);
-        p.text(
-          prompt.description,
-          config.screens.right.x + 30,
-          config.screens.right.y + 110,
-          config.screens.right.width - 40,
-          config.screens.right.height - 100
-        );
-        p.pop();
-
-        // Display full card image on the screen left
-        let fullCardImage: p5.Image;
-        switch (prompt.title) {
-          case "HANAFUDA":
-            fullCardImage = hanafudaFull;
-            break;
-          case "POKEMON":
-            fullCardImage = pokemonFull;
-            break;
-          case "TAROT":
-            fullCardImage = tarotFull;
-            break;
-          case "ITALIAN":
-            fullCardImage = italianFull;
-            break;
-          case "RAMOLOS":
-            fullCardImage = ramolosFull;
-            break;
-          default:
-            fullCardImage = mamlukFull;
-        }
-
-        const maxWidth = config.screens.left.width - 60;
-        const maxHeight = config.screens.left.height - 60;
-        let displayWidth = fullCardImage.width;
-        let displayHeight = fullCardImage.height;
-
-        // Scale down if necessary
-        if (displayWidth > maxWidth) {
-          const scaleFactor = maxWidth / displayWidth;
-          displayWidth = maxWidth;
-          displayHeight *= scaleFactor;
-        }
-
-        if (displayHeight > maxHeight) {
-          const scaleFactor = maxHeight / displayHeight;
-          displayHeight = maxHeight;
-          displayWidth *= scaleFactor;
-        }
-
-        p.push();
-        p.fill(255, 255, 255, 200);
-        p.noStroke();
-        p.rect(
-          config.screens.left.x,
-          config.screens.left.y,
-          config.screens.left.width,
-          config.screens.left.height,
-          20
-        );
-        p.pop();
-
-        p.image(
-          fullCardImage,
-          config.screens.left.x +
-            (config.screens.left.width - displayWidth) / 2,
-          config.screens.left.y +
-            (config.screens.left.height - displayHeight) / 2,
-          displayWidth,
-          displayHeight
-        );
-      }
-
       const canvasContent = p.get();
 
       p.background(0);
       utils.drawScreens(p, config.screens, canvasContent);
+      cardodex.draw(p);
     },
 
     cleanup: () => {
       interactionZone.remove("vessel");
       magnifier.remove("mmk");
+
+      cardodex.clear();
     },
   };
 };

@@ -67,6 +67,7 @@ export const draw = (p: p5) => {
   p.push();
 
   p.fill(config.color.black);
+  p.noStroke();
 
   // TITLE
   p.textFont(disket);

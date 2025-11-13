@@ -27,7 +27,7 @@ const promptState: Prompt = {
   startTime: undefined,
 };
 
-const PROMPT_DURATION = 8000;
+const PROMPT_DURATION = 10000;
 
 let leftScreenInfoImg: p5.Image;
 let rightScreenInfoImg: p5.Image;

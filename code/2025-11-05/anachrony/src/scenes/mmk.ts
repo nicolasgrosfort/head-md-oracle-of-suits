@@ -85,60 +85,55 @@ const color = {
 
 const cardPrompts = {
   CardMmk1: {
-    title: "8 of Cups Tuman",
-    description: `A rare find! This card blends the classic suit of Cups with the enigmatic Tuman design.
-    Perfect for those who appreciate both tradition and mystery in their decks.`,
-    type: "Mameluk Card",
+    title: "8 of Cups",
+    description: `In Mamluk decks, the cup suit was called tūmān. These cards were so beautifully painted that people treated them like treasures.`,
+    type: "Egypt",
     date: "1500",
   },
   CardMmk2: {
     title: "Deputy Na'ib",
-    description: `A rare find! This card blends the classic suit of Cups with the enigmatic Tuman design.
-    Perfect for those who appreciate both tradition and mystery in their decks.`,
-    type: "Mameluk Card",
+    description: `In Arabic, nā’ib means “deputy”. The word travelled so far it became naibi in Italy and naipes in Spain — early names for playing cards.`,
+    type: "Egypt",
     date: "1500",
   },
   CardMmk3: {
-    title: "Second deputy Na'ib thani",
-    description: `A rare find! This card blends the classic suit of Cups with the enigmatic Tuman design.
-    Perfect for those who appreciate both tradition and mystery in their decks.`,
-    type: "Mameluk Card",
+    title: "Second Deputy Na'ib",
+    description: `Mamluk decks had three court ranks — king, deputy, second deputy. Early European cards copied this so closely that some omitted queens.`,
+    type: "Egypt",
     date: "1500",
   },
   CardMmk4: {
     title: "King Malik",
-    description: `A rare find! This card blends the classic suit of Cups with the enigmatic Tuman design.
-    Perfect for those who appreciate both tradition and mystery in their decks.`,
-    type: "Mameluk Card",
+    description: `Painted for a wealthy owner, Mamluk king cards carried poetic Arabic verses. Their 52-card structure inspired the decks we use now.`,
+    type: "Egypt",
     date: "1500",
   },
   CardPachimon1: {
-    title: "Pachimon Card 1",
-    description: `An intriguing Pachimon card, showcasing unique artwork and symbolism.
-    A must-have for collectors of rare and exotic playing cards.`,
-    type: "Pachimon Card",
-    date: "1800",
+    title: "Ace Of Clover",
+    description:
+      "Pachimon cards were freebies featuring wild, bootleg monsters — half Godzilla, half UFO — hidden inside packs of Kewpie mayonnaise.",
+    type: "Japan",
+    date: "1970",
   },
   CardTarotOsho1: {
-    title: "Osho Zen Tarot Card 1",
-    description: `A captivating card from the Osho Zen Tarot deck, known for its deep spiritual insights.
-    Ideal for those seeking enlightenment through their tarot readings.`,
-    type: "Osho Zen Tarot Card",
+    title: "No Mind",
+    description:
+      "Published in 1984, this oracle deck was made for reflection, not fortune-telling. “No-Mind” shows a calm night sky inviting a quiet pause.",
+    type: "Inde",
     date: "1970",
   },
   CardChinese1: {
-    title: "Chinese Playing Card 1",
-    description: `A beautifully crafted Chinese playing card, rich in cultural heritage and design.
-    Perfect for enthusiasts of traditional Asian card games.`,
-    type: "Chinese Playing Card",
-    date: "1600",
+    title: "Money Suited",
+    description: `These Chinese cards use an old money-based suit system and often show heroes from The Water Margin, a classic adventure novel.`,
+    type: "China",
+    date: "1650",
   },
   CardHanafuda1: {
-    title: "Hanafuda Card 1",
-    description: `A stunning Hanafuda card, featuring intricate floral designs and vibrant colors.
-    A prized addition for fans of Japanese card games and art.`,
-    type: "Hanafuda Card",
-    date: "1700",
+    title: "Crane and Sun",
+    description:
+      "Hanafuda cards link each month to a flower. This crane-and-sun card celebrates Japan’s seasons. Nintendo began as a Hanafuda maker in 1889.",
+    type: "Japan",
+    date: "2008",
   },
 };
 

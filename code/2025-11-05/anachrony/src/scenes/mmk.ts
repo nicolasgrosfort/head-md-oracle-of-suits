@@ -19,41 +19,21 @@ import cloudRightUrl from "../assets/images/cloud-right.png";
 import sandUrl from "../assets/images/mmk/sand.png";
 import sunUrl from "../assets/images/sun.png";
 
-import hanafudaUrl from "../assets/images/hanafuda-skew.png";
-import italianUrl from "../assets/images/italian-skew.png";
-import mamlukUrl from "../assets/images/mamluk-skew.png";
-import ramolosUrl from "../assets/images/pokemon-ramolos-skew.png";
-import pokemonUrl from "../assets/images/pokemon-skew.png";
-import tarotUrl from "../assets/images/tarot-skew.png";
-
-import hanafudaFullUrl from "../assets/images/hanafuda.png";
-import italianFullUrl from "../assets/images/italian.png";
-import mamlukFullUrl from "../assets/images/mamluk.png";
-import pokemonFullUrl from "../assets/images/pokemon.png";
-import ramolosFullUrl from "../assets/images/ramolos.png";
-import tarotFullUrl from "../assets/images/tarot.png";
-
 import cardMmk1FullUrl from "../assets/images/mmk/card-mmk-1-full.png";
 import cardMmk1SkewUrl from "../assets/images/mmk/card-mmk-1-skew.png";
+import cardMmkSkewBlankUrl from "../assets/images/mmk/card-mmk-skew-blank.png";
 
 import vesselUrl from "../assets/images/vessel.png";
 
-type Card =
-  | "Hanafuda"
-  | "Italian"
-  | "Mamluk"
-  | "Ramolos"
-  | "Pokemon"
-  | "Tarot"
-  | "CardMmk1";
+type Card = "CardMmk1";
 
 const specialCards: Array<Card> = [
-  "Hanafuda",
-  "Pokemon",
-  "Tarot",
-  "Italian",
-  "Ramolos",
-  "Mamluk",
+  "CardMmk1",
+  "CardMmk1",
+  "CardMmk1",
+  "CardMmk1",
+  "CardMmk1",
+  "CardMmk1",
   "CardMmk1",
 ];
 
@@ -62,38 +42,8 @@ const color = {
 };
 
 const cardPrompts = {
-  Hanafuda: {
-    title: "HANAFUDA",
-    description: `Careful! These flower cards were once used for secret gambling in Japan.
-    Nintendo actually started as a Hanafuda company long before making consoles...`,
-  },
-  Italian: {
-    title: "ITALIAN",
-    description: `Ah, the Latin ancestors of modern suits! 
-    Swords, Cups, Coins, and Clubs—perfect tools for both fortune-telling and bar fights in Renaissance taverns.`,
-  },
-  Mamluk: {
-    title: "MAMLUK",
-    description: `Legend says these golden cards traveled from Egypt to Europe by caravan.
-    It carrying the DNA of all modern decks—minus the queens, who appeared later.`,
-  },
-  Ramolos: {
-    title: "RAMOLOS",
-    description: `Oh! Looks like a Slowpoke has wandered in. It doesn't belong here.
-    Plus, it's a shiny, a very rare version of this card...`,
-  },
-  Pokemon: {
-    title: "POKEMON",
-    description: `These creatures turned playgrounds into stock exchanges.
-    Somewhere, a Charizard is still worth more than your rent.`,
-  },
-  Tarot: {
-    title: "TAROT",
-    description: `Originally a noble card game before becoming mystical, it’s now both art and prophecy.
-    Be careful—The Fool might just predict your next design sprint.`,
-  },
   CardMmk1: {
-    title: "8 of Cups Tūmān",
+    title: "8 of Cups Tuman",
     description: `A rare find! This card blends the classic suit of Cups with the enigmatic Tuman design.
     Perfect for those who appreciate both tradition and mystery in their decks.`,
     type: "Mameluk Card",
@@ -105,28 +55,19 @@ export const createMmkScene = (p: p5): Scene => {
   let cloudLeft: p5.Image;
   let cloudCenter: p5.Image;
   let cloudRight: p5.Image;
+
   let sun: p5.Image;
   let sand: p5.Image;
+
   let cardL: p5.Image;
   let cardM: p5.Image;
   let cardS: p5.Image;
-  let hanafuda: p5.Image;
-  let pokemon: p5.Image;
-  let tarot: p5.Image;
-  let italian: p5.Image;
-  let mamluk: p5.Image;
-  let ramolos: p5.Image;
-  let pokemonFull: p5.Image;
-  let tarotFull: p5.Image;
-  let italianFull: p5.Image;
-  let hanafudaFull: p5.Image;
-  let mamlukFull: p5.Image;
-  let ramolosFull: p5.Image;
+
   let vessel: p5.Image;
 
   let cardMmk1Full: p5.Image;
   let cardMmk1Skew: p5.Image;
-  // let cardMmkSkewBlank: p5.Image;
+  let cardMmkSkewBlank: p5.Image;
 
   let cloudLeftX = 0;
   let cloudCenterX = 0;
@@ -147,9 +88,9 @@ export const createMmkScene = (p: p5): Scene => {
   let cards: Array<{
     x: number;
     y: number;
-    size: "S" | "M" | "L";
+    size: "S" | "M" | "L" | "default";
     speed: number;
-    card?: Card;
+    card?: Card | "blank";
   }> = [];
 
   const cardsArea: Array<{ x: number; y: number }> = [
@@ -168,22 +109,27 @@ export const createMmkScene = (p: p5): Scene => {
   ];
 
   const createCards = (p: p5, amount: number = 25) => {
-    let specialCardsUsed = 0;
-
+    // Create blank cards
     for (let i = 0; i < amount; i++) {
       const pos = utils.randomPositionInPolygon(p, cardsArea);
       const size = p.random() < 0.3 ? "S" : p.random() < 0.6 ? "M" : "L";
       const speed = p.random(0.5, 2);
 
-      let card: Card | undefined = undefined;
+      cards.push({ x: pos.x, y: pos.y, size, speed, card: "blank" });
+    }
 
-      // Assigner une carte spéciale seulement s'il en reste et avec une probabilité faible
-      if (specialCardsUsed < specialCards.length && p.random() < 0.15) {
-        card = specialCards[specialCardsUsed];
-        specialCardsUsed++;
-      }
+    // Create special cards
+    for (const specialCard of specialCards) {
+      const pos = utils.randomPositionInPolygon(p, cardsArea);
+      const speed = p.random(0.5, 2);
 
-      cards.push({ x: pos.x, y: pos.y, size, speed, card });
+      cards.push({
+        x: pos.x,
+        y: pos.y,
+        size: "default",
+        speed,
+        card: specialCard,
+      });
     }
   };
 
@@ -197,41 +143,29 @@ export const createMmkScene = (p: p5): Scene => {
     utils.image(pg, vessel, vesselX, vesselY);
 
     for (let card of cards) {
-      let cardImage: p5.Image;
+      let cardImage: p5.Image | null = null;
 
       if (isMagnifier && card.card) {
-        // Dans le magnifier, afficher les cartes spéciales
         switch (card.card) {
-          case "Hanafuda":
-            cardImage = hanafuda;
-            break;
-          case "Pokemon":
-            cardImage = pokemon;
-            break;
-          case "Tarot":
-            cardImage = tarot;
-            break;
-          case "Italian":
-            cardImage = italian;
-            break;
-          case "Ramolos":
-            cardImage = ramolos;
-            break;
-          case "Mamluk":
-            cardImage = mamluk;
-            break;
           case "CardMmk1":
             cardImage = cardMmk1Skew;
             break;
-          default:
+          case "blank":
             cardImage =
               card.size === "L" ? cardL : card.size === "M" ? cardM : cardS;
         }
       } else {
-        // Dans la scène normale, afficher les cartes blanches
-        cardImage =
-          card.size === "L" ? cardL : card.size === "M" ? cardM : cardS;
+        switch (card.card) {
+          case "CardMmk1":
+            cardImage = cardMmkSkewBlank;
+            break;
+          case "blank":
+            cardImage =
+              card.size === "L" ? cardL : card.size === "M" ? cardM : cardS;
+        }
       }
+
+      if (!cardImage) continue;
 
       const ratio = card.size === "L" ? 1 : card.size === "M" ? 0.9 : 0.8;
       utils.image(pg, cardImage, card.x, card.y, { ratio: 0.25 * ratio });
@@ -262,23 +196,9 @@ export const createMmkScene = (p: p5): Scene => {
       cardM = await utils.loadImage(p, cardMUrl, 1);
       cardS = await utils.loadImage(p, cardSUrl, 1);
 
-      hanafuda = await utils.loadImage(p, hanafudaUrl, 1);
-      pokemon = await utils.loadImage(p, pokemonUrl, 1);
-      tarot = await utils.loadImage(p, tarotUrl, 1);
-      italian = await utils.loadImage(p, italianUrl, 1);
-      mamluk = await utils.loadImage(p, mamlukUrl, 1);
-      ramolos = await utils.loadImage(p, ramolosUrl, 1);
-
-      pokemonFull = await utils.loadImage(p, pokemonFullUrl, 1);
-      tarotFull = await utils.loadImage(p, tarotFullUrl, 1);
-      italianFull = await utils.loadImage(p, italianFullUrl, 1);
-      hanafudaFull = await utils.loadImage(p, hanafudaFullUrl, 1);
-      mamlukFull = await utils.loadImage(p, mamlukFullUrl, 1);
-      ramolosFull = await utils.loadImage(p, ramolosFullUrl, 1);
-
       cardMmk1Full = await utils.loadImage(p, cardMmk1FullUrl, 1);
       cardMmk1Skew = await utils.loadImage(p, cardMmk1SkewUrl, 1);
-      // cardMmkSkewBlank = await utils.loadImage(p, cardMmkSkewBlankUrl, 1);
+      cardMmkSkewBlank = await utils.loadImage(p, cardMmkSkewBlankUrl, 1);
 
       vessel = await utils.loadImage(p, vesselUrl, 1);
       isOnVessel = false;
@@ -291,7 +211,7 @@ export const createMmkScene = (p: p5): Scene => {
       });
 
       cards = [];
-      createCards(p, 36);
+      createCards(p, 2);
 
       interactionZone.create("vessel", {
         x: vesselX,
@@ -361,7 +281,9 @@ export const createMmkScene = (p: p5): Scene => {
       // Mettre à jour les cartes et détecter les collisions
       // TODO : cleanup, plus la même logique
       for (let i = cards.length - 1; i >= 0; i--) {
-        let cardImage: p5.Image;
+        let cardImage: p5.Image | null = null;
+        const cardType = cards[i].card;
+
         switch (cards[i].size) {
           case "L":
             cardImage = cardL;
@@ -372,10 +294,18 @@ export const createMmkScene = (p: p5): Scene => {
           case "S":
             cardImage = cardS;
             break;
+          case "default":
+            switch (cardType) {
+              case "CardMmk1":
+                cardImage = cardMmkSkewBlank;
+                break;
+            }
         }
 
         cards[i].x += cards[i].speed;
         cards[i].y -= cards[i].speed * 0.6;
+
+        if (!cardImage) continue;
 
         if (cards[i].x > p.width || cards[i].y < -cardImage.height) {
           const pos = utils.randomPositionInPolygon(p, baseCardsArea);
@@ -394,33 +324,17 @@ export const createMmkScene = (p: p5): Scene => {
             handY > cards[i].y &&
             handY < cards[i].y + cardImage.height * 0.25 * ratio
           ) {
-            const cardType = cards[i].card;
             if (!cardType) continue;
 
-            let fullCardImage: p5.Image;
+            let fullCardImage: p5.Image | null = null;
 
             switch (cardType) {
-              case "Hanafuda":
-                fullCardImage = hanafudaFull;
-                break;
-              case "Pokemon":
-                fullCardImage = pokemonFull;
-                break;
-              case "Tarot":
-                fullCardImage = tarotFull;
-                break;
-              case "Italian":
-                fullCardImage = italianFull;
-                break;
-              case "Ramolos":
-                fullCardImage = ramolosFull;
-                break;
               case "CardMmk1":
                 fullCardImage = cardMmk1Full;
                 break;
-              default:
-                fullCardImage = mamlukFull;
             }
+
+            if (!fullCardImage || cardType === "blank") continue;
 
             cardodex.setPrompt({
               ...cardPrompts[cardType],

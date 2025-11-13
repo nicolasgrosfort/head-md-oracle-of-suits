@@ -55,30 +55,30 @@ const cardPrompts: Record<string, Omit<cardodex.PromptData, "image">> = {
   card1: {
     title: "Rock'n Pop",
     description:
-      "In Hanafuda, the January “Hikari” card shows a crane and rising sun — symbols of luck and long life.",
+      "A wild card drifts between all eras. If pieces of time feel misplaced, it may be because I changed the rules.",
     date: "1980",
     type: "France",
   },
   card5: {
     title: "Justo Rodero",
     description:
-      "In the 17th century, the Ace of Diamonds stood for both wealth and deceit — hence the saying “an ace up your sleeve.”",
+      "I can be any card… or none. Follow the traces I left behind; they will show you what I tried to become.",
     date: "1955",
     type: "Spain",
   },
   cards: {
-    title: "Cards",
+    title: "What To Do ?",
     description:
-      "A standard deck of playing cards has 52 cards, representing the 52 weeks in a year.",
-    date: "2025",
-    type: "Geneva",
+      "Sixteen cards are lost across four worlds. Find them, scan them, and return each one to the era where it belongs.",
+    date: "2045",
+    type: "Space",
   },
   hand: {
-    title: "Hand",
+    title: "How To Play ?",
     description:
-      "The earliest known playing cards date back to 9th century China, where they were used for games and divination.",
-    date: "2025",
-    type: "Geneva",
+      "Move your hand to explore the scene. Turn the dial to travel. Use the magnifier to reveal what doesn’t belong.",
+    date: "2045",
+    type: "Space",
   },
 };
 

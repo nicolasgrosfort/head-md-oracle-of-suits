@@ -35,11 +35,27 @@ import tarotFullUrl from "../assets/images/tarot.png";
 
 import cardMmk1FullUrl from "../assets/images/mmk/card-mmk-1-full.png";
 import cardMmk1SkewUrl from "../assets/images/mmk/card-mmk-1-skew.png";
-import cardMmkSkewBlankUrl from "../assets/images/mmk/card-mmk-skew-blank.png";
 
 import vesselUrl from "../assets/images/vessel.png";
 
-// const MAX_TIME_PROMPT = 10000;
+type Card =
+  | "Hanafuda"
+  | "Italian"
+  | "Mamluk"
+  | "Ramolos"
+  | "Pokemon"
+  | "Tarot"
+  | "CardMmk1";
+
+const specialCards: Array<Card> = [
+  "Hanafuda",
+  "Pokemon",
+  "Tarot",
+  "Italian",
+  "Ramolos",
+  "Mamluk",
+  "CardMmk1",
+];
 
 const color = {
   blue: "#A8EEFE",
@@ -49,43 +65,39 @@ const cardPrompts = {
   Hanafuda: {
     title: "HANAFUDA",
     description: `Careful! These flower cards were once used for secret gambling in Japan.
-    
     Nintendo actually started as a Hanafuda company long before making consoles...`,
   },
-
   Italian: {
     title: "ITALIAN",
     description: `Ah, the Latin ancestors of modern suits! 
-
     Swords, Cups, Coins, and Clubs—perfect tools for both fortune-telling and bar fights in Renaissance taverns.`,
   },
-
   Mamluk: {
     title: "MAMLUK",
     description: `Legend says these golden cards traveled from Egypt to Europe by caravan.
-    
     It carrying the DNA of all modern decks—minus the queens, who appeared later.`,
   },
-
   Ramolos: {
     title: "RAMOLOS",
     description: `Oh! Looks like a Slowpoke has wandered in. It doesn't belong here.
-    
     Plus, it's a shiny, a very rare version of this card...`,
   },
-
   Pokemon: {
     title: "POKEMON",
     description: `These creatures turned playgrounds into stock exchanges.
-    
     Somewhere, a Charizard is still worth more than your rent.`,
   },
-
   Tarot: {
     title: "TAROT",
     description: `Originally a noble card game before becoming mystical, it’s now both art and prophecy.
-    
     Be careful—The Fool might just predict your next design sprint.`,
+  },
+  CardMmk1: {
+    title: "8 of Cups Tūmān",
+    description: `A rare find! This card blends the classic suit of Cups with the enigmatic Tuman design.
+    Perfect for those who appreciate both tradition and mystery in their decks.`,
+    type: "Mameluk Card",
+    date: "1500",
   },
 };
 
@@ -114,7 +126,7 @@ export const createMmkScene = (p: p5): Scene => {
 
   let cardMmk1Full: p5.Image;
   let cardMmk1Skew: p5.Image;
-  let cardMmkSkewBlank: p5.Image;
+  // let cardMmkSkewBlank: p5.Image;
 
   let cloudLeftX = 0;
   let cloudCenterX = 0;
@@ -137,7 +149,7 @@ export const createMmkScene = (p: p5): Scene => {
     y: number;
     size: "S" | "M" | "L";
     speed: number;
-    card?: "Hanafuda" | "Pokemon" | "Tarot" | "Italian" | "Ramolos" | "Mamluk";
+    card?: Card;
   }> = [];
 
   const cardsArea: Array<{ x: number; y: number }> = [
@@ -156,10 +168,6 @@ export const createMmkScene = (p: p5): Scene => {
   ];
 
   const createCards = (p: p5, amount: number = 25) => {
-    const specialCards: Array<
-      "Hanafuda" | "Pokemon" | "Tarot" | "Italian" | "Ramolos" | "Mamluk"
-    > = ["Hanafuda", "Pokemon", "Tarot", "Italian", "Ramolos", "Mamluk"];
-
     let specialCardsUsed = 0;
 
     for (let i = 0; i < amount; i++) {
@@ -167,14 +175,7 @@ export const createMmkScene = (p: p5): Scene => {
       const size = p.random() < 0.3 ? "S" : p.random() < 0.6 ? "M" : "L";
       const speed = p.random(0.5, 2);
 
-      let card:
-        | "Hanafuda"
-        | "Pokemon"
-        | "Tarot"
-        | "Italian"
-        | "Ramolos"
-        | "Mamluk"
-        | undefined = undefined;
+      let card: Card | undefined = undefined;
 
       // Assigner une carte spéciale seulement s'il en reste et avec une probabilité faible
       if (specialCardsUsed < specialCards.length && p.random() < 0.15) {
@@ -218,6 +219,9 @@ export const createMmkScene = (p: p5): Scene => {
             break;
           case "Mamluk":
             cardImage = mamluk;
+            break;
+          case "CardMmk1":
+            cardImage = cardMmk1Skew;
             break;
           default:
             cardImage =
@@ -274,7 +278,7 @@ export const createMmkScene = (p: p5): Scene => {
 
       cardMmk1Full = await utils.loadImage(p, cardMmk1FullUrl, 1);
       cardMmk1Skew = await utils.loadImage(p, cardMmk1SkewUrl, 1);
-      cardMmkSkewBlank = await utils.loadImage(p, cardMmkSkewBlankUrl, 1);
+      // cardMmkSkewBlank = await utils.loadImage(p, cardMmkSkewBlankUrl, 1);
 
       vessel = await utils.loadImage(p, vesselUrl, 1);
       isOnVessel = false;
@@ -410,6 +414,9 @@ export const createMmkScene = (p: p5): Scene => {
                 break;
               case "Ramolos":
                 fullCardImage = ramolosFull;
+                break;
+              case "CardMmk1":
+                fullCardImage = cardMmk1Full;
                 break;
               default:
                 fullCardImage = mamlukFull;

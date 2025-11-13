@@ -177,8 +177,11 @@ export const monitor = (
     progress: string;
     scene: string;
     year: string;
-  }
+  },
+  type: "scene" | "starship" = "scene"
 ) => {
+  const baseY = type === "scene" ? 0 : 720;
+
   // Boxes
   p.push();
   p.fill("#9FD5A3");
@@ -188,21 +191,21 @@ export const monitor = (
 
   p.rect(
     config.screens.center.x + 296,
-    config.screens.center.height - 20 - 60,
+    config.screens.center.height - 20 - 60 - baseY,
     148,
     60
   );
 
   p.rect(
     config.screens.center.x + 464,
-    config.screens.center.height - 20 - 60,
+    config.screens.center.height - 20 - 60 - baseY,
     148,
     60
   );
 
   p.rect(
     config.screens.center.x + 632,
-    config.screens.center.height - 20 - 60,
+    config.screens.center.height - 20 - 60 - baseY,
     148,
     60
   );
@@ -221,7 +224,7 @@ export const monitor = (
   p.text(
     data.progress,
     config.screens.center.x + 296 + 18,
-    config.screens.center.height - 31 - 36,
+    config.screens.center.height - 31 - 36 - baseY,
     112,
     36
   );
@@ -234,7 +237,7 @@ export const monitor = (
   p.text(
     data.scene,
     config.screens.center.x + 464 + 22,
-    config.screens.center.height - 20 - 56,
+    config.screens.center.height - 20 - 56 - baseY,
     105,
     56
   );
@@ -247,7 +250,7 @@ export const monitor = (
   p.text(
     data.year,
     config.screens.center.x + 632 + 29,
-    config.screens.center.height - 31 - 36,
+    config.screens.center.height - 31 - 36 - baseY,
     90,
     36
   );

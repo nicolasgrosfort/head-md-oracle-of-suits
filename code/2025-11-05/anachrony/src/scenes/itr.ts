@@ -1,6 +1,7 @@
 import p5 from "p5";
 
 import * as audio from "../libs/audio";
+import * as cardTracker from "../libs/card-tracker";
 import * as cardodex from "../libs/cardodex";
 import * as interactionZone from "../libs/interaction-zone";
 import * as magnifier from "../libs/magnifier";
@@ -95,6 +96,12 @@ export const createIntroScene = (p: p5): sceneManager.Scene => {
   let isOnButton = false;
   let lastAngle: number | null = null;
 
+  let monitor = {
+    scene: "",
+    progress: "",
+    year: "",
+  };
+
   const MIN_ZONE_RADIUS = 50;
   const MAX_ZONE_RADIUS = 200;
   const ORIGINAL_CIRCLE_X = 1022;
@@ -113,21 +120,45 @@ export const createIntroScene = (p: p5): sceneManager.Scene => {
         currentImg = itrImg1;
         currentBtn = 0;
         currentPlanet = 0;
+        monitor.scene = "MMK";
+        monitor.year = "1500";
+        monitor.progress = utils.formatProgress(
+          cardTracker.getCountByScene("mmk"),
+          4
+        );
         break;
       case 1:
         currentImg = itrImg2;
         currentBtn = 1;
         currentPlanet = 1;
+        monitor.scene = "ACN";
+        monitor.year = "1400";
+        monitor.progress = utils.formatProgress(
+          cardTracker.getCountByScene("acn"),
+          4
+        );
         break;
       case 2:
         currentImg = itrImg3;
         currentBtn = 2;
         currentPlanet = 2;
+        monitor.scene = "EMD";
+        monitor.year = "1700";
+        monitor.progress = utils.formatProgress(
+          cardTracker.getCountByScene("emd"),
+          4
+        );
         break;
       case 3:
         currentImg = itrImg4;
         currentBtn = 3;
         currentPlanet = 3;
+        monitor.scene = "JPN";
+        monitor.year = "1600";
+        monitor.progress = utils.formatProgress(
+          cardTracker.getCountByScene("jpn"),
+          4
+        );
         break;
     }
 
@@ -168,6 +199,8 @@ export const createIntroScene = (p: p5): sceneManager.Scene => {
     utils.image(pg, btnImgs[currentBtn], 926, 991);
 
     pg.pop();
+
+    cardodex.monitor(p, monitor, "starship");
   };
 
   return {

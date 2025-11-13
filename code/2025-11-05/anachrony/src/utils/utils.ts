@@ -223,3 +223,9 @@ export const isInsideCircle = (
   const dy = pointY - circleY;
   return dx * dx + dy * dy <= radius * radius;
 };
+
+export const formatProgress = (progress: number, max: number): string => {
+  return `${progress.toString().padStart(2, "0")}/${max
+    .toString()
+    .padStart(2, "0")}`;
+};

@@ -91,18 +91,19 @@ new p5((p: p5) => {
     if (!mediaPipe.anyHand()) frameWithoutHand++;
     else frameWithoutHand = 0;
 
-    if (frameWithoutHand >= FRAME_TO_SWITCH_OFF) {
+    if (
+      frameWithoutHand >= FRAME_TO_SWITCH_OFF &&
+      sceneManager.getCurrentSceneName() !== "sby"
+    ) {
       frameWithoutHand = 0;
       audio.lock.start();
       sceneManager.switchTo("sby");
     }
   };
 
-  p.mousePressed = async () => {
-    audio.toggle();
-  };
-
   p.keyPressed = async () => {
+    if (!sceneManager.sceneIsReady()) return;
+
     switch (p.key) {
       case "s": {
         await sceneManager.switchTo("sby");

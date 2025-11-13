@@ -31,6 +31,15 @@ import planetEmdUrl from "../assets/images/planet-emd.png";
 import planetJpnUrl from "../assets/images/planet-jpn.png";
 import planetMmkUrl from "../assets/images/planet-mmk.png";
 
+import cardCardsFullUrl from "../assets/images/itr/card-cards-full.png";
+import cardhandFullUrl from "../assets/images/itr/card-hand-full.png";
+
+import cardCardsSkewUrl from "../assets/images/itr/card-cards-skew.png";
+import cardhandSkewUrl from "../assets/images/itr/card-hand-skew.png";
+
+import cardCardsBlankUrl from "../assets/images/itr/card-cards-blank.png";
+import cardHandBlankUrl from "../assets/images/itr/card-hand-blank.png";
+
 import card1Url from "../assets/images/card-1.png";
 import card5Url from "../assets/images/card-5.png";
 
@@ -57,6 +66,20 @@ const cardPrompts: Record<string, Omit<cardodex.PromptData, "image">> = {
     date: "1955",
     type: "Spain",
   },
+  cards: {
+    title: "Cards",
+    description:
+      "A standard deck of playing cards has 52 cards, representing the 52 weeks in a year.",
+    date: "2025",
+    type: "Geneva",
+  },
+  hand: {
+    title: "Hand",
+    description:
+      "The earliest known playing cards date back to 9th century China, where they were used for games and divination.",
+    date: "2025",
+    type: "Geneva",
+  },
 };
 
 export const createIntroScene = (p: p5): sceneManager.Scene => {
@@ -72,14 +95,27 @@ export const createIntroScene = (p: p5): sceneManager.Scene => {
   let card1VisibleImg: p5.Image;
   let card5VisibleImg: p5.Image;
 
+  let cardCardsFullImg: p5.Image;
+  let cardhandFullImg: p5.Image;
+
+  let cardCardsSkewImg: p5.Image;
+  let cardhandSkewImg: p5.Image;
+
+  let cardCardsBlankImg: p5.Image;
+  let cardHandBlankImg: p5.Image;
+
   let card1FullImg: p5.Image;
   let card5FullImg: p5.Image;
 
   const card1X = 611;
   const card5X = 1232;
+  const cardsX = 374;
+  const handCardX = 1462;
 
   const card1Y = 1144;
   const card5Y = 911;
+  const cardsY = 1220;
+  const handCardY = 1368;
 
   let loaderImgs: p5.Image[] = [];
   let currentLoader = 0;
@@ -168,9 +204,13 @@ export const createIntroScene = (p: p5): sceneManager.Scene => {
     if (isMagnifier) {
       utils.image(pg, card1VisibleImg, card1X, card1Y);
       utils.image(pg, card5VisibleImg, card5X, card5Y);
+      utils.image(pg, cardCardsSkewImg, cardsX, cardsY);
+      utils.image(pg, cardhandSkewImg, handCardX, handCardY);
     } else {
       utils.image(pg, card1Img, card1X, card1Y);
       utils.image(pg, card5Img, card5X, card5Y);
+      utils.image(pg, cardCardsBlankImg, cardsX, cardsY);
+      utils.image(pg, cardHandBlankImg, handCardX, handCardY);
     }
 
     utils.image(pg, loaderImgs[currentLoader + (isOnButton ? 1 : 0)], 623, 815);
@@ -248,6 +288,15 @@ export const createIntroScene = (p: p5): sceneManager.Scene => {
       planetImgs.push(await utils.loadImage(p, planetJpnUrl, 1));
       currentPlanet = 0;
 
+      cardCardsFullImg = await utils.loadImage(p, cardCardsFullUrl, 1);
+      cardhandFullImg = await utils.loadImage(p, cardhandFullUrl, 1);
+
+      cardCardsSkewImg = await utils.loadImage(p, cardCardsSkewUrl, 1);
+      cardhandSkewImg = await utils.loadImage(p, cardhandSkewUrl, 1);
+
+      cardCardsBlankImg = await utils.loadImage(p, cardCardsBlankUrl, 1);
+      cardHandBlankImg = await utils.loadImage(p, cardHandBlankUrl, 1);
+
       baseButtonImg = await utils.loadImage(p, baseButtonUrl, 1);
 
       interactionZone.create("button", {
@@ -308,25 +357,55 @@ export const createIntroScene = (p: p5): sceneManager.Scene => {
         const handX = hand.x * p.width;
         const handY = hand.y * p.height;
 
-        [card1FullImg, card5FullImg].forEach((cardVisibleImg, index) => {
-          const cardX = index === 0 ? card1X : card5X;
-          const cardY = index === 0 ? card1Y : card5Y;
-          const cardWidth = cardVisibleImg.width;
-          const cardHeight = cardVisibleImg.height;
+        [card1FullImg, card5FullImg, cardCardsFullImg, cardhandFullImg].forEach(
+          (cardVisibleImg, index) => {
+            let cardId: string | null = null;
+            let cardX: number | null = null;
+            let cardY: number | null = null;
 
-          if (
-            handX >= cardX &&
-            handX <= cardX + cardWidth &&
-            handY >= cardY &&
-            handY <= cardY + cardHeight
-          ) {
-            const cardId = index === 0 ? "card1" : "card5";
-            cardodex.setPrompt({
-              ...cardPrompts[cardId],
-              image: cardVisibleImg,
-            });
+            switch (index) {
+              case 0:
+                cardId = "card1";
+                cardX = card1X;
+                cardY = card1Y;
+                break;
+              case 1:
+                cardId = "card5";
+                cardX = card5X;
+                cardY = card5Y;
+                break;
+              case 2:
+                cardId = "cards";
+                cardX = cardsX;
+                cardY = cardsY;
+                break;
+              case 3:
+                cardId = "hand";
+                cardX = handCardX;
+                cardY = handCardY;
+                break;
+            }
+
+            const cardWidth = cardVisibleImg.width;
+            const cardHeight = cardVisibleImg.height;
+
+            if (!cardX || !cardY) return;
+
+            if (
+              handX >= cardX &&
+              handX <= cardX + cardWidth &&
+              handY >= cardY &&
+              handY <= cardY + cardHeight
+            ) {
+              if (cardId) {
+                cardodex.setPrompt({
+                  ...cardPrompts[cardId],
+                  image: cardVisibleImg,
+                });
+              }
+            }
           }
-        });
+        );
 
         if (interactionZone.isActive("button")) {
           if (lastAngle === null) {
@@ -371,6 +450,11 @@ export const createIntroScene = (p: p5): sceneManager.Scene => {
 
       cardodex.draw(p);
       interactionZone.draw(p, "button", true);
+
+      const canvasContent = p.get();
+
+      p.background(0);
+      utils.drawScreens(p, config.screens, canvasContent);
     },
 
     cleanup: () => {

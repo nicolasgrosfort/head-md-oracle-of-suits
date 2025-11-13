@@ -93,6 +93,7 @@ new p5((p: p5) => {
 
     if (frameWithoutHand >= FRAME_TO_SWITCH_OFF) {
       frameWithoutHand = 0;
+      audio.lock.start();
       sceneManager.switchTo("sby");
     }
   };

@@ -1,5 +1,6 @@
 import p5 from "p5";
 
+import * as audio from "../libs/audio";
 import * as mediaPipe from "../libs/media-pipe";
 import * as sceneManager from "../libs/scene-manager";
 import * as utils from "../utils/utils";
@@ -39,6 +40,7 @@ export const createStandbyScene = (p: p5): sceneManager.Scene => {
 
       if (frameWithHand >= FRAME_TO_SWITCH_ON) {
         frameWithHand = 0;
+        audio.unlock.start();
         sceneManager.switchTo("itr");
       }
     },

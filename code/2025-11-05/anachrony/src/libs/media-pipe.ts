@@ -488,7 +488,7 @@ export const onHandMove = (callback: (hand: Hand) => void) => {
   let hand: Hand;
 
   const TRANSLATE = { x: 1, y: 1 };
-  const SCALE = { x: 1, y: 1 };
+  const SCALE = { x: 1.5, y: 1.5 };
 
   const gestureResults = getGestureResults();
   if (!gestureResults) {

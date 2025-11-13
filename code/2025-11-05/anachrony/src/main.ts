@@ -43,7 +43,7 @@ new p5((p: p5) => {
     await mediaPipe.initialize(p, {
       enableGestures: true,
       enableFace: true,
-      enablePose: false,
+      enablePose: true,
     });
 
     await sceneManager.switchTo("sby");

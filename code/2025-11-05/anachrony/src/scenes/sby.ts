@@ -31,7 +31,10 @@ export const createStandbyScene = (p: p5): sceneManager.Scene => {
       );
       p.pop();
 
-      if (mediaPipe.anyFace()) frameWithHand++;
+      const isAnyHuman =
+        mediaPipe.anyHand() || mediaPipe.anyFace() || mediaPipe.anyPose();
+
+      if (isAnyHuman) frameWithHand++;
       else frameWithHand = 0;
 
       if (frameWithHand >= FRAME_TO_SWITCH_ON) sceneManager.switchTo("itr");

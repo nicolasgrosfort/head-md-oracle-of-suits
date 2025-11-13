@@ -57,9 +57,7 @@ In each scene, use the numbers (1, 2, 3, 4...) to change the variations.
 
 > _Backlog items sorted by priority_
 
-- Write the facts about cards for MMK and Intro sequences
-- Define how to show gestures to the user (hidden things in interface)
-- Implement the Planet animation for intro
+- Write the text for all hidden cards
 - Prepare presentation (9:30)
 
 ### Nice to have
@@ -74,6 +72,8 @@ In each scene, use the numbers (1, 2, 3, 4...) to change the variations.
 
 ### Done
 
+- ~~Implement the Planet animation for intro~~
+- ~~Define how to show gestures to the user (hidden things in interface)~~
 - ~~Choose card for MMK sequences~~
 - ~~Implement the Cardodex (left and right screens)~~
 - ~~Implement the loader for traveling~~

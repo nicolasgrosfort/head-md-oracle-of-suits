@@ -55,7 +55,11 @@ new p5((p: p5) => {
       p.fill(255);
       p.textAlign(p.CENTER, p.CENTER);
       p.textSize(32);
-      p.text("Loading...", p.width / 2, p.height / 2);
+      p.text(
+        "Loading...",
+        config.screens.center.x + config.screens.center.width * 0.5,
+        config.screens.center.y + config.screens.center.height * 0.5
+      );
       return;
     }
 

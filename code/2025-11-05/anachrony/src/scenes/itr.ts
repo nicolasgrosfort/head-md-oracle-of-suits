@@ -327,7 +327,7 @@ export const createIntroScene = (p: p5): sceneManager.Scene => {
               sceneManager.switchTo("acn");
               break;
             case 3:
-              sceneManager.switchTo("jkr");
+              sceneManager.switchTo("jpn");
               break;
           }
         },

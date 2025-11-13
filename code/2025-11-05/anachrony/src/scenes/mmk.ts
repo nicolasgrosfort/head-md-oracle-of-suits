@@ -20,21 +20,26 @@ import sandUrl from "../assets/images/mmk/sand.png";
 import sunUrl from "../assets/images/sun.png";
 
 import cardMmk1FullUrl from "../assets/images/mmk/card-mmk-1-full.png";
+import cardMmk2FullUrl from "../assets/images/mmk/card-mmk-2-full.png";
+import cardMmk3FullUrl from "../assets/images/mmk/card-mmk-3-full.png";
+import cardMmk4FullUrl from "../assets/images/mmk/card-mmk-4-full.png";
+
 import cardMmk1SkewUrl from "../assets/images/mmk/card-mmk-1-skew.png";
+import cardMmk2SkewUrl from "../assets/images/mmk/card-mmk-2-skew.png";
+import cardMmk3SkewUrl from "../assets/images/mmk/card-mmk-3-skew.png";
+import cardMmk4SkewUrl from "../assets/images/mmk/card-mmk-4-skew.png";
+
 import cardMmkSkewBlankUrl from "../assets/images/mmk/card-mmk-skew-blank.png";
 
 import vesselUrl from "../assets/images/vessel.png";
 
-type Card = "CardMmk1";
+type Card = "CardMmk1" | "CardMmk2" | "CardMmk3" | "CardMmk4";
 
 const specialCards: Array<Card> = [
   "CardMmk1",
-  "CardMmk1",
-  "CardMmk1",
-  "CardMmk1",
-  "CardMmk1",
-  "CardMmk1",
-  "CardMmk1",
+  "CardMmk2",
+  "CardMmk3",
+  "CardMmk4",
 ];
 
 const color = {
@@ -44,6 +49,27 @@ const color = {
 const cardPrompts = {
   CardMmk1: {
     title: "8 of Cups Tuman",
+    description: `A rare find! This card blends the classic suit of Cups with the enigmatic Tuman design.
+    Perfect for those who appreciate both tradition and mystery in their decks.`,
+    type: "Mameluk Card",
+    date: "1500",
+  },
+  CardMmk2: {
+    title: "Deputy Na'ib",
+    description: `A rare find! This card blends the classic suit of Cups with the enigmatic Tuman design.
+    Perfect for those who appreciate both tradition and mystery in their decks.`,
+    type: "Mameluk Card",
+    date: "1500",
+  },
+  CardMmk3: {
+    title: "Second deputy Na'ib thani",
+    description: `A rare find! This card blends the classic suit of Cups with the enigmatic Tuman design.
+    Perfect for those who appreciate both tradition and mystery in their decks.`,
+    type: "Mameluk Card",
+    date: "1500",
+  },
+  CardMmk4: {
+    title: "King Malik",
     description: `A rare find! This card blends the classic suit of Cups with the enigmatic Tuman design.
     Perfect for those who appreciate both tradition and mystery in their decks.`,
     type: "Mameluk Card",
@@ -66,7 +92,15 @@ export const createMmkScene = (p: p5): Scene => {
   let vessel: p5.Image;
 
   let cardMmk1Full: p5.Image;
+  let cardMmk2Full: p5.Image;
+  let cardMmk3Full: p5.Image;
+  let cardMmk4Full: p5.Image;
+
   let cardMmk1Skew: p5.Image;
+  let cardMmk2Skew: p5.Image;
+  let cardMmk3Skew: p5.Image;
+  let cardMmk4Skew: p5.Image;
+
   let cardMmkSkewBlank: p5.Image;
 
   let cloudLeftX = 0;
@@ -150,6 +184,15 @@ export const createMmkScene = (p: p5): Scene => {
           case "CardMmk1":
             cardImage = cardMmk1Skew;
             break;
+          case "CardMmk2":
+            cardImage = cardMmk2Skew;
+            break;
+          case "CardMmk3":
+            cardImage = cardMmk3Skew;
+            break;
+          case "CardMmk4":
+            cardImage = cardMmk4Skew;
+            break;
           case "blank":
             cardImage =
               card.size === "L" ? cardL : card.size === "M" ? cardM : cardS;
@@ -157,6 +200,15 @@ export const createMmkScene = (p: p5): Scene => {
       } else {
         switch (card.card) {
           case "CardMmk1":
+            cardImage = cardMmkSkewBlank;
+            break;
+          case "CardMmk2":
+            cardImage = cardMmkSkewBlank;
+            break;
+          case "CardMmk3":
+            cardImage = cardMmkSkewBlank;
+            break;
+          case "CardMmk4":
             cardImage = cardMmkSkewBlank;
             break;
           case "blank":
@@ -197,7 +249,15 @@ export const createMmkScene = (p: p5): Scene => {
       cardS = await utils.loadImage(p, cardSUrl, 1);
 
       cardMmk1Full = await utils.loadImage(p, cardMmk1FullUrl, 1);
+      cardMmk2Full = await utils.loadImage(p, cardMmk2FullUrl, 1);
+      cardMmk3Full = await utils.loadImage(p, cardMmk3FullUrl, 1);
+      cardMmk4Full = await utils.loadImage(p, cardMmk4FullUrl, 1);
+
       cardMmk1Skew = await utils.loadImage(p, cardMmk1SkewUrl, 1);
+      cardMmk2Skew = await utils.loadImage(p, cardMmk2SkewUrl, 1);
+      cardMmk3Skew = await utils.loadImage(p, cardMmk3SkewUrl, 1);
+      cardMmk4Skew = await utils.loadImage(p, cardMmk4SkewUrl, 1);
+
       cardMmkSkewBlank = await utils.loadImage(p, cardMmkSkewBlankUrl, 1);
 
       vessel = await utils.loadImage(p, vesselUrl, 1);
@@ -211,7 +271,7 @@ export const createMmkScene = (p: p5): Scene => {
       });
 
       cards = [];
-      createCards(p, 2);
+      createCards(p, 25);
 
       interactionZone.create("vessel", {
         x: vesselX,
@@ -299,6 +359,15 @@ export const createMmkScene = (p: p5): Scene => {
               case "CardMmk1":
                 cardImage = cardMmkSkewBlank;
                 break;
+              case "CardMmk2":
+                cardImage = cardMmkSkewBlank;
+                break;
+              case "CardMmk3":
+                cardImage = cardMmkSkewBlank;
+                break;
+              case "CardMmk4":
+                cardImage = cardMmkSkewBlank;
+                break;
             }
         }
 
@@ -331,6 +400,15 @@ export const createMmkScene = (p: p5): Scene => {
             switch (cardType) {
               case "CardMmk1":
                 fullCardImage = cardMmk1Full;
+                break;
+              case "CardMmk2":
+                fullCardImage = cardMmk2Full;
+                break;
+              case "CardMmk3":
+                fullCardImage = cardMmk3Full;
+                break;
+              case "CardMmk4":
+                fullCardImage = cardMmk4Full;
                 break;
             }
 

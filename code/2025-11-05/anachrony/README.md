@@ -15,6 +15,10 @@ The projet using p5.js with typescript and vite.js.
     yarn preview # Preview the production build
 ```
 
+#### Images
+
+The images must be exported at x4 (to maintain good quality with the magnifier effect).
+
 ### Deployment
 
 The project is automatically deployed to [lab.tekh.studio/anachrony/](https://lab.tekh.studio/anachrony/) when the code is pushed to the main branch.
@@ -57,11 +61,6 @@ In each scene, use the numbers (1, 2, 3, 4...) to change the variations.
 
 > _Backlog items sorted by priority_
 
-- Write the text for all hidden cards
-- Prepare presentation (9:30)
-
-### Nice to have
-
 - Prototype the "Joker" sequence
 - Prototype the "Edo "Japan" sequence
 - Implement the Joker sequence
@@ -72,6 +71,8 @@ In each scene, use the numbers (1, 2, 3, 4...) to change the variations.
 
 ### Done
 
+- ~~Prepare presentation (9:30)~~
+- ~~Write the text for all hidden cards~~
 - ~~Implement the Planet animation for intro~~
 - ~~Define how to show gestures to the user (hidden things in interface)~~
 - ~~Choose card for MMK sequences~~

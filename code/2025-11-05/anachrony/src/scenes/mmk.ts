@@ -196,6 +196,8 @@ export const createMmkScene = (p: p5): Scene => {
   let vesselY = 400;
 
   let isComplete = false;
+  let vesselRotation = 0;
+  let vesselAnimDirection = 1;
 
   let cards: Array<{
     x: number;
@@ -248,7 +250,31 @@ export const createMmkScene = (p: p5): Scene => {
   const drawScene = (pg: p5 | p5.Graphics, isMagnifier?: boolean) => {
     pg.background(color.blue);
 
-    utils.image(pg, vessel, vesselX, vesselY);
+    // Animate vessel when complete
+    if (isComplete) {
+      vesselRotation += 0.002 * vesselAnimDirection;
+
+      if (vesselRotation >= p.radians(8) || vesselRotation <= p.radians(-8)) {
+        vesselAnimDirection *= -1;
+      }
+
+      pg.push();
+      pg.translate(
+        vesselX + (vessel.width * 0.25) / 2,
+        vesselY + (vessel.height * 0.25) / 2
+      );
+      pg.rotate(vesselRotation);
+      pg.image(
+        vessel,
+        (-vessel.width * 0.25) / 2,
+        (-vessel.height * 0.25) / 2,
+        vessel.width * 0.25,
+        vessel.height * 0.25
+      );
+      pg.pop();
+    } else {
+      utils.image(pg, vessel, vesselX, vesselY);
+    }
 
     utils.image(pg, sun, config.screens.center.x - sun.width * 0.25 + 160, 40);
     utils.image(pg, sand, 0, config.screens.center.height - sand.height * 0.25);
@@ -335,7 +361,7 @@ export const createMmkScene = (p: p5): Scene => {
   return {
     setup: async () => {
       cloudLeft = await utils.loadImage(p, cloudLeftUrl, 1);
-      cloudLeftX = 40;
+      cloudLeftX = 80;
 
       cloudCenter = await utils.loadImage(p, cloundCenterUrl, 1);
       cloudCenterX = p.width * 0.5;
@@ -427,8 +453,8 @@ export const createMmkScene = (p: p5): Scene => {
       console.log("Drawing MMK scene");
 
       const leftResult = utils.animateX(
-        40,
-        40 + 400,
+        80,
+        80 + 400,
         0.2,
         cloudLeftX,
         cloudLeftDirection
@@ -468,7 +494,7 @@ export const createMmkScene = (p: p5): Scene => {
       if (!isAnyHand) {
         handX = 0;
         handY = 0;
-        interactionZone.reset("vessel");
+        interactionZone.reset("vessel", true);
         isOnVessel = false;
       }
 

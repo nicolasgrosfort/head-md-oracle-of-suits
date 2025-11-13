@@ -6,8 +6,8 @@ import * as utils from "../utils/utils";
 import disketUrl from "../assets/fonts/disket-mono-bold.ttf";
 import recursiveUrl from "../assets/fonts/recursive-mono-lnr-st-med.woff2";
 
-import leftScreenInfoUrl from "../assets/images/left-screen-info.png";
-import rightScreenInfoUrl from "../assets/images/right-screen-info.png";
+import leftScreenInfoUrl from "../assets/images/common/left-screen-info.png";
+import rightScreenInfoUrl from "../assets/images/common/right-screen-info.png";
 
 export type PromptData = {
   title: string;

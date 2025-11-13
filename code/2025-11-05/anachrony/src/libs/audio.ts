@@ -33,6 +33,7 @@ export const load = () => {
     autostart: true,
     loop: true,
     fadeIn: 4,
+    volume: -4,
     fadeOut: 2,
     onload: () => {
       isSongLoaded = true;

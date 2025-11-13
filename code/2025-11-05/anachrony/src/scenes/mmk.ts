@@ -370,14 +370,14 @@ export const createMmkScene = (p: p5): Scene => {
       pg,
       loaderImgs[currentLoader + (isOnVessel ? 1 : 0)],
       623,
-      config.screens.center.height - 60
+      config.screens.center.height - 80
     );
 
     utils.image(
       pg,
       loaderImgs[currentLoader + (isOnVessel ? 1 : 0)],
       1303,
-      config.screens.center.height - 60,
+      config.screens.center.height - 80,
       { flipX: true }
     );
   };
@@ -670,7 +670,7 @@ export const createMmkScene = (p: p5): Scene => {
 
       // DISPLAY CARD FOUNDED TO THE TOP LEFT
       const cardsDiscovered = cardTracker.getByScene("mmk");
-      const padding = 20;
+      const padding = 40;
       let currentX = config.screens.center.x + padding;
       for (let i = 0; i < cardsDiscovered.length; i++) {
         const card = cardsDiscovered[i];
@@ -698,7 +698,7 @@ export const createMmkScene = (p: p5): Scene => {
         const y = config.screens.center.y + padding;
 
         utils.image(p, cardImage, x, y);
-        currentX += cardImage.width * 0.25 + padding;
+        currentX += cardImage.width * 0.25 + padding * 0.5;
       }
 
       // COUNT CARDS TO DISPLAY
@@ -708,7 +708,7 @@ export const createMmkScene = (p: p5): Scene => {
       cardodex.monitor(p, {
         progress,
         scene: "MMK",
-        year: "2075",
+        year: "1500",
       });
 
       if (!isComplete && cardTracker.getCountByScene("mmk") >= 4) {

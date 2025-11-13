@@ -60,7 +60,7 @@ In each scene, use the numbers (1, 2, 3, 4...) to change the variations.
 - Write the facts about cards for MMK and Intro sequences
 - Define how to show gestures to the user (hidden things in interface)
 - Implement the Planet animation for intro
-- Record video presentation
+- Prepare presentation (9:30)
 
 ### Nice to have
 

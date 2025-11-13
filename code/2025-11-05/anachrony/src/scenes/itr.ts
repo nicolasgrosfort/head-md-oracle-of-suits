@@ -106,9 +106,10 @@ export const createIntroScene = (p: p5): sceneManager.Scene => {
   const MAX_ZONE_RADIUS = 200;
   const ORIGINAL_CIRCLE_X = 1022;
   const ORIGINAL_CIRCLE_Y = 1055;
-  const MAX_PLANET_SCALE = 1.2;
+  const MAX_PLANET_SCALE = 1.15;
 
-  let planetScale = 1;
+  let planetBaseScale = 1;
+  let planetAnimationOffset = 0;
 
   const drawScene = (pg: p5 | p5.Graphics, isMagnifier?: boolean) => {
     pg.push();
@@ -182,12 +183,15 @@ export const createIntroScene = (p: p5): sceneManager.Scene => {
       { flipX: true }
     );
 
+    planetAnimationOffset = p.sin(p.frameCount * 0.1) * 0.01;
+    const finalPlanetScale = planetBaseScale + planetAnimationOffset;
+
     pg.push();
     pg.translate(
       832 + (planetImgs[currentPlanet].width / 2) * 0.25,
       166 + (planetImgs[currentPlanet].height / 2) * 0.25
     );
-    pg.scale(planetScale);
+    pg.scale(finalPlanetScale);
     pg.translate(
       (-planetImgs[currentPlanet].width / 2) * 0.25,
       (-planetImgs[currentPlanet].height / 2) * 0.25
@@ -253,7 +257,7 @@ export const createIntroScene = (p: p5): sceneManager.Scene => {
         maxRadius: MAX_ZONE_RADIUS,
         requiredFrames: config.frame.toTravel,
         onProgress: (progress) => {
-          planetScale = p.map(progress, 0, 1, 1, MAX_PLANET_SCALE);
+          planetBaseScale = p.map(progress, 0, 1, 1, MAX_PLANET_SCALE);
           currentLoader = Math.min(
             loaderImgs.length - 1,
             Math.floor(progress * (loaderImgs.length - 1))
@@ -276,7 +280,7 @@ export const createIntroScene = (p: p5): sceneManager.Scene => {
           }
         },
         onExit: () => {
-          planetScale = 1;
+          planetBaseScale = 1;
           currentLoader = 0;
         },
       });

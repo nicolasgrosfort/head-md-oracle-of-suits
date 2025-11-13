@@ -180,7 +180,7 @@ export const monitor = (
   },
   type: "scene" | "starship" = "scene"
 ) => {
-  const baseY = type === "scene" ? 0 : 720;
+  const baseY = type === "scene" ? 20 : 720;
 
   // Boxes
   p.push();

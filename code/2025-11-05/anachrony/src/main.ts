@@ -92,6 +92,7 @@ new p5((p: p5) => {
     else frameWithoutHand = 0;
 
     if (frameWithoutHand >= FRAME_TO_SWITCH_OFF) {
+      frameWithoutHand = 0;
       sceneManager.switchTo("sby");
     }
   };

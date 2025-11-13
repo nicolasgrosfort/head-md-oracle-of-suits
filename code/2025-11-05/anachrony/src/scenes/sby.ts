@@ -37,7 +37,10 @@ export const createStandbyScene = (p: p5): sceneManager.Scene => {
       if (isAnyHuman) frameWithHand++;
       else frameWithHand = 0;
 
-      if (frameWithHand >= FRAME_TO_SWITCH_ON) sceneManager.switchTo("itr");
+      if (frameWithHand >= FRAME_TO_SWITCH_ON) {
+        frameWithHand = 0;
+        sceneManager.switchTo("itr");
+      }
     },
 
     cleanup: () => {

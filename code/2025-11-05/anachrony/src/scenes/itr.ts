@@ -36,22 +36,25 @@ import card5Url from "../assets/images/card-5.png";
 import card1VisibleUrl from "../assets/images/card-1-visible.png";
 import card5VisibleUrl from "../assets/images/card-5-visible.png";
 
+import card1FullUrl from "../assets/images/card-1-full.png";
+import card5FullUrl from "../assets/images/card-5-full.png";
+
 import baseButtonUrl from "../assets/images/base-button.png";
 
 const cardPrompts: Record<string, Omit<cardodex.PromptData, "image">> = {
   card1: {
-    title: "18 Rock'n Pop",
+    title: "Rock'n Pop",
     description:
       "In Hanafuda, the January “Hikari” card shows a crane and rising sun — symbols of luck and long life.",
     date: "1980",
     type: "France",
   },
   card5: {
-    title: "CARD 5",
+    title: "Justo Rodero",
     description:
       "In the 17th century, the Ace of Diamonds stood for both wealth and deceit — hence the saying “an ace up your sleeve.”",
-    date: "2023",
-    type: "Japan",
+    date: "1955",
+    type: "Spain",
   },
 };
 
@@ -67,6 +70,9 @@ export const createIntroScene = (p: p5): sceneManager.Scene => {
 
   let card1VisibleImg: p5.Image;
   let card5VisibleImg: p5.Image;
+
+  let card1FullImg: p5.Image;
+  let card5FullImg: p5.Image;
 
   const card1X = 611;
   const card5X = 1232;
@@ -180,6 +186,9 @@ export const createIntroScene = (p: p5): sceneManager.Scene => {
       card1VisibleImg = await utils.loadImage(p, card1VisibleUrl, 1);
       card5VisibleImg = await utils.loadImage(p, card5VisibleUrl, 1);
 
+      card1FullImg = await utils.loadImage(p, card1FullUrl, 1);
+      card5FullImg = await utils.loadImage(p, card5FullUrl, 1);
+
       loaderImgs = [];
       loaderImgs.push(await utils.loadImage(p, loader0Url, 1));
       loaderImgs.push(await utils.loadImage(p, loader1Url, 1));
@@ -262,7 +271,7 @@ export const createIntroScene = (p: p5): sceneManager.Scene => {
         const handX = hand.x * p.width;
         const handY = hand.y * p.height;
 
-        [card1VisibleImg, card5VisibleImg].forEach((cardVisibleImg, index) => {
+        [card1FullImg, card5FullImg].forEach((cardVisibleImg, index) => {
           const cardX = index === 0 ? card1X : card5X;
           const cardY = index === 0 ? card1Y : card5Y;
           const cardWidth = cardVisibleImg.width;

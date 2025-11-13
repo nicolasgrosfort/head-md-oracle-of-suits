@@ -56,7 +56,7 @@ new p5((p: p5) => {
       p.textAlign(p.CENTER, p.CENTER);
       p.textSize(32);
       p.text(
-        "Loading...",
+        "LOADING...",
         config.screens.center.x + config.screens.center.width * 0.5,
         config.screens.center.y + config.screens.center.height * 0.5
       );

@@ -19,6 +19,9 @@ let displayHand = false;
 let displayFace = false;
 let displayPose = false;
 
+const FRAME_TO_SWITCH_OFF = 1000;
+let frameWithoutHand = 0;
+
 new p5((p: p5) => {
   p.setup = async () => {
     p.createCanvas(config.sketch.width, config.sketch.height);
@@ -39,7 +42,7 @@ new p5((p: p5) => {
     await cardodex.initialize(p);
     await mediaPipe.initialize(p, {
       enableGestures: true,
-      enableFace: false,
+      enableFace: true,
       enablePose: false,
     });
 
@@ -84,6 +87,13 @@ new p5((p: p5) => {
       drawLandmarks: true,
       drawConnections: true,
     });
+
+    if (mediaPipe.anyHand()) frameWithoutHand++;
+    else frameWithoutHand = 0;
+
+    if (frameWithoutHand >= FRAME_TO_SWITCH_OFF) {
+      sceneManager.switchTo("sby");
+    }
   };
 
   p.mousePressed = async () => {

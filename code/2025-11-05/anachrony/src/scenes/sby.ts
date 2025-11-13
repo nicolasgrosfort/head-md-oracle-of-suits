@@ -6,12 +6,11 @@ import * as utils from "../utils/utils";
 
 import sbyUrl1 from "../assets/images/sby-1.png";
 
-const FRAME_TO_SWITCH = 5;
+const FRAME_TO_SWITCH_ON = 5;
 
 export const createStandbyScene = (p: p5): sceneManager.Scene => {
   let sbyImg1: p5.Image;
   let frameWithHand = 0;
-  let isAnyHand = false;
 
   return {
     setup: async () => {
@@ -32,15 +31,10 @@ export const createStandbyScene = (p: p5): sceneManager.Scene => {
       );
       p.pop();
 
-      isAnyHand = false;
-      mediaPipe.onHandMove(() => {
-        isAnyHand = true;
-      });
-
-      if (isAnyHand) frameWithHand++;
+      if (mediaPipe.anyFace()) frameWithHand++;
       else frameWithHand = 0;
 
-      if (frameWithHand >= FRAME_TO_SWITCH) sceneManager.switchTo("itr");
+      if (frameWithHand >= FRAME_TO_SWITCH_ON) sceneManager.switchTo("itr");
     },
 
     cleanup: () => {

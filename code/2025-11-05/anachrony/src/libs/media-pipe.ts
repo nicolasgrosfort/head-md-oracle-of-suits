@@ -33,6 +33,9 @@ let poseLandmarker: PoseLandmarker | null = null;
 let video: p5.Element | null = null;
 let crop: p5.Graphics | null = null;
 
+let isAnyFace = false;
+let isAnyPose = false;
+let isAnyHand = false;
 let isReady = false;
 
 let lastGestureResults: HandLandmarkerResult | null = null;
@@ -154,14 +157,17 @@ export const detect = () => {
 
     if (handLandmarker) {
       lastGestureResults = handLandmarker.detect(cropCanvas);
+      isAnyHand = lastGestureResults?.landmarks?.length > 0;
     }
 
     if (faceLandmarker) {
       lastFaceResults = faceLandmarker.detect(cropCanvas);
+      isAnyFace = lastFaceResults?.faceLandmarks?.length > 0;
     }
 
     if (poseLandmarker) {
       lastPoseResults = poseLandmarker.detect(cropCanvas);
+      isAnyPose = lastPoseResults?.landmarks?.length > 0;
     }
   }
 };
@@ -589,3 +595,6 @@ export const getPoseResults = () => lastPoseResults;
 export const getVideo = () => video;
 
 export const ready = () => isReady;
+export const anyFace = () => isAnyFace;
+export const anyPose = () => isAnyPose;
+export const anyHand = () => isAnyHand;

@@ -1,6 +1,7 @@
 import p5 from "p5";
 
 import * as audio from "./libs/audio";
+import * as cardTracker from "./libs/card-tracker";
 import * as cardodex from "./libs/cardodex";
 import * as mediaPipe from "./libs/media-pipe";
 import * as sceneManager from "./libs/scene-manager";
@@ -8,7 +9,7 @@ import * as config from "./utils/config";
 
 import { createAncientChinaScene } from "./scenes/acn";
 import { createEmdScene } from "./scenes/emd";
-import { createIntroScene } from "./scenes/itr";
+import { createIntroScene, resetButtonPosition } from "./scenes/itr";
 import { createJokerScene } from "./scenes/jkr";
 import { createEdoJapanScene } from "./scenes/jpn";
 import { createMmkScene } from "./scenes/mmk";
@@ -104,6 +105,8 @@ new p5((p: p5) => {
       sceneManager.getCurrentSceneName() !== "sby"
     ) {
       audio.lock.start();
+      cardTracker.reset();
+      resetButtonPosition();
       sceneManager.switchTo("sby");
     }
   };

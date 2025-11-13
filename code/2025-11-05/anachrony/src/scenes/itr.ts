@@ -80,6 +80,12 @@ const cardPrompts: Record<string, Omit<cardodex.PromptData, "image">> = {
   },
 };
 
+let buttonPosition = 0;
+
+export const resetButtonPosition = () => {
+  buttonPosition = 0;
+};
+
 export const createIntroScene = (p: p5): sceneManager.Scene => {
   let itrImg1: p5.Image;
   let itrImg2: p5.Image;
@@ -126,7 +132,6 @@ export const createIntroScene = (p: p5): sceneManager.Scene => {
   let planetImgs: p5.Image[] = [];
   let currentPlanet = 0;
 
-  let buttonPosition = 0;
   let isOnButton = false;
   let lastAngle: number | null = null;
 

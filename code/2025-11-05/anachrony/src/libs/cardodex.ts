@@ -171,6 +171,88 @@ export const draw = (p: p5) => {
   p.pop();
 };
 
+export const monitor = (
+  p: p5,
+  data: {
+    progress: string;
+    scene: string;
+    year: string;
+  }
+) => {
+  // Boxes
+  p.push();
+  p.fill("#9FD5A3");
+  p.stroke("#252525");
+  p.rectMode(p.CORNER);
+  p.strokeWeight(4);
+
+  p.rect(
+    config.screens.center.x + 296,
+    config.screens.center.height - 20 - 60,
+    148,
+    60
+  );
+
+  p.rect(
+    config.screens.center.x + 464,
+    config.screens.center.height - 20 - 60,
+    148,
+    60
+  );
+
+  p.rect(
+    config.screens.center.x + 632,
+    config.screens.center.height - 20 - 60,
+    148,
+    60
+  );
+
+  p.pop();
+
+  // Text
+  p.fill(0);
+  p.noStroke();
+
+  p.textSize(32);
+  p.textLeading(36);
+  p.textFont(disket);
+  p.textAlign(p.LEFT, p.CENTER);
+
+  p.text(
+    data.progress,
+    config.screens.center.x + 296 + 18,
+    config.screens.center.height - 32 - 36,
+    112,
+    36
+  );
+
+  p.textSize(50);
+  p.textLeading(56);
+  p.textFont(disket);
+  p.textAlign(p.LEFT, p.CENTER);
+
+  p.text(
+    data.scene,
+    config.screens.center.x + 464 + 22,
+    config.screens.center.height - 23 - 56,
+    105,
+    56
+  );
+
+  p.textSize(32);
+  p.textLeading(36);
+  p.textFont(disket);
+  p.textAlign(p.LEFT, p.CENTER);
+
+  p.text(
+    data.year,
+    config.screens.center.x + 632 + 29,
+    config.screens.center.height - 32 - 36,
+    90,
+    36
+  );
+};
+
 export const clear = () => {
   promptState.data = undefined;
   promptState.startTime = undefined;

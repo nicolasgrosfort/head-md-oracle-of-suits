@@ -5,18 +5,21 @@ import clacUrl from "../assets/audios/clac.m4a";
 import drawCardUrl from "../assets/audios/draw-card.mp3";
 import loaderUrl from "../assets/audios/loader.mp3";
 import portalUrl from "../assets/audios/portal.mp3";
+import successUrl from "../assets/audios/success.mp3";
 
 export let isSongLoaded = false;
 export let isClacLoaded = false;
 export let isPortalLoaded = false;
 export let isLoaderLoaded = false;
 export let isDrawCardLoaded = false;
+export let isSuccessLoaded = false;
 
 export let song: Tone.Player;
 export let clac: Tone.Player;
 export let portal: Tone.Player;
 export let loader: Tone.Player;
 export let drawCard: Tone.Player;
+export let success: Tone.Player;
 
 export const load = () => {
   song = new Tone.Player({
@@ -60,6 +63,14 @@ export const load = () => {
     autostart: false,
     onload: () => {
       isDrawCardLoaded = true;
+    },
+  }).toDestination();
+
+  success = new Tone.Player({
+    url: successUrl,
+    autostart: false,
+    onload: () => {
+      isSuccessLoaded = true;
     },
   }).toDestination();
 };

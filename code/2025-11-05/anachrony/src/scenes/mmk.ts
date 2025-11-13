@@ -1,5 +1,6 @@
 import p5 from "p5";
 
+import * as audio from "../libs/audio";
 import * as cardTracker from "../libs/card-tracker";
 import * as cardodex from "../libs/cardodex";
 import * as interactionZone from "../libs/interaction-zone";
@@ -193,6 +194,8 @@ export const createMmkScene = (p: p5): Scene => {
   let isOnVessel = false;
   let vesselX = 60;
   let vesselY = 400;
+
+  let isComplete = false;
 
   let cards: Array<{
     x: number;
@@ -602,6 +605,8 @@ export const createMmkScene = (p: p5): Scene => {
 
       // DISPLAY CARD FOUNDED TO THE TOP LEFT
       const cardsDiscovered = cardTracker.getByScene("mmk");
+      const padding = 20;
+      let currentX = config.screens.center.x + padding;
       for (let i = 0; i < cardsDiscovered.length; i++) {
         const card = cardsDiscovered[i];
 
@@ -624,31 +629,27 @@ export const createMmkScene = (p: p5): Scene => {
 
         if (!cardImage) continue;
 
-        const padding = 10;
-
-        const x =
-          config.screens.center.x +
-          padding +
-          i * (cardImage.width * 0.25 + padding);
+        const x = currentX;
         const y = config.screens.center.y + padding;
 
         utils.image(p, cardImage, x, y);
+        currentX += cardImage.width * 0.25 + padding;
       }
 
       // COUNT CARDS TO DISPLAY
-      p.fill(0);
-      p.noStroke();
-      p.textSize(24);
-      p.textAlign(p.CENTER, p.BOTTOM);
-
       const count = cardTracker.getCountByScene("mmk").toString();
-      const text = `${count.padStart(2, "0")}/04`;
+      const progress = `${count.padStart(2, "0")}/04`;
 
-      p.text(
-        text,
-        config.screens.center.x + config.screens.center.width * 0.5,
-        p.height - 20
-      );
+      cardodex.monitor(p, {
+        progress,
+        scene: "MMK",
+        year: "2075",
+      });
+
+      if (!isComplete && cardTracker.getCountByScene("mmk") >= 4) {
+        isComplete = true;
+        audio.success.start();
+      }
     },
 
     cleanup: () => {

@@ -50,6 +50,12 @@ import cardMmkSkewBlankUrl from "../assets/images/mmk/card-mmk-skew-blank.png";
 import cardPachinonSkewBlankUrl from "../assets/images/mmk/card-pachimon-skew-blank.png";
 import cardTarotOshoSkewBlankUrl from "../assets/images/mmk/card-tarot-osho-skew-blank.png";
 
+import loader0Url from "../assets/images/loader-0.png";
+import loader1Url from "../assets/images/loader-1.png";
+import loader2Url from "../assets/images/loader-2.png";
+import loader3Url from "../assets/images/loader-3.png";
+import loader4Url from "../assets/images/loader-4.png";
+
 import vesselUrl from "../assets/images/vessel.png";
 
 type Card =
@@ -198,6 +204,9 @@ export const createMmkScene = (p: p5): Scene => {
   let isComplete = false;
   let vesselRotation = 0;
   let vesselAnimDirection = 1;
+
+  let loaderImgs: p5.Image[] = [];
+  let currentLoader = 0;
 
   let cards: Array<{
     x: number;
@@ -356,6 +365,21 @@ export const createMmkScene = (p: p5): Scene => {
     if (isOnVessel && !isMagnifier) {
       interactionZone.draw(p, "vessel", true);
     }
+
+    utils.image(
+      pg,
+      loaderImgs[currentLoader + (isOnVessel ? 1 : 0)],
+      623,
+      config.screens.center.height - 60
+    );
+
+    utils.image(
+      pg,
+      loaderImgs[currentLoader + (isOnVessel ? 1 : 0)],
+      1303,
+      config.screens.center.height - 60,
+      { flipX: true }
+    );
   };
 
   return {
@@ -398,6 +422,14 @@ export const createMmkScene = (p: p5): Scene => {
       cardPachinon1Small = await utils.loadImage(p, cardPachinon1SmallUrl, 1);
       cardTarotOsho1Small = await utils.loadImage(p, cardTarotOsho1SmallUrl, 1);
 
+      loaderImgs = [];
+      loaderImgs.push(await utils.loadImage(p, loader0Url, 1));
+      loaderImgs.push(await utils.loadImage(p, loader1Url, 1));
+      loaderImgs.push(await utils.loadImage(p, loader2Url, 1));
+      loaderImgs.push(await utils.loadImage(p, loader3Url, 1));
+      loaderImgs.push(await utils.loadImage(p, loader4Url, 1));
+      currentLoader = 0;
+
       cardMmkSkewBlank = await utils.loadImage(p, cardMmkSkewBlankUrl, 1);
       cardPachinonSkewBlank = await utils.loadImage(
         p,
@@ -439,12 +471,19 @@ export const createMmkScene = (p: p5): Scene => {
         width: vessel.width * 0.25,
         height: vessel.height * 0.25,
         requiredFrames: config.frame.toTravel,
-        onProgress: () => {
+        onProgress: (progress) => {
           cardodex.clear();
+          currentLoader = Math.min(
+            loaderImgs.length - 1,
+            Math.floor(progress * (loaderImgs.length - 1))
+          );
         },
         onComplete: () => {
           console.log("Vessel interaction complete");
           sceneManager.switchTo("itr");
+        },
+        onExit: () => {
+          currentLoader = 0;
         },
       });
     },

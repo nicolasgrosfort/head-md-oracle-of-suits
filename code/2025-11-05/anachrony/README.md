@@ -57,9 +57,9 @@ In each scene, use the numbers (1, 2, 3, 4...) to change the variations.
 
 > _Backlog items sorted by priority_
 
-- Implement the Cardodex (left and right screens)
+- Choose card for MMK sequences
+- Write the facts about cards for MMK and Intro sequences
 - Define how to show gestures to the user (hidden things in interface)
-- Write the facts about cards
 - Implement the Planet animation for intro
 - Prototype the "Joker" sequence
 - Implement the Joker sequence
@@ -75,6 +75,7 @@ In each scene, use the numbers (1, 2, 3, 4...) to change the variations.
 
 ### Done
 
+- ~~Implement the Cardodex (left and right screens)~~
 - ~~Implement the loader for traveling~~
 - ~~Implement the Magnifier for intro~~
 - ~~Reduce the camera area~~

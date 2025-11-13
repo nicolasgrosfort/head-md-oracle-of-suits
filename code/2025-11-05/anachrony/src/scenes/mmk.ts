@@ -85,10 +85,6 @@ const cardPrompts = {
 };
 
 export const createMmkScene = (p: p5): Scene => {
-  // let zoomFactor = 2;
-  // let zoomSize = 300;
-  // let magnifier: p5.Graphics;
-
   let cloudLeft: p5.Image;
   let cloudCenter: p5.Image;
   let cloudRight: p5.Image;

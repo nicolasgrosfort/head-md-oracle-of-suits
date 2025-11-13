@@ -1,5 +1,6 @@
 import p5 from "p5";
 
+import * as cardTracker from "../libs/card-tracker";
 import * as cardodex from "../libs/cardodex";
 import * as interactionZone from "../libs/interaction-zone";
 import * as magnifier from "../libs/magnifier";
@@ -36,6 +37,11 @@ import cardMmk3SkewUrl from "../assets/images/mmk/card-mmk-3-skew.png";
 import cardMmk4SkewUrl from "../assets/images/mmk/card-mmk-4-skew.png";
 import cardPachinon1SkewUrl from "../assets/images/mmk/card-pachimon-1-skew.png";
 import cardTarotOsho1SkewUrl from "../assets/images/mmk/card-tarot-osho-1-skew.png";
+
+import cardChinese1SmallUrl from "../assets/images/mmk/card-chinese-1-small.png";
+import cardHanafuda1SmallUrl from "../assets/images/mmk/card-hanafuda-1-small.png";
+import cardPachinon1SmallUrl from "../assets/images/mmk/card-pachimon-1-small.png";
+import cardTarotOsho1SmallUrl from "../assets/images/mmk/card-tarot-osho-1-small.png";
 
 import cardChineseSkewBlankUrl from "../assets/images/mmk/card-chinese-skew-blank.png";
 import cardHanafudaSkewBlankUrl from "../assets/images/mmk/card-hanafuda-skew-blank.png";
@@ -167,6 +173,11 @@ export const createMmkScene = (p: p5): Scene => {
   let cardChineseSkewBlank: p5.Image;
   let cardHanafudaSkewBlank: p5.Image;
 
+  let cardPachinon1Small: p5.Image;
+  let cardTarotOsho1Small: p5.Image;
+  let cardChinese1Small: p5.Image;
+  let cardHanafuda1Small: p5.Image;
+
   let cloudLeftX = 0;
   let cloudCenterX = 0;
   let cloudRightX = 0;
@@ -180,8 +191,8 @@ export const createMmkScene = (p: p5): Scene => {
   let handY = 0;
 
   let isOnVessel = false;
-  let vesselX = 70;
-  let vesselY = 500;
+  let vesselX = 60;
+  let vesselY = 400;
 
   let cards: Array<{
     x: number;
@@ -234,17 +245,16 @@ export const createMmkScene = (p: p5): Scene => {
   const drawScene = (pg: p5 | p5.Graphics, isMagnifier?: boolean) => {
     pg.background(color.blue);
 
+    utils.image(pg, vessel, vesselX, vesselY);
+
     utils.image(pg, sun, config.screens.center.x - sun.width * 0.25 + 160, 40);
     utils.image(pg, sand, 0, config.screens.center.height - sand.height * 0.25);
     utils.image(pg, cloudLeft, cloudLeftX, 320);
-
-    utils.image(pg, vessel, vesselX, vesselY);
 
     for (let card of cards) {
       let cardImage: p5.Image | null = null;
 
       if (isMagnifier && card.card) {
-        console.log(card.card);
         switch (card.card) {
           case "CardMmk1":
             cardImage = cardMmk1Skew;
@@ -353,6 +363,11 @@ export const createMmkScene = (p: p5): Scene => {
       cardPachinon1Skew = await utils.loadImage(p, cardPachinon1SkewUrl, 1);
       cardTarotOsho1Skew = await utils.loadImage(p, cardTarotOsho1SkewUrl, 1);
       cardHanafuda1Skew = await utils.loadImage(p, cardHanafuda1SkewUrl, 1);
+
+      cardChinese1Small = await utils.loadImage(p, cardChinese1SmallUrl, 1);
+      cardHanafuda1Small = await utils.loadImage(p, cardHanafuda1SmallUrl, 1);
+      cardPachinon1Small = await utils.loadImage(p, cardPachinon1SmallUrl, 1);
+      cardTarotOsho1Small = await utils.loadImage(p, cardTarotOsho1SmallUrl, 1);
 
       cardMmkSkewBlank = await utils.loadImage(p, cardMmkSkewBlankUrl, 1);
       cardPachinonSkewBlank = await utils.loadImage(
@@ -540,15 +555,19 @@ export const createMmkScene = (p: p5): Scene => {
                 break;
               case "CardPachimon1":
                 fullCardImage = cardPachinon1Full;
+                cardTracker.discover("CardPachimon1", "mmk");
                 break;
               case "CardTarotOsho1":
                 fullCardImage = cardTarotOsho1Full;
+                cardTracker.discover("CardTarotOsho1", "mmk");
                 break;
               case "CardChinese1":
                 fullCardImage = cardChinese1Full;
+                cardTracker.discover("CardChinese1", "mmk");
                 break;
               case "CardHanafuda1":
                 fullCardImage = cardHanafuda1Full;
+                cardTracker.discover("CardHanafuda1", "mmk");
                 break;
             }
 
@@ -580,6 +599,56 @@ export const createMmkScene = (p: p5): Scene => {
       p.background(0);
       utils.drawScreens(p, config.screens, canvasContent);
       cardodex.draw(p);
+
+      // DISPLAY CARD FOUNDED TO THE TOP LEFT
+      const cardsDiscovered = cardTracker.getByScene("mmk");
+      for (let i = 0; i < cardsDiscovered.length; i++) {
+        const card = cardsDiscovered[i];
+
+        let cardImage: p5.Image | null = null;
+
+        switch (card.id) {
+          case "CardPachimon1":
+            cardImage = cardPachinon1Small;
+            break;
+          case "CardTarotOsho1":
+            cardImage = cardTarotOsho1Small;
+            break;
+          case "CardChinese1":
+            cardImage = cardChinese1Small;
+            break;
+          case "CardHanafuda1":
+            cardImage = cardHanafuda1Small;
+            break;
+        }
+
+        if (!cardImage) continue;
+
+        const padding = 10;
+
+        const x =
+          config.screens.center.x +
+          padding +
+          i * (cardImage.width * 0.25 + padding);
+        const y = config.screens.center.y + padding;
+
+        utils.image(p, cardImage, x, y);
+      }
+
+      // COUNT CARDS TO DISPLAY
+      p.fill(0);
+      p.noStroke();
+      p.textSize(24);
+      p.textAlign(p.CENTER, p.BOTTOM);
+
+      const count = cardTracker.getCountByScene("mmk").toString();
+      const text = `${count.padStart(2, "0")}/04`;
+
+      p.text(
+        text,
+        config.screens.center.x + config.screens.center.width * 0.5,
+        p.height - 20
+      );
     },
 
     cleanup: () => {

@@ -19,27 +19,51 @@ import cloudRightUrl from "../assets/images/cloud-right.png";
 import sandUrl from "../assets/images/mmk/sand.png";
 import sunUrl from "../assets/images/sun.png";
 
+import cardChinese1FullUrl from "../assets/images/mmk/card-chinese-1-full.png";
+import cardHanafuda1FullUrl from "../assets/images/mmk/card-hanafuda-1-full.png";
 import cardMmk1FullUrl from "../assets/images/mmk/card-mmk-1-full.png";
 import cardMmk2FullUrl from "../assets/images/mmk/card-mmk-2-full.png";
 import cardMmk3FullUrl from "../assets/images/mmk/card-mmk-3-full.png";
 import cardMmk4FullUrl from "../assets/images/mmk/card-mmk-4-full.png";
+import cardPachinon1FullUrl from "../assets/images/mmk/card-pachimon-1-full.png";
+import cardTarotOsho1FullUrl from "../assets/images/mmk/card-tarot-osho-1-full.png";
 
+import cardChinese1SkewUrl from "../assets/images/mmk/card-chinese-1-skew.png";
+import cardHanafuda1SkewUrl from "../assets/images/mmk/card-hanafuda-1-skew.png";
 import cardMmk1SkewUrl from "../assets/images/mmk/card-mmk-1-skew.png";
 import cardMmk2SkewUrl from "../assets/images/mmk/card-mmk-2-skew.png";
 import cardMmk3SkewUrl from "../assets/images/mmk/card-mmk-3-skew.png";
 import cardMmk4SkewUrl from "../assets/images/mmk/card-mmk-4-skew.png";
+import cardPachinon1SkewUrl from "../assets/images/mmk/card-pachimon-1-skew.png";
+import cardTarotOsho1SkewUrl from "../assets/images/mmk/card-tarot-osho-1-skew.png";
 
+import cardChineseSkewBlankUrl from "../assets/images/mmk/card-chinese-skew-blank.png";
+import cardHanafudaSkewBlankUrl from "../assets/images/mmk/card-hanafuda-skew-blank.png";
 import cardMmkSkewBlankUrl from "../assets/images/mmk/card-mmk-skew-blank.png";
+import cardPachinonSkewBlankUrl from "../assets/images/mmk/card-pachimon-skew-blank.png";
+import cardTarotOshoSkewBlankUrl from "../assets/images/mmk/card-tarot-osho-skew-blank.png";
 
 import vesselUrl from "../assets/images/vessel.png";
 
-type Card = "CardMmk1" | "CardMmk2" | "CardMmk3" | "CardMmk4";
+type Card =
+  | "CardMmk1"
+  | "CardMmk2"
+  | "CardMmk3"
+  | "CardMmk4"
+  | "CardPachimon1"
+  | "CardTarotOsho1"
+  | "CardChinese1"
+  | "CardHanafuda1";
 
 const specialCards: Array<Card> = [
   "CardMmk1",
   "CardMmk2",
   "CardMmk3",
   "CardMmk4",
+  "CardPachimon1",
+  "CardTarotOsho1",
+  "CardChinese1",
+  "CardHanafuda1",
 ];
 
 const color = {
@@ -75,6 +99,34 @@ const cardPrompts = {
     type: "Mameluk Card",
     date: "1500",
   },
+  CardPachimon1: {
+    title: "Pachimon Card 1",
+    description: `An intriguing Pachimon card, showcasing unique artwork and symbolism.
+    A must-have for collectors of rare and exotic playing cards.`,
+    type: "Pachimon Card",
+    date: "1800",
+  },
+  CardTarotOsho1: {
+    title: "Osho Zen Tarot Card 1",
+    description: `A captivating card from the Osho Zen Tarot deck, known for its deep spiritual insights.
+    Ideal for those seeking enlightenment through their tarot readings.`,
+    type: "Osho Zen Tarot Card",
+    date: "1970",
+  },
+  CardChinese1: {
+    title: "Chinese Playing Card 1",
+    description: `A beautifully crafted Chinese playing card, rich in cultural heritage and design.
+    Perfect for enthusiasts of traditional Asian card games.`,
+    type: "Chinese Playing Card",
+    date: "1600",
+  },
+  CardHanafuda1: {
+    title: "Hanafuda Card 1",
+    description: `A stunning Hanafuda card, featuring intricate floral designs and vibrant colors.
+    A prized addition for fans of Japanese card games and art.`,
+    type: "Hanafuda Card",
+    date: "1700",
+  },
 };
 
 export const createMmkScene = (p: p5): Scene => {
@@ -95,13 +147,25 @@ export const createMmkScene = (p: p5): Scene => {
   let cardMmk2Full: p5.Image;
   let cardMmk3Full: p5.Image;
   let cardMmk4Full: p5.Image;
+  let cardPachinon1Full: p5.Image;
+  let cardTarotOsho1Full: p5.Image;
+  let cardChinese1Full: p5.Image;
+  let cardHanafuda1Full: p5.Image;
 
   let cardMmk1Skew: p5.Image;
   let cardMmk2Skew: p5.Image;
   let cardMmk3Skew: p5.Image;
   let cardMmk4Skew: p5.Image;
+  let cardPachinon1Skew: p5.Image;
+  let cardTarotOsho1Skew: p5.Image;
+  let cardChinese1Skew: p5.Image;
+  let cardHanafuda1Skew: p5.Image;
 
   let cardMmkSkewBlank: p5.Image;
+  let cardPachinonSkewBlank: p5.Image;
+  let cardTarotOshoSkewBlank: p5.Image;
+  let cardChineseSkewBlank: p5.Image;
+  let cardHanafudaSkewBlank: p5.Image;
 
   let cloudLeftX = 0;
   let cloudCenterX = 0;
@@ -180,6 +244,7 @@ export const createMmkScene = (p: p5): Scene => {
       let cardImage: p5.Image | null = null;
 
       if (isMagnifier && card.card) {
+        console.log(card.card);
         switch (card.card) {
           case "CardMmk1":
             cardImage = cardMmk1Skew;
@@ -192,6 +257,18 @@ export const createMmkScene = (p: p5): Scene => {
             break;
           case "CardMmk4":
             cardImage = cardMmk4Skew;
+            break;
+          case "CardPachimon1":
+            cardImage = cardPachinon1Skew;
+            break;
+          case "CardTarotOsho1":
+            cardImage = cardTarotOsho1Skew;
+            break;
+          case "CardChinese1":
+            cardImage = cardChinese1Skew;
+            break;
+          case "CardHanafuda1":
+            cardImage = cardHanafuda1Skew;
             break;
           case "blank":
             cardImage =
@@ -211,6 +288,18 @@ export const createMmkScene = (p: p5): Scene => {
           case "CardMmk4":
             cardImage = cardMmkSkewBlank;
             break;
+          case "CardPachimon1":
+            cardImage = cardPachinonSkewBlank;
+            break;
+          case "CardTarotOsho1":
+            cardImage = cardTarotOshoSkewBlank;
+            break;
+          case "CardChinese1":
+            cardImage = cardChineseSkewBlank;
+            break;
+          case "CardHanafuda1":
+            cardImage = cardHanafudaSkewBlank;
+            break;
           case "blank":
             cardImage =
               card.size === "L" ? cardL : card.size === "M" ? cardM : cardS;
@@ -219,8 +308,7 @@ export const createMmkScene = (p: p5): Scene => {
 
       if (!cardImage) continue;
 
-      const ratio = card.size === "L" ? 1 : card.size === "M" ? 0.9 : 0.8;
-      utils.image(pg, cardImage, card.x, card.y, { ratio: 0.25 * ratio });
+      utils.image(pg, cardImage, card.x, card.y);
     }
 
     utils.image(pg, cloudRight, cloudRightX, 340);
@@ -252,13 +340,41 @@ export const createMmkScene = (p: p5): Scene => {
       cardMmk2Full = await utils.loadImage(p, cardMmk2FullUrl, 1);
       cardMmk3Full = await utils.loadImage(p, cardMmk3FullUrl, 1);
       cardMmk4Full = await utils.loadImage(p, cardMmk4FullUrl, 1);
+      cardChinese1Full = await utils.loadImage(p, cardChinese1FullUrl, 1);
+      cardPachinon1Full = await utils.loadImage(p, cardPachinon1FullUrl, 1);
+      cardTarotOsho1Full = await utils.loadImage(p, cardTarotOsho1FullUrl, 1);
+      cardHanafuda1Full = await utils.loadImage(p, cardHanafuda1FullUrl, 1);
 
       cardMmk1Skew = await utils.loadImage(p, cardMmk1SkewUrl, 1);
       cardMmk2Skew = await utils.loadImage(p, cardMmk2SkewUrl, 1);
       cardMmk3Skew = await utils.loadImage(p, cardMmk3SkewUrl, 1);
       cardMmk4Skew = await utils.loadImage(p, cardMmk4SkewUrl, 1);
+      cardChinese1Skew = await utils.loadImage(p, cardChinese1SkewUrl, 1);
+      cardPachinon1Skew = await utils.loadImage(p, cardPachinon1SkewUrl, 1);
+      cardTarotOsho1Skew = await utils.loadImage(p, cardTarotOsho1SkewUrl, 1);
+      cardHanafuda1Skew = await utils.loadImage(p, cardHanafuda1SkewUrl, 1);
 
       cardMmkSkewBlank = await utils.loadImage(p, cardMmkSkewBlankUrl, 1);
+      cardPachinonSkewBlank = await utils.loadImage(
+        p,
+        cardPachinonSkewBlankUrl,
+        1
+      );
+      cardTarotOshoSkewBlank = await utils.loadImage(
+        p,
+        cardTarotOshoSkewBlankUrl,
+        1
+      );
+      cardChineseSkewBlank = await utils.loadImage(
+        p,
+        cardChineseSkewBlankUrl,
+        1
+      );
+      cardHanafudaSkewBlank = await utils.loadImage(
+        p,
+        cardHanafudaSkewBlankUrl,
+        1
+      );
 
       vessel = await utils.loadImage(p, vesselUrl, 1);
       isOnVessel = false;
@@ -271,7 +387,7 @@ export const createMmkScene = (p: p5): Scene => {
       });
 
       cards = [];
-      createCards(p, 25);
+      createCards(p, 22);
 
       interactionZone.create("vessel", {
         x: vesselX,
@@ -368,6 +484,18 @@ export const createMmkScene = (p: p5): Scene => {
               case "CardMmk4":
                 cardImage = cardMmkSkewBlank;
                 break;
+              case "CardPachimon1":
+                cardImage = cardPachinonSkewBlank;
+                break;
+              case "CardTarotOsho1":
+                cardImage = cardTarotOshoSkewBlank;
+                break;
+              case "CardChinese1":
+                cardImage = cardChineseSkewBlank;
+                break;
+              case "CardHanafuda1":
+                cardImage = cardHanafudaSkewBlank;
+                break;
             }
         }
 
@@ -409,6 +537,18 @@ export const createMmkScene = (p: p5): Scene => {
                 break;
               case "CardMmk4":
                 fullCardImage = cardMmk4Full;
+                break;
+              case "CardPachimon1":
+                fullCardImage = cardPachinon1Full;
+                break;
+              case "CardTarotOsho1":
+                fullCardImage = cardTarotOsho1Full;
+                break;
+              case "CardChinese1":
+                fullCardImage = cardChinese1Full;
+                break;
+              case "CardHanafuda1":
+                fullCardImage = cardHanafuda1Full;
                 break;
             }
 

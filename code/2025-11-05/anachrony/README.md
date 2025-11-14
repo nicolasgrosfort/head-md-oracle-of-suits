@@ -1,5 +1,7 @@
 # Anachrony
 
+Anachrony is a contemplative interactive game where you travel through different eras to return misplaced playing cards to their rightful time.
+
 ## Technical
 
 The project needs `Node 22` and `Yarn 1.22` to works.

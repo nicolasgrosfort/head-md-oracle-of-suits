@@ -4,17 +4,20 @@
     "type": "split",
     "children": [
       {
-        "id": "080741c1594ca0af",
+        "id": "335c76b6d850660d",
         "type": "tabs",
         "children": [
           {
-            "id": "7ba679f29c07597f",
+            "id": "08c169749fceea7d",
             "type": "leaf",
             "state": {
-              "type": "graph",
-              "state": {},
-              "icon": "lucide-git-fork",
-              "title": "Graph view"
+              "type": "bases",
+              "state": {
+                "file": "process/journal/journal.base",
+                "viewName": "Table"
+              },
+              "icon": "lucide-table",
+              "title": "journal"
             }
           }
         ]
@@ -49,7 +52,7 @@
             "state": {
               "type": "search",
               "state": {
-                "query": "tag:#hacking",
+                "query": "throwing",
                 "matchingCase": false,
                 "explainSearch": false,
                 "collapseAll": false,
@@ -70,7 +73,8 @@
               "title": "Bookmarks"
             }
           }
-        ]
+        ],
+        "currentTab": 1
       }
     ],
     "direction": "horizontal",
@@ -162,8 +166,10 @@
       "bases:Create new base": false
     }
   },
-  "active": "7ba679f29c07597f",
+  "active": "1c2bd345c90b38ac",
   "lastOpenFiles": [
+    "process/observations/observations.base",
+    "Untitled.md",
     "code/2025-10-20/README.md",
     "process/concepts/2025-10-24/bestiary-of-suits.md",
     "process/observations/images/map-within-card.jpeg",
@@ -191,7 +197,6 @@
     "code/2025-10-24/chronoscope-lamp/src/jsconfig.json",
     "code/2025-10-24/chronoscope-lamp/src/index.html",
     "code/2025-10-24/chronoscope-lamp/src/libraries/p5.sound.min.js",
-    "code/2025-10-24/chronoscope-lamp/src/libraries/p5.min.js",
     "code/2025-10-21/camera-reframe/README.md",
     "code/2025-10-21/3d-parallax/README.md",
     "code/2025-10-20/rock-paper-scissors/README.md",
@@ -207,8 +212,6 @@
     "process/references/hanafuda.md",
     "process/observations/2025-09-22-hanafuda-koi-koi.md",
     "process/observations/2025-09-22-hanafuda.md",
-    "process/observations/2025-09-22-anyone-got-any-tips-for-getting-into-throwing-cards.md",
-    "process/observations/2025-09-22-bought-two-new-decks.md",
-    "README.md"
+    "process/observations/2025-09-22-anyone-got-any-tips-for-getting-into-throwing-cards.md"
   ]
 }

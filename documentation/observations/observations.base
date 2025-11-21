@@ -14,5 +14,4 @@ views:
       - property: file.name
         direction: ASC
     columnSize:
-      file.name: 145
-      file.basename: 136
+      file.name: 326

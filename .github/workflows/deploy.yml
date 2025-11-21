@@ -16,7 +16,7 @@ jobs:
 
     defaults:
       run:
-        working-directory: code/2025-11-05/anachrony
+        working-directory: code
 
     steps:
       - name: Get latest code
@@ -27,7 +27,7 @@ jobs:
         with:
           node-version: "22"
           cache: "yarn"
-          cache-dependency-path: code/2025-11-05/anachrony/yarn.lock
+          cache-dependency-path: code/yarn.lock
 
       - name: Install deps
         run: yarn install --frozen-lockfile
@@ -45,4 +45,4 @@ jobs:
           username: ${{ secrets.USERNAME }}
           password: ${{ secrets.PASSWORD }}
           server-dir: /sites/lab.tekh.studio/anachrony/
-          local-dir: code/2025-11-05/anachrony/dist/
+          local-dir: code/dist/

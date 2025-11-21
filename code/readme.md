@@ -2,6 +2,10 @@
 
 Anachrony is a contemplative interactive game where you travel through different eras to return misplaced playing cards to their rightful time.
 
+## Preview
+
+![Anachrony](./docs/anachrony.gif)
+
 ## Technical
 
 The project needs `Node 22.16.0` and `Yarn 1.22.22` to works.
@@ -53,14 +57,6 @@ In each scene, use the numbers (1, 2, 3, 4...) to change the variations.
     'f' - Switch to Final scene
 ```
 
----
-
-## Preview
-
-![Screen Walker](./docs/screen-walker.gif)
-
----
-
 ## Roadmap
 
 > _Backlog items sorted by priority_
@@ -72,3 +68,7 @@ In each scene, use the numbers (1, 2, 3, 4...) to change the variations.
 - Implement the "Ancient China" sequence
 - Implement the "Edo Japan" sequence
 - Compose sound design
+
+## Research
+
+![Screen Walker](./docs/screen-walker.gif)

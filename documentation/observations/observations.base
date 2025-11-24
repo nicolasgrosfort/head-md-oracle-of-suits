@@ -1,10 +1,6 @@
 views:
   - type: table
     name: Table
-    filters:
-      and:
-        - file.ext == "md"
-        - file.folder == "process/observations"
     order:
       - file.name
       - file.tags

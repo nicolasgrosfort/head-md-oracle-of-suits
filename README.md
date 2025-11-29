@@ -14,4 +14,4 @@ _Note that the project was designed to be projected onto 3 separate screens._
 
 - [Anachrony](https://lab.tekh.studio/anachrony/)
 
-![Presentation @ 2025.11.14](./press-kit/assets/process-21.png)
+![Presentation @ 2025.11.14](./press-kit/assets/process/process-21.png)

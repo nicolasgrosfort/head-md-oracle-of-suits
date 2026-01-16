@@ -1,7 +1,7 @@
 import p5 from "p5";
-import type { Scene } from "../libs/scene-manager";
 import * as magnifier from "../libs/magnifier";
 import * as mediaPipe from "../libs/media-pipe";
+import type { Scene } from "../libs/scene-manager";
 import * as config from "../utils/config";
 import * as utils from "../utils/utils";
 
@@ -16,14 +16,7 @@ export const createEdoJapanScene = (p: p5): Scene => {
 
   const drawScene = (pg: p5 | p5.Graphics, _isMagnifier?: boolean) => {
     pg.push();
-    pg.imageMode(pg.CENTER);
-    pg.image(
-      jpnImg1,
-      pg.width * 0.5,
-      pg.height * 0.5,
-      jpnImg1.width * 0.25,
-      jpnImg1.height * 0.25
-    );
+    utils.image(pg, jpnImg1, 0, 0);
     pg.pop();
   };
 
@@ -60,6 +53,10 @@ export const createEdoJapanScene = (p: p5): Scene => {
       }
 
       isAnyHand = false;
+
+      const canvasContent = p.get();
+      p.background(0);
+      utils.drawScreens(p, config.screens, canvasContent);
     },
 
     cleanup: () => {

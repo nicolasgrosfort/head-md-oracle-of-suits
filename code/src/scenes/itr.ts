@@ -321,10 +321,10 @@ export const createIntroScene = (p: p5): sceneManager.Scene => {
               sceneManager.switchTo("mmk");
               break;
             case 1:
-              sceneManager.switchTo("emd");
+              sceneManager.switchTo("acn");
               break;
             case 2:
-              sceneManager.switchTo("acn");
+              sceneManager.switchTo("emd");
               break;
             case 3:
               sceneManager.switchTo("jpn");

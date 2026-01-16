@@ -27,44 +27,17 @@ export const createAncientChinaScene = (p: p5): Scene => {
   let handY = 0;
 
   let isOnVessel = false;
-  let vesselX = 60;
-  let vesselY = 400;
+  let vesselX = 1800;
+  let vesselY = 450;
 
   let currentLoader = 0;
-
-  let isComplete = false;
-  let vesselRotation = 0;
-  let vesselAnimDirection = 1;
 
   const drawScene = (pg: p5 | p5.Graphics, isMagnifier?: boolean) => {
     pg.push();
     utils.image(pg, acnImg1, 0, 0);
     pg.pop();
 
-    if (isComplete) {
-      vesselRotation += 0.002 * vesselAnimDirection;
-
-      if (vesselRotation >= p.radians(8) || vesselRotation <= p.radians(-8)) {
-        vesselAnimDirection *= -1;
-      }
-
-      pg.push();
-      pg.translate(
-        vesselX + (vessel.width * 0.25) / 2,
-        vesselY + (vessel.height * 0.25) / 2
-      );
-      pg.rotate(vesselRotation);
-      pg.image(
-        vessel,
-        (-vessel.width * 0.25) / 2,
-        (-vessel.height * 0.25) / 2,
-        vessel.width * 0.25,
-        vessel.height * 0.25
-      );
-      pg.pop();
-    } else {
-      utils.image(pg, vessel, vesselX, vesselY);
-    }
+    utils.image(pg, vessel, vesselX, vesselY, { flipX: true });
 
     if (isOnVessel && !isMagnifier) {
       interactionZone.draw(p, "vessel", true);

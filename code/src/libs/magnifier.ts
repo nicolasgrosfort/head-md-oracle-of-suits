@@ -20,7 +20,7 @@ const magnifiers = new Map<string, MagnifierState>();
 export const create = (
   p: p5,
   id: string,
-  config: MagnifierConfig = {}
+  config: MagnifierConfig = {},
 ): void => {
   const zoomFactor = config.zoomFactor ?? 2;
   const size = config.size ?? 300;
@@ -45,7 +45,7 @@ export const draw = (
   id: string,
   handX: number,
   handY: number,
-  sourceGraphics?: p5.Graphics
+  sourceGraphics?: p5.Graphics,
 ): void => {
   const magnifier = magnifiers.get(id);
   if (!magnifier) return;
@@ -60,19 +60,20 @@ export const draw = (
   p.push();
   const zoomedRegion = source.get(sx, sy, copySize, copySize);
 
-  p.drawingContext.save();
-  p.drawingContext.beginPath();
-  p.drawingContext.arc(handX, handY, magnifier.size / 2, 0, p.TWO_PI);
-  p.drawingContext.clip();
+  const ctx = p.drawingContext as CanvasRenderingContext2D;
+
+  ctx.save();
+  ctx.beginPath();
+  ctx.arc(handX, handY, magnifier.size / 2, 0, p.TWO_PI);
+  ctx.clip();
 
   // Activer l'interpolation pour un zoom lisse
-  p.drawingContext.imageSmoothingEnabled = true;
-  p.drawingContext.imageSmoothingQuality = "high";
-
+  ctx.imageSmoothingEnabled = true;
+  ctx.imageSmoothingQuality = "high";
   p.translate(handX - magnifier.size / 2, handY - magnifier.size / 2);
   p.image(zoomedRegion, 0, 0, magnifier.size, magnifier.size);
 
-  p.drawingContext.restore();
+  ctx.restore();
 
   p.noFill();
 
@@ -106,7 +107,7 @@ export const getGraphics = (id: string): p5.Graphics | null => {
 
 export const updateConfig = (
   id: string,
-  config: Partial<MagnifierConfig>
+  config: Partial<MagnifierConfig>,
 ): void => {
   const magnifier = magnifiers.get(id);
   if (!magnifier) return;

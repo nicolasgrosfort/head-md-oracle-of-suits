@@ -7,14 +7,13 @@ export const drawScreens = (p: p5, screens: Screens, content?: p5.Image) => {
   for (const screen of Object.values(screens)) {
     p.push();
 
-    p.drawingContext.save();
-    p.drawingContext.beginPath();
-    p.drawingContext.rect(screen.x, screen.y, screen.width, screen.height);
-    p.drawingContext.clip();
-
+    const ctx = p.drawingContext as CanvasRenderingContext2D;
+    ctx.save();
+    ctx.beginPath();
+    ctx.rect(screen.x, screen.y, screen.width, screen.height);
+    ctx.clip();
     p.image(content as any, 0, 0, p.width, p.height);
-
-    p.drawingContext.restore();
+    ctx.restore();
     p.pop();
 
     p.noFill();
@@ -27,7 +26,7 @@ export const drawScreens = (p: p5, screens: Screens, content?: p5.Image) => {
 export const loadImage = (
   p: p5,
   url: string,
-  ratio: number = 4
+  ratio: number = 4,
 ): Promise<p5.Image> => {
   const scale = 1 / ratio;
   return new Promise<p5.Image>((resolve) => {
@@ -43,7 +42,7 @@ export const animateX = (
   maxX: number,
   speed: number,
   currentX: number,
-  direction: number = 1
+  direction: number = 1,
 ): { x: number; direction: number } => {
   let newX = currentX + speed * direction;
   let newDirection = direction;
@@ -63,7 +62,7 @@ export const animateX = (
 
 export const randomPositionInPolygon = (
   p: p5,
-  vertices: Array<{ x: number; y: number }>
+  vertices: Array<{ x: number; y: number }>,
 ): { x: number; y: number } => {
   const minX = Math.min(...vertices.map((v) => v.x));
   const maxX = Math.max(...vertices.map((v) => v.x));
@@ -87,7 +86,7 @@ export const randomPositionInPolygon = (
 
 const isPointInPolygon = (
   point: { x: number; y: number },
-  vertices: Array<{ x: number; y: number }>
+  vertices: Array<{ x: number; y: number }>,
 ): boolean => {
   let inside = false;
 
@@ -118,7 +117,7 @@ export const imageToAscii = (
   y: number,
   width: number,
   height: number,
-  resolution: number = 15 // Augmenté pour moins de détails mais plus rapide
+  resolution: number = 15, // Augmenté pour moins de détails mais plus rapide
 ) => {
   // const chars = " .-+*#@";
   const chars = " @#*+-.";
@@ -166,7 +165,7 @@ export const image = (
     ratio: 0.25,
     ascii: false,
     flipX: false,
-  }
+  },
 ) => {
   const ratio = options.ratio ?? 0.25;
   const ascii = options.ascii ?? false;
@@ -183,7 +182,7 @@ export const image = (
         -x - image.width * ratio,
         y,
         image.width * ratio,
-        image.height * ratio
+        image.height * ratio,
       );
       pg.pop();
     } else {
@@ -198,7 +197,7 @@ export const getAngle = (
   x2: number,
   y2: number,
   base: number = 150,
-  step: number = 30
+  step: number = 30,
 ): number => {
   const dx = x2 - x1;
   const dy = y2 - y1;
@@ -217,7 +216,7 @@ export const isInsideCircle = (
   pointY: number,
   circleX: number,
   circleY: number,
-  radius: number
+  radius: number,
 ): boolean => {
   const dx = pointX - circleX;
   const dy = pointY - circleY;

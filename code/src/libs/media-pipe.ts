@@ -62,7 +62,7 @@ export const initialize = async (
     enableGestures: true,
     enableFace: false,
     enablePose: false,
-  }
+  },
 ) => {
   video = p.createCapture({
     video: {
@@ -81,7 +81,7 @@ export const initialize = async (
   crop = p.createGraphics(config.video.width, config.video.height);
 
   const vision = await FilesetResolver.forVisionTasks(
-    "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@latest/wasm"
+    "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@latest/wasm",
   );
 
   if (options.enableGestures !== false) {
@@ -137,7 +137,7 @@ export const detect = () => {
     return;
   }
 
-  const videoElement = video.elt;
+  const videoElement = video.elt as HTMLVideoElement;
 
   if (videoElement.readyState >= 2) {
     const cropCanvas = (crop as any).canvas as HTMLCanvasElement;
@@ -152,7 +152,7 @@ export const detect = () => {
       crop.width * 0.5 - 400 * 0.5 - 25,
       275,
       400,
-      crop.height - 575
+      crop.height - 575,
     );
 
     if (handLandmarker) {
@@ -183,7 +183,7 @@ export const drawHands = (
     hide: false,
     drawLandmarks: true,
     drawConnections: true,
-  }
+  },
 ) => {
   if (options.hide) return;
 
@@ -268,7 +268,7 @@ export const drawFace = (
     drawEyes: true,
     drawNose: true,
     drawMouth: true,
-  }
+  },
 ) => {
   if (options.hide) return;
 
@@ -408,7 +408,7 @@ export const drawBody = (
     hide: false,
     drawLandmarks: true,
     drawConnections: true,
-  }
+  },
 ) => {
   if (options.hide) return;
 
@@ -467,7 +467,7 @@ export const drawVideo = (
   options: { hide?: boolean; opacity?: number } = {
     hide: false,
     opacity: 1,
-  }
+  },
 ) => {
   if (options.hide === true) return;
 
@@ -560,7 +560,7 @@ export const onHandMove = (callback: (hand: Hand) => void) => {
     smoothedThumbTip.x,
     smoothedThumbTip.y,
     smoothedPinkyTip.x,
-    smoothedPinkyTip.y
+    smoothedPinkyTip.y,
   );
 
   const xCentered = (1 - avgX - 0.5) * SCALE.x + 0.5 * TRANSLATE.x;

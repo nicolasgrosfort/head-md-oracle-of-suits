@@ -6,6 +6,10 @@ Anachrony is a contemplative interactive game where you travel through different
 
 ![Anachrony](./docs/anachrony.gif)
 
+## Streaming
+
+The project use [Syphoner](https://www.sigmasix.ch/syphoner/) image to MadMapper.
+
 ## Technical
 
 The project needs `Node 22.16.0` and `Yarn 1.22.22` to works.
